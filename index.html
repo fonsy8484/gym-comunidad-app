@@ -1,641 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0f14">
   <title>Gym Comunidad</title>
   <style>
-    :root {
-      --bg: #0b0f14;
-      --card: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #f97316;
-      --accent-2: #ec4899;
-      --success: #10b981;
-      --danger: #ef4444;
-      --border: #1f2937;
-      --shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #0b0f14 100%);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 16px;
-    }
-    .container { max-width: 900px; margin: 0 auto; }
-    header {
-      text-align: center;
-      padding: 24px 0 32px;
-    }
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-    }
-    .subtitle { color: var(--muted); font-size: 14px; }
-    .nav {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .nav button {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .nav button.active {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-color: transparent;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-    .card h2 {
-      font-size: 18px;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-    .btn {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 12px;
-    }
-    .btn-secondary {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .exercise-list { display: grid; gap: 12px; }
-    .exercise-item {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .exercise-item:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .exercise-title { font-weight: 600; margin-bottom: 4px; }
-    .exercise-muscle { font-size: 12px; color: var(--muted); }
-    .input-group { margin-bottom: 12px; }
-    .input-group label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .input-group input, .input-group select, .input-group textarea {
-      width: 100%;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      color: var(--text);
-      font-size: 14px;
-    }
-    .series-list { margin-top: 16px; }
-    .series-item {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-    .hidden { display: none; }
-    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .filter-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-    .muscle-diagram {
-      width: 100%;
-      max-width: 300px;
-      margin: 16px auto;
-      display: block;
-    }
-    .exercise-image {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 12px;
-      margin: 16px auto;
-      display: block;
-    }
-    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-    .tab {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      text-align: center;
-    }
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    :root{--bg:#0b0f14;--card:#111827;--card2:#162032;--text:#f1f5f9;--muted:#9ca3af;--accent:#f97316;--accent2:#ec4899;--border:#263244;--ok:#10b981;--danger:#ef4444}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#16243a 0,#0b0f14 45%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}button,input,select,textarea{font:inherit}.app{max-width:1040px;margin:auto;padding:16px 16px 42px}header{text-align:center;padding:20px 0 18px}h1{margin:0;font-size:clamp(28px,7vw,42px);font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}.sub{margin:8px 0 0;color:var(--muted);font-size:14px}.nav{display:flex;gap:8px;overflow:auto;padding-bottom:12px}.nav button,.chip,.button{border:1px solid var(--border);background:#121a28;color:var(--text);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700;white-space:nowrap}.nav button.active,.button.primary{border:none;background:linear-gradient(100deg,var(--accent),var(--accent2));color:#fff}.view{display:none}.view.active{display:block}.card{background:rgba(17,24,39,.94);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 14px 38px rgba(0,0,0,.24)}h2{font-size:20px;margin:0 0 8px}h3{font-size:16px;margin:18px 0 8px}.muted{color:var(--muted);font-size:14px;line-height:1.5}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.exercise{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:1px solid var(--border);background:#0d1522;color:var(--text);border-radius:14px;padding:10px;cursor:pointer}.exercise:hover{border-color:var(--accent)}.thumb{width:60px;height:74px;border-radius:9px;object-fit:cover;background:#202b3c;flex:none}.exercise b{display:block;margin-bottom:4px}.small{font-size:12px;color:var(--muted)}.filters{display:flex;gap:8px;overflow:auto;padding:3px 0 10px}.chip{padding:7px 11px;font-size:13px}.chip.active{background:var(--accent);border-color:var(--accent)}.detail-image{display:block;width:min(100%,480px);max-height:620px;object-fit:cover;border-radius:14px;background:#0b111d;margin:14px auto}.details{line-height:1.58;font-size:15px}.details li{margin:7px 0}.section-tabs{display:flex;gap:8px;margin:14px 0;overflow:auto}.section-tabs button{border:1px solid var(--border);background:#0d1522;color:var(--text);padding:8px 11px;border-radius:10px;cursor:pointer;white-space:nowrap}.section-tabs button.active{background:#27364d;border-color:var(--accent)}label{display:block;color:var(--muted);font-size:13px;margin:12px 0 5px}input,select,textarea{width:100%;color:var(--text);background:#0b111d;border:1px solid var(--border);border-radius:10px;padding:10px}textarea{resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.button{width:100%;margin-top:14px}.button.secondary{background:#121a28}.set{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:8px;background:#0d1522;font-size:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{border:1px solid var(--border);background:#0d1522;border-radius:14px;text-align:center;padding:14px}.stat strong{display:block;font-size:26px;color:var(--accent)}.notice{padding:10px;border-left:3px solid var(--accent);background:#231a17;color:#fcd6c0;border-radius:7px;font-size:13px;line-height:1.45;margin:10px 0}.hidden{display:none!important}@media(max-width:420px){.two{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.app{padding:12px}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>GYM COMUNIDAD</h1>
-      <p class="subtitle">Entrena con técnica, registra tu progreso</p>
-    </header>
+<div class="app">
+  <header><h1>GYM COMUNIDAD</h1><p class="sub">Entrena, registra tu progreso y aprende la técnica</p></header>
+  <nav class="nav">
+    <button class="active" data-view="entrenar">Entrenar</button>
+    <button data-view="biblioteca">Biblioteca</button>
+    <button data-view="cardio">Cardio</button>
+    <button data-view="estadisticas">Estadísticas</button>
+    <button data-view="ajustes">Ajustes</button>
+  </nav>
 
-    <nav class="nav">
-      <button class="active" data-tab="entrenar">Entrenar</button>
-      <button data-tab="biblioteca">Biblioteca</button>
-      <button data-tab="cardio">Cardio</button>
-      <button data-tab="estadisticas">Estadísticas</button>
-      <button data-tab="ajustes">Ajustes</button>
-    </nav>
+  <section id="entrenar" class="view active">
+    <div class="card">
+      <h2>Rutina de hoy</h2>
+      <p class="muted">Elige una rutina y toca un ejercicio para ver la imagen, la técnica y guardar tus series.</p>
+      <label for="rutina">Rutina</label>
+      <select id="rutina">
+        <option value="push">Push · Pecho, hombros y tríceps</option>
+        <option value="pull">Pull · Espalda y bíceps</option>
+        <option value="upper">Upper · Torso completo</option>
+      </select>
+      <div id="rutinaLista" class="grid" style="margin-top:14px"></div>
+    </div>
+    <div id="detalleEntreno" class="hidden"></div>
+  </section>
 
-    <section id="entrenar" class="tab-content">
-      <div class="card">
-        <h2>Rutina de hoy</h2>
-        <select id="rutina-select" class="input-group">
-          <option value="push">Push (Pecho, Hombros, Tríceps)</option>
-          <option value="pull">Pull (Espalda, Bíceps)</option>
-          <option value="legs">Legs (Piernas, Glúteos)</option>
-          <option value="upper">Upper (Torso completo)</option>
-          <option value="lower">Lower (Piernas completo)</option>
-        </select>
-        <div id="rutina-ejercicios" class="exercise-list"></div>
-      </div>
+  <section id="biblioteca" class="view">
+    <div class="card">
+      <h2>Biblioteca de ejercicios</h2>
+      <input id="buscar" type="search" placeholder="Buscar, por ejemplo: press, jalón o remo">
+      <div id="filtros" class="filters"></div>
+      <div id="bibliotecaLista" class="grid"></div>
+    </div>
+    <div id="detalleBiblioteca" class="hidden"></div>
+  </section>
 
-      <div id="ejercicio-detalle" class="card hidden">
-        <h2 id="detalle-titulo"></h2>
-        <img id="detalle-imagen" class="exercise-image" alt="" />
-        <div id="detalle-musculo" class="exercise-muscle"></div>
-        <div class="tabs">
-          <button class="tab active" data-detail="tecnica">Técnica</button>
-          <button class="tab" data-detail="errores">Errores</button>
-          <button class="tab" data-detail="alternativas">Alternativas</button>
-        </div>
-        <div id="detalle-contenido"></div>
-        <button class="btn btn-secondary" id="cambiar-ejercicio">Cambiar ejercicio</button>
-        <div id="registro-series" class="hidden">
-          <h3 style="margin:16px 0 12px;font-size:16px;">Registrar serie</h3>
-          <div class="input-group">
-            <label>Peso (kg)</label>
-            <input type="number" id="serie-peso" placeholder="0" />
-          </div>
-          <div class="input-group">
-            <label>Repeticiones</label>
-            <input type="number" id="serie-reps" placeholder="0" />
-          </div>
-          <div class="input-group">
-            <label>RIR (0-5)</label>
-            <input type="number" id="serie-rir" placeholder="2" min="0" max="5" />
-          </div>
-          <div class="input-group">
-            <label>Notas (opcional)</label>
-            <textarea id="serie-notas" rows="2" placeholder="Sensaciones, técnica, etc."></textarea>
-          </div>
-          <button class="btn" id="guardar-serie">Guardar serie</button>
-          <div class="series-list" id="series-registradas"></div>
-          <button class="btn btn-secondary" id="finalizar-ejercicio">Finalizar ejercicio</button>
-        </div>
-      </div>
-    </section>
+  <section id="cardio" class="view">
+    <div class="card">
+      <h2>Registrar cardio</h2>
+      <div class="two"><div><label>Tipo</label><select id="cardioTipo"><option>Bicicleta</option><option>Elíptica</option><option>Cinta</option><option>Otro</option></select></div><div><label>Duración (min)</label><input id="cardioMin" type="number" min="1" placeholder="20"></div></div>
+      <div class="two"><div><label>Resistencia / intensidad</label><input id="cardioRes" type="number" min="1" max="10" placeholder="5"></div><div><label>Distancia (km, opcional)</label><input id="cardioDist" type="number" min="0" step="0.1" placeholder="5.0"></div></div>
+      <label>Notas (opcional)</label><textarea id="cardioNotas" rows="3" placeholder="Ritmo, sensaciones…"></textarea>
+      <button class="button primary" id="guardarCardio">Guardar cardio</button>
+      <div id="listaCardio"></div>
+    </div>
+  </section>
 
-    <section id="biblioteca" class="tab-content hidden">
-      <div class="card">
-        <h2>Buscar ejercicio</h2>
-        <div class="filters" id="filtros-grupo"></div>
-        <div class="filters" id="filtros-material"></div>
-        <div class="exercise-list" id="biblioteca-lista"></div>
-      </div>
-    </section>
+  <section id="estadisticas" class="view"><div class="card"><h2>Tu progreso</h2><div class="stats"><div class="stat"><strong id="nSesiones">0</strong><span class="small">Series guardadas</span></div><div class="stat"><strong id="nEjercicios">0</strong><span class="small">Ejercicios usados</span></div><div class="stat"><strong id="nCardio">0</strong><span class="small">Sesiones de cardio</span></div></div><div id="ultimos" style="margin-top:16px"></div></div></section>
 
-    <section id="cardio" class="tab-content hidden">
-      <div class="card">
-        <h2>Registrar cardio</h2>
-        <div class="input-group">
-          <label>Tipo</label>
-          <select id="cardio-tipo">
-            <option value="bicicleta">Bicicleta</option>
-            <option value="eliptica">Elíptica</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Duración (minutos)</label>
-          <input type="number" id="cardio-duracion" placeholder="20" />
-        </div>
-        <div class="input-group">
-          <label>Resistencia (1-10)</label>
-          <input type="number" id="cardio-resistencia" placeholder="5" min="1" max="10" />
-        </div>
-        <div class="input-group">
-          <label>Distancia (km, opcional)</label>
-          <input type="number" id="cardio-distancia" placeholder="5.0" step="0.1" />
-        </div>
-        <div class="input-group">
-          <label>Notas</label>
-          <textarea id="cardio-notas" rows="2" placeholder="Sensaciones, ritmo, etc."></textarea>
-        </div>
-        <button class="btn" id="guardar-cardio">Guardar cardio</button>
-      </div>
-    </section>
+  <section id="ajustes" class="view"><div class="card"><h2>Copia de seguridad</h2><p class="muted">Guarda una copia antes de borrar datos del navegador o cambiar de móvil.</p><button id="exportar" class="button primary">Exportar mi copia</button><button id="importar" class="button secondary">Importar una copia</button><input id="archivoImportar" class="hidden" type="file" accept="application/json,.json"></div><div class="card"><h2>Borrar datos</h2><p class="muted">Esto borra solo tus registros guardados en este navegador. No borra las fotos ni la aplicación.</p><button id="borrar" class="button secondary">Borrar mis registros</button></div></section>
+</div>
 
-    <section id="estadisticas" class="tab-content hidden">
-      <div class="card">
-        <h2>Tus estadísticas</h2>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="stat-entrenos">0</div>
-            <div class="stat-label">Entrenamientos</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-series">0</div>
-            <div class="stat-label">Series totales</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-cardios">0</div>
-            <div class="stat-label">Sesiones cardio</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="ajustes" class="tab-content hidden">
-      <div class="card">
-        <h2>Copia de seguridad</h2>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Exporta tus datos para no perderlos o impórtalos en otro dispositivo.</p>
-        <button class="btn" id="exportar-datos">Exportar copia</button>
-        <button class="btn btn-secondary" id="importar-datos">Importar copia</button>
-        <input type="file" id="archivo-importar" accept=".json" class="hidden" />
-      </div>
-      <div class="card">
-        <h2>Borrar datos</h2>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Esto eliminará todos tus entrenamientos y cardio guardados.</p>
-        <button class="btn btn-secondary" id="borrar-datos">Borrar todo</button>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    let biblioteca = [];
-    let rutinaActual = 'push';
-    let ejercicioSeleccionado = null;
-    let seriesTemporales = [];
-
-    const rutinas = {
-      push: ['01-press-banca-barra', '02-press-inclinado-barra', '04-press-plano-mancuernas', '07-aperturas-planas-mancuernas', '12-flexiones'],
-      pull: ['15-jalon-pecho-medio', '16-jalon-pecho-ancho', '20-remo-sentado-maquina', '21-remo-sentado-estrecho', '22-remo-barra-inclinado'],
-      legs: ['30-sentadilla-barra', '31-prensa', '32-zancadas', '34-extension-cuadriceps', '35-curl-femoral'],
-      upper: ['01-press-banca-barra', '15-jalon-pecho-medio', '04-press-plano-mancuernas', '20-remo-sentado-maquina'],
-      lower: ['30-sentadilla-barra', '31-prensa', '34-extension-cuadriceps', '35-curl-femoral', '38-elevacion-gemelos']
-    };
-
-    async function cargarBiblioteca() {
-      try {
-        const respuesta = await fetch('biblioteca-ejercicios.json');
-        biblioteca = await respuesta.json();
-      } catch (e) {
-        console.error('Error cargando biblioteca:', e);
-        biblioteca = [];
-      }
-    }
-
-    function obtenerEjercicioPorId(id) {
-      return biblioteca.find(e => e.id === id) || null;
-    }
-
-    function renderizarRutina() {
-      const contenedor = document.getElementById('rutina-ejercicios');
-      contenedor.innerHTML = '';
-      const ids = rutinas[rutinaActual] || [];
-      ids.forEach(id => {
-        const ej = obtenerEjercicioPorId(id);
-        if (!ej) return;
-        const item = document.createElement('div');
-        item.className = 'exercise-item';
-        item.innerHTML = `
-          <div class="exercise-title">${ej.nombre}</div>
-          <div class="exercise-muscle">${ej.grupo_muscular_principal}</div>
-        `;
-        item.addEventListener('click', () => abrirEjercicio(ej));
-        contenedor.appendChild(item);
-      });
-    }
-
-    function abrirEjercicio(ej) {
-      ejercicioSeleccionado = ej;
-      seriesTemporales = [];
-      document.getElementById('detalle-titulo').textContent = ej.nombre;
-      document.getElementById('detalle-musculo').textContent = ej.grupo_muscular_principal;
-      
-      const img = document.getElementById('detalle-imagen');
-      const nombreImagen = ej.id + '.png';
-      img.src = 'imagenes/' + nombreImagen;
-      img.alt = ej.nombre;
-      img.onerror = () => {
-        img.style.display = 'none';
-      };
-      img.onload = () => {
-        img.style.display = 'block';
-      };
-
-      document.getElementById('detalle-contenido').innerHTML = `
-        <p style="font-size:14px;line-height:1.6;">${ej.tecnica}</p>
-      `;
-      document.getElementById('registro-series').classList.remove('hidden');
-      document.getElementById('ejercicio-detalle').classList.remove('hidden');
-      renderizarSeries();
-    }
-
-    function renderizarSeries() {
-      const contenedor = document.getElementById('series-registradas');
-      contenedor.innerHTML = '';
-      seriesTemporales.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'series-item';
-        div.innerHTML = `Serie ${i+1}: ${s.peso} kg × ${s.reps} reps (RIR ${s.rir})${s.notas ? ' — ' + s.notas : ''}`;
-        contenedor.appendChild(div);
-      });
-    }
-
-    function guardarSerie() {
-      const peso = parseFloat(document.getElementById('serie-peso').value) || 0;
-      const reps = parseInt(document.getElementById('serie-reps').value) || 0;
-      const rir = parseInt(document.getElementById('serie-rir').value) || 2;
-      const notas = document.getElementById('serie-notas').value.trim();
-      if (peso <= 0 || reps <= 0) {
-        alert('Introduce peso y repeticiones válidos');
-        return;
-      }
-      seriesTemporales.push({ peso, reps, rir, notas });
-      renderizarSeries();
-      document.getElementById('serie-peso').value = '';
-      document.getElementById('serie-reps').value = '';
-      document.getElementById('serie-rir').value = '2';
-      document.getElementById('serie-notas').value = '';
-    }
-
-    function finalizarEjercicio() {
-      if (seriesTemporales.length === 0) {
-        alert('Registra al menos una serie');
-        return;
-      }
-      const clave = 'gym_comunidad_series_' + ejercicioSeleccionado.id;
-      const existentes = JSON.parse(localStorage.getItem(clave) || '[]');
-      const nuevas = existentes.concat(seriesTemporales.map(s => ({
-        ...s,
-        fecha: new Date().toISOString()
-      })));
-      localStorage.setItem(clave, JSON.stringify(nuevas));
-      alert('Ejercicio guardado');
-      document.getElementById('ejercicio-detalle').classList.add('hidden');
-      ejercicioSeleccionado = null;
-      seriesTemporales = [];
-      actualizarEstadisticas();
-    }
-
-    function renderizarBiblioteca() {
-      const contenedor = document.getElementById('biblioteca-lista');
-      contenedor.innerHTML = '';
-      const grupoActivo = document.querySelector('#filtros-grupo .filter-btn.active')?.dataset.grupo || 'todos';
-      const materialActivo = document.querySelector('#filtros-material .filter-btn.active')?.dataset.material || 'todos';
-      
-      let filtrados = biblioteca;
-      if (grupoActivo !== 'todos') {
-        filtrados = filtrados.filter(e => e.grupo_muscular_principal.toLowerCase().includes(grupoActivo));
-      }
-      if (materialActivo !== 'todos') {
-        filtrados = filtrados.filter(e => e.material.toLowerCase().includes(materialActivo));
-      }
-
-      filtrados.forEach(ej => {
-        const item = document.createElement('div');
-        item.className = 'exercise-item';
-        item.innerHTML = `
-          <div class="exercise-title">${ej.nombre}</div>
-          <div class="exercise-muscle">${ej.grupo_muscular_principal} · ${ej.material}</div>
-        `;
-        item.addEventListener('click', () => abrirEjercicio(ej));
-        contenedor.appendChild(item);
-      });
-    }
-
-    function actualizarEstadisticas() {
-      let entrenos = 0, series = 0, cardios = 0;
-      for (let i = 0; i < localStorage.length; i++) {
-        const clave = localStorage.key(i);
-        if (clave.startsWith('gym_comunidad_series_')) {
-          const datos = JSON.parse(localStorage.getItem(clave) || '[]');
-          series += datos.length;
-          if (datos.length > 0) entrenos++;
-        }
-        if (clave.startsWith('gym_comunidad_cardio_')) {
-          const datos = JSON.parse(localStorage.getItem(clave) || '[]');
-          cardios += datos.length;
-        }
-      }
-      document.getElementById('stat-entrenos').textContent = entrenos;
-      document.getElementById('stat-series').textContent = series;
-      document.getElementById('stat-cardios').textContent = cardios;
-    }
-
-    function exportarDatos() {
-      const datos = {};
-      for (let i = 0; i < localStorage.length; i++) {
-        const clave = localStorage.key(i);
-        if (clave.startsWith('gym_comunidad_')) {
-          datos[clave] = localStorage.getItem(clave);
-        }
-      }
-      const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'gym-comunidad-copia.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function importarDatos() {
-      document.getElementById('archivo-importar').click();
-    }
-
-    function procesarImportacion(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const datos = JSON.parse(e.target.result);
-          Object.keys(datos).forEach(clave => {
-            localStorage.setItem(clave, datos[clave]);
-          });
-          alert('Datos importados correctamente');
-          actualizarEstadisticas();
-        } catch (err) {
-          alert('Error al importar: ' + err.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function borrarDatos() {
-      if (!confirm('¿Seguro que quieres borrar todos tus datos?')) return;
-      for (let i = localStorage.length - 1; i >= 0; i--) {
-        const clave = localStorage.key(i);
-        if (clave.startsWith('gym_comunidad_')) {
-          localStorage.removeItem(clave);
-        }
-      }
-      alert('Datos borrados');
-      actualizarEstadisticas();
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      await cargarBiblioteca();
-      renderizarRutina();
-      renderizarBiblioteca();
-      actualizarEstadisticas();
-
-      document.querySelectorAll('.nav button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.tab).classList.remove('hidden');
-        });
-      });
-
-      document.getElementById('rutina-select').addEventListener('change', (e) => {
-        rutinaActual = e.target.value;
-        renderizarRutina();
-      });
-
-      document.getElementById('guardar-serie').addEventListener('click', guardarSerie);
-      document.getElementById('finalizar-ejercicio').addEventListener('click', finalizarEjercicio);
-      document.getElementById('cambiar-ejercicio').addEventListener('click', () => {
-        document.getElementById('ejercicio-detalle').classList.add('hidden');
-        ejercicioSeleccionado = null;
-      });
-
-      document.querySelectorAll('#filtros-grupo').forEach(cont => {
-        cont.innerHTML = '';
-        ['todos', 'pecho', 'espalda', 'hombros', 'brazos', 'piernas', 'gluteos', 'abdominales'].forEach(g => {
-          const btn = document.createElement('button');
-          btn.className = 'filter-btn' + (g === 'todos' ? ' active' : '');
-          btn.dataset.grupo = g;
-          btn.textContent = g.charAt(0).toUpperCase() + g.slice(1);
-          btn.addEventListener('click', () => {
-            cont.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderizarBiblioteca();
-          });
-          cont.appendChild(btn);
-        });
-      });
-
-      document.querySelectorAll('#filtros-material').forEach(cont => {
-        cont.innerHTML = '';
-        ['todos', 'barra', 'mancuernas', 'polea', 'maquina', 'peso corporal'].forEach(m => {
-          const btn = document.createElement('button');
-          btn.className = 'filter-btn' + (m === 'todos' ? ' active' : '');
-          btn.dataset.material = m;
-          btn.textContent = m.charAt(0).toUpperCase() + m.slice(1);
-          btn.addEventListener('click', () => {
-            cont.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderizarBiblioteca();
-          });
-          cont.appendChild(btn);
-        });
-      });
-
-      document.getElementById('guardar-cardio').addEventListener('click', () => {
-        const tipo = document.getElementById('cardio-tipo').value;
-        const duracion = parseInt(document.getElementById('cardio-duracion').value) || 0;
-        const resistencia = parseInt(document.getElementById('cardio-resistencia').value) || 0;
-        const distancia = parseFloat(document.getElementById('cardio-distancia').value) || null;
-        const notas = document.getElementById('cardio-notas').value.trim();
-        if (duracion <= 0 || resistencia <= 0) {
-          alert('Introduce duración y resistencia válidas');
-          return;
-        }
-        const clave = 'gym_comunidad_cardio_' + tipo;
-        const existentes = JSON.parse(localStorage.getItem(clave) || '[]');
-        existentes.push({ duracion, resistencia, distancia, notas, fecha: new Date().toISOString() });
-        localStorage.setItem(clave, JSON.stringify(existentes));
-        alert('Cardio guardado');
-        document.getElementById('cardio-duracion').value = '';
-        document.getElementById('cardio-resistencia').value = '';
-        document.getElementById('cardio-distancia').value = '';
-        document.getElementById('cardio-notas').value = '';
-        actualizarEstadisticas();
-      });
-
-      document.getElementById('exportar-datos').addEventListener('click', exportarDatos);
-      document.getElementById('importar-datos').addEventListener('click', importarDatos);
-      document.getElementById('archivo-importar').addEventListener('change', procesarImportacion);
-      document.getElementById('borrar-datos').addEventListener('click', borrarDatos);
-    });
-  </script>
+<script>
+const images={
+ '01-press-banca-barra':'IMG_9372.png','02-press-inclinado-barra':'IMG_9371.png','04-press-plano-mancuernas':'IMG_9370.png','05-press-inclinado-mancuernas':'IMG_9369.png','07-aperturas-planas-mancuernas':'IMG_9368.png','08-aperturas-inclinadas-mancuernas':'IMG_9367.png','09-cruce-polea-alto-bajo':'IMG_9366.png','10-cruce-polea-bajo-alto':'IMG_9365.png','11-press-pecho-unilateral-polea':'IMG_9364.png','12-flexiones':'IMG_9363.png','13-flexiones-inclinadas':'IMG_9362.png','14-flexiones-pies-elevados':'IMG_9361.png','15-jalon-pecho-medio':'IMG_9360.png','16-jalon-pecho-ancho':'IMG_9359.png','17-jalon-supino':'IMG_9358.png','18-jalon-unilateral-arrodillado':'IMG_9357.png','19-pulldown-brazos-rectos':'IMG_9356.png','20-remo-sentado-maquina':'IMG_9355.png','21-remo-sentado-estrecho':'IMG_9354.png','22-remo-barra-inclinado':'IMG_9353.png','23-remo-pendlay':'IMG_9352.png','24-remo-mancuerna-unilateral':'IMG_9351.png'
+};
+const exercises=[
+ ['01-press-banca-barra','Press de banca con barra','Pecho','Barra','Túmbate con escápulas atrás y pies firmes. Baja la barra al pecho de forma controlada y empuja manteniendo los codos aproximadamente a 45° del torso.','Rebotar la barra en el pecho; despegar glúteos; abrir demasiado los codos.','Press plano con mancuernas, flexiones.'],
+ ['02-press-inclinado-barra','Press inclinado con barra','Pecho','Barra','Usa un banco a 30–45°. Baja la barra a la parte alta del pecho y empuja sin perder la posición de escápulas.','Banco demasiado vertical; usar impulso; encoger hombros.','Press inclinado con mancuernas, cruce bajo-alto.'],
+ ['04-press-plano-mancuernas','Press plano con mancuernas','Pecho','Mancuernas','Con escápulas retraídas, baja las mancuernas a los lados del pecho y empuja hacia arriba con control.','Chocar mancuernas; perder estabilidad de muñeca; hombros adelantados.','Press banca con barra, flexiones.'],
+ ['05-press-inclinado-mancuernas','Press inclinado con mancuernas','Pecho','Mancuernas','Banco a 30–45°, baja las mancuernas con codos controlados y empuja en diagonal hacia arriba.','Inclinar demasiado el banco; abrir los codos; usar pesos que no controlas.','Press inclinado con barra, aperturas inclinadas.'],
+ ['07-aperturas-planas-mancuernas','Aperturas planas con mancuernas','Pecho','Mancuernas','Mantén una ligera flexión de codo. Abre en arco hasta sentir estiramiento y cierra como si abrazaras un barril.','Bajar demasiado; convertirlo en press; usar demasiado peso.','Cruce de poleas, aperturas en máquina.'],
+ ['08-aperturas-inclinadas-mancuernas','Aperturas inclinadas con mancuernas','Pecho','Mancuernas','En banco inclinado, abre los brazos en arco manteniendo el codo ligeramente flexionado y vuelve a unir con control.','Cargar demasiado; perder posición de hombros; bajar sin control.','Cruce bajo-alto, press inclinado.'],
+ ['09-cruce-polea-alto-bajo','Cruce de poleas alto a bajo','Pecho','Polea','Con poleas altas y un paso al frente, lleva las manos hacia delante y abajo, a la altura del ombligo.','Encoger hombros; mover solo los brazos; perder control al volver.','Aperturas planas, flexiones.'],
+ ['10-cruce-polea-bajo-alto','Cruce de poleas bajo a alto','Pecho','Polea','Desde poleas bajas, lleva los agarres hacia arriba y delante hasta la altura del pecho alto o la cara.','Impulsarte con piernas; subir hombros; hiperextender espalda.','Aperturas inclinadas, press inclinado.'],
+ ['11-press-pecho-unilateral-polea','Press de pecho unilateral en polea','Pecho','Polea','Da un paso al frente, bloquea el tronco y empuja el agarre desde el pecho hacia delante.','Girar demasiado el cuerpo; no estabilizar abdomen; encoger el hombro.','Press unilateral con mancuerna, flexiones.'],
+ ['12-flexiones','Flexiones','Pecho','Peso corporal','Manos algo más anchas que hombros, cuerpo en línea recta. Baja el pecho cerca del suelo y empuja.','Cadera hundida o elevada; codos abiertos en exceso; recorrido corto.','Press de banca, flexiones inclinadas.'],
+ ['13-flexiones-inclinadas','Flexiones inclinadas','Pecho','Peso corporal','Apoya las manos en banco, mantén el cuerpo recto y realiza una flexión controlada.','Doblar cadera; no bajar el pecho hacia el banco; hombros encogidos.','Flexiones normales, press inclinado.'],
+ ['14-flexiones-pies-elevados','Flexiones con pies elevados','Pecho','Peso corporal','Coloca pies en banco, manos en suelo y mantén el tronco firme mientras bajas y empujas.','Cadera elevada; cuello forzado; recorrido incompleto.','Press inclinado, fondos.'],
+ ['15-jalon-pecho-medio','Jalón al pecho agarre medio','Espalda','Polea','Tira de la barra hacia la parte alta del pecho llevando los codos abajo y atrás, con el pecho alto.','Balancear tronco; tirar detrás de la nuca; encoger hombros.','Dominadas, remo sentado.'],
+ ['16-jalon-pecho-ancho','Jalón al pecho agarre ancho','Espalda','Polea','Con agarre ancho, baja la barra delante hasta el pecho alto sin perder el control de las escápulas.','Tirar con los brazos solamente; inclinarse demasiado; bajar tras nuca.','Jalón medio, dominadas.'],
+ ['17-jalon-supino','Jalón al pecho agarre supino','Espalda','Polea','Agarre inverso a la anchura de hombros. Lleva la barra al pecho controlando los codos hacia abajo.','Exceso de impulso; hombros hacia arriba; no controlar la subida.','Jalón medio, remo con barra.'],
+ ['18-jalon-unilateral-arrodillado','Jalón unilateral arrodillado','Espalda','Polea','Arrodillado de lado a la polea, tira del agarre hacia la cadera sin girar el tronco.','Rotar cuerpo; tirar solo de bíceps; perder la postura.','Jalón bilateral, remo unilateral.'],
+ ['19-pulldown-brazos-rectos','Pulldown con brazos rectos','Espalda','Polea','Mantén codos casi rectos y lleva la barra desde arriba hasta los muslos usando los dorsales.','Doblar mucho los codos; arquear lumbar; usar impulso.','Jalón al pecho, remo.'],
+ ['20-remo-sentado-maquina','Remo sentado en máquina','Espalda','Máquina','Tira de los agarres hacia el tronco, con pecho alto y escápulas atrás al final.','Balancear torso; encoger hombros; tirar solo de brazos.','Remo con barra, remo con mancuerna.'],
+ ['21-remo-sentado-estrecho','Remo sentado agarre estrecho','Espalda','Polea','Con agarre neutro, lleva el asa hacia el abdomen bajo, manteniendo los codos cerca del cuerpo.','Tirar al pecho alto; hombros encogidos; redondear espalda.','Remo máquina, remo unilateral.'],
+ ['22-remo-barra-inclinado','Remo con barra inclinado','Espalda','Barra','Haz bisagra de cadera con espalda neutra y tira de la barra hacia el abdomen sin cambiar mucho el ángulo del torso.','Redondear lumbar; usar tirón de cadera; llevar barra al pecho.','Remo Pendlay, remo con mancuerna.'],
+ ['23-remo-pendlay','Remo Pendlay','Espalda','Barra','Parte con la barra en el suelo y torso casi paralelo. Tira hacia el abdomen y devuelve la barra al suelo en cada repetición.','Redondear espalda; no apoyar la barra; elevar torso para ayudarse.','Remo barra inclinado, remo máquina.'],
+ ['24-remo-mancuerna-unilateral','Remo con mancuerna unilateral','Espalda','Mancuernas','Apoya una mano y rodilla en banco. Lleva la mancuerna hacia la cadera con el codo cerca del cuerpo.','Girar torso; subir hombro; tirar hacia el pecho en vez de hacia cadera.','Remo máquina, remo en polea.']
+].map(([id,name,group,material,technique,mistakes,alternatives])=>({id,name,group,material,technique,mistakes,alternatives}));
+const routines={push:['01-press-banca-barra','02-press-inclinado-barra','04-press-plano-mancuernas','07-aperturas-planas-mancuernas','09-cruce-polea-alto-bajo','12-flexiones'],pull:['15-jalon-pecho-medio','16-jalon-pecho-ancho','17-jalon-supino','19-pulldown-brazos-rectos','20-remo-sentado-maquina','22-remo-barra-inclinado'],upper:['01-press-banca-barra','04-press-plano-mancuernas','15-jalon-pecho-medio','20-remo-sentado-maquina','21-remo-sentado-estrecho','24-remo-mancuerna-unilateral']};
+const $=s=>document.querySelector(s);const storageKey='gymComunidadDataV2';
+let data=JSON.parse(localStorage.getItem(storageKey)||'{"sets":[],"cardio":[]}');let activeGroup='Todos';
+function save(){localStorage.setItem(storageKey,JSON.stringify(data));renderStats()}
+function imageUrl(e){return 'imagenes/'+(images[e.id]||'')}
+function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function exerciseCard(e){const url=imageUrl(e);return `<button class="exercise" onclick="openExercise('${e.id}','biblioteca')"><img class="thumb" src="${url}" onerror="this.style.visibility='hidden'" alt=""><span><b>${e.name}</b><span class="small">${e.group} · ${e.material}</span></span></button>`}
+function renderRoutine(){const ids=routines[$('#rutina').value];$('#rutinaLista').innerHTML=ids.map(id=>{const e=exercises.find(x=>x.id===id);return exerciseCard(e)}).join('')}
+function renderFilters(){const groups=['Todos',...new Set(exercises.map(e=>e.group))];$('#filtros').innerHTML=groups.map(g=>`<button class="chip ${g===activeGroup?'active':''}" onclick="setGroup('${g}')">${g}</button>`).join('')}
+function setGroup(g){activeGroup=g;renderFilters();renderLibrary()}
+function renderLibrary(){const q=$('#buscar').value.toLowerCase().trim();const list=exercises.filter(e=>(activeGroup==='Todos'||e.group===activeGroup)&&(`${e.name} ${e.group} ${e.material}`).toLowerCase().includes(q));$('#bibliotecaLista').innerHTML=list.map(exerciseCard).join('')||'<p class="muted">No hay ejercicios con esa búsqueda.</p>'}
+function detailHtml(e,source){const url=imageUrl(e);return `<div class="card"><button class="chip" onclick="closeDetail('${source}')">← Volver</button><h2 style="margin-top:14px">${e.name}</h2><p class="muted">${e.group} · ${e.material}</p><img class="detail-image" src="${url}" onerror="this.style.display='none'" alt="${e.name}"><div class="section-tabs"><button class="active" onclick="showInfo(this,'${e.id}','technique')">Técnica</button><button onclick="showInfo(this,'${e.id}','mistakes')">Errores</button><button onclick="showInfo(this,'${e.id}','alternatives')">Alternativas</button></div><div id="info-${e.id}" class="details"><p>${e.technique}</p></div>${source==='entrenar'?trainingForm(e):''}</div>`}
+function trainingForm(e){return `<hr style="border:0;border-top:1px solid var(--border);margin:20px 0"><h3>Guardar serie</h3><div class="two"><div><label>Peso (kg)</label><input id="kg-${e.id}" inputmode="decimal" type="number" min="0" step="0.5" placeholder="Ej. 60"></div><div><label>Repeticiones</label><input id="reps-${e.id}" inputmode="numeric" type="number" min="1" placeholder="Ej. 10"></div></div><div class="two"><div><label>RIR (0–5)</label><input id="rir-${e.id}" inputmode="numeric" type="number" min="0" max="5" placeholder="Ej. 2"></div><div><label>Nota</label><input id="note-${e.id}" placeholder="Opcional"></div></div><button class="button primary" onclick="saveSet('${e.id}')">Guardar serie</button><div id="sets-${e.id}"></div>`}
+function openExercise(id,source){const e=exercises.find(x=>x.id===id);const target=source==='entrenar'?$('#detalleEntreno'):$('#detalleBiblioteca');target.innerHTML=detailHtml(e,source);target.classList.remove('hidden');if(source==='entrenar'){target.scrollIntoView({behavior:'smooth'});renderSets(e.id)}else target.scrollIntoView({behavior:'smooth'})}
+function closeDetail(source){const target=source==='entrenar'?$('#detalleEntreno'):$('#detalleBiblioteca');target.classList.add('hidden');target.innerHTML=''}
+function showInfo(button,id,field){button.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));button.classList.add('active');const e=exercises.find(x=>x.id===id);const labels={technique:'Técnica',mistakes:'Errores frecuentes',alternatives:'Alternativas'};$('#info-'+id).innerHTML=`<h3>${labels[field]}</h3><p>${e[field]}</p>`}
+function saveSet(id){const kg=Number($('#kg-'+id).value),reps=Number($('#reps-'+id).value),rir=$('#rir-'+id).value,note=$('#note-'+id).value.trim();if(!Number.isFinite(kg)||kg<0||!Number.isFinite(reps)||reps<1){alert('Escribe un peso válido y al menos una repetición.');return}data.sets.unshift({id,kg,reps,rir,note,date:new Date().toISOString()});save();renderSets(id);$('#kg-'+id).value='';$('#reps-'+id).value='';$('#rir-'+id).value='';$('#note-'+id).value=''}
+function renderSets(id){const sets=data.sets.filter(s=>s.id===id).slice(0,8);$('#sets-'+id).innerHTML=sets.length?`<h3>Últimas series</h3>${sets.map(s=>`<div class="set"><span>${new Date(s.date).toLocaleDateString('es-ES')} · ${s.kg} kg × ${s.reps}${s.rir!==''?' · RIR '+s.rir:''}</span><span class="small">${escapeHtml(s.note)}</span></div>`).join('')}`:''}
+function saveCardio(){const min=Number($('#cardioMin').value),res=$('#cardioRes').value,dist=$('#cardioDist').value,note=$('#cardioNotas').value.trim(),type=$('#cardioTipo').value;if(!Number.isFinite(min)||min<1){alert('Escribe la duración en minutos.');return}data.cardio.unshift({type,min,res,dist,note,date:new Date().toISOString()});save();$('#cardioMin').value='';$('#cardioRes').value='';$('#cardioDist').value='';$('#cardioNotas').value='';renderCardio()}
+function renderCardio(){const items=data.cardio.slice(0,12);$('#listaCardio').innerHTML=items.length?'<h3>Últimas sesiones</h3>'+items.map(c=>`<div class="set"><span><b>${c.type}</b> · ${c.min} min${c.res?' · intensidad '+c.res:''}${c.dist?' · '+c.dist+' km':''}</span><span class="small">${new Date(c.date).toLocaleDateString('es-ES')} ${escapeHtml(c.note)}</span></div>`).join(''):'<p class="muted" style="margin-top:16px">Todavía no hay cardio guardado.</p>'}
+function renderStats(){const ids=new Set(data.sets.map(s=>s.id));$('#nSesiones').textContent=data.sets.length;$('#nEjercicios').textContent=ids.size;$('#nCardio').textContent=data.cardio.length;const last=data.sets.slice(0,5);$('#ultimos').innerHTML=last.length?'<h3>Últimas series</h3>'+last.map(s=>{const e=exercises.find(x=>x.id===s.id);return `<div class="set"><span>${e?e.name:s.id} · ${s.kg} kg × ${s.reps}</span><span class="small">${new Date(s.date).toLocaleDateString('es-ES')}</span></div>`}).join(''):'<p class="muted" style="margin-top:16px">Aún no has guardado series.</p>'}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='copia-gym-comunidad.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const parsed=JSON.parse(r.result);if(!Array.isArray(parsed.sets)||!Array.isArray(parsed.cardio))throw Error();data=parsed;save();renderCardio();alert('Copia importada correctamente.')}catch{alert('Ese archivo no es una copia válida de Gym Comunidad.')}};r.readAsText(file)}
+function changeView(name){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));$('#'+name).classList.add('active');document.querySelector(`.nav button[data-view="${name}"]`).classList.add('active');if(name==='estadisticas')renderStats()}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>changeView(b.dataset.view));$('#rutina').onchange=renderRoutine;$('#buscar').oninput=renderLibrary;$('#guardarCardio').onclick=saveCardio;$('#exportar').onclick=exportData;$('#importar').onclick=()=>$('#archivoImportar').click();$('#archivoImportar').onchange=e=>importData(e.target.files[0]);$('#borrar').onclick=()=>{if(confirm('¿Seguro que quieres borrar todos tus registros?')){data={sets:[],cardio:[]};save();renderCardio();alert('Registros borrados.')}};renderRoutine();renderFilters();renderLibrary();renderCardio();renderStats();
+</script>
 </body>
 </html>
