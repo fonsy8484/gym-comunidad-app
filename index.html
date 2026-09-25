@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gym Comunidad</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #f97316;
+      --accent-2: #ec4899;
+      --success: #10b981;
+      --danger: #ef4444;
+      --border: #1f2937;
+      --shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #0b0f14 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header {
+      text-align: center;
+      padding: 24px 0 32px;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .subtitle { color: var(--muted); font-size: 14px; }
+    .nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .nav button {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav button.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .btn {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .btn-secondary {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .exercise-list { display: grid; gap: 12px; }
+    .exercise-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .exercise-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .exercise-title { font-weight: 600; margin-bottom: 4px; }
+    .exercise-muscle { font-size: 12px; color: var(--muted); }
+    .input-group { margin-bottom: 12px; }
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .input-group input, .input-group select, .input-group textarea {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .series-list { margin-top: 16px; }
+    .series-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .hidden { display: none; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .muscle-diagram {
+      width: 100%;
+      max-width: 300px;
+      margin: 16px auto;
+      display: block;
+    }
+    .exercise-image {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      margin: 16px auto;
+      display: block;
+    }
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .tab {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>GYM COMUNIDAD</h1>
+      <p class="subtitle">Entrena con técnica, registra tu progreso</p>
+    </header>
+
+    <nav class="nav">
+      <button class="active" data-tab="entrenar">Entrenar</button>
+      <button data-tab="biblioteca">Biblioteca</button>
+      <button data-tab="cardio">Cardio</button>
+      <button data-tab="estadisticas">Estadísticas</button>
+      <button data-tab="ajustes">Ajustes</button>
+    </nav>
+
+    <section id="entrenar" class="tab-content">
+      <div class="card">
+        <h2>Rutina de hoy</h2>
+        <select id="rutina-select" class="input-group">
+          <option value="push">Push (Pecho, Hombros, Tríceps)</option>
+          <option value="pull">Pull (Espalda, Bíceps)</option>
+          <option value="legs">Legs (Piernas, Glúteos)</option>
+          <option value="upper">Upper (Torso completo)</option>
+          <option value="lower">Lower (Piernas completo)</option>
+        </select>
+        <div id="rutina-ejercicios" class="exercise-list"></div>
+      </div>
+
+      <div id="ejercicio-detalle" class="card hidden">
+        <h2 id="detalle-titulo"></h2>
+        <img id="detalle-imagen" class="exercise-image" alt="" />
+        <div id="detalle-musculo" class="exercise-muscle"></div>
+        <div class="tabs">
+          <button class="tab active" data-detail="tecnica">Técnica</button>
+          <button class="tab" data-detail="errores">Errores</button>
+          <button class="tab" data-detail="alternativas">Alternativas</button>
+        </div>
+        <div id="detalle-contenido"></div>
+        <button class="btn btn-secondary" id="cambiar-ejercicio">Cambiar ejercicio</button>
+        <div id="registro-series" class="hidden">
+          <h3 style="margin:16px 0 12px;font-size:16px;">Registrar serie</h3>
+          <div class="input-group">
+            <label>Peso (kg)</label>
+            <input type="number" id="serie-peso" placeholder="0" />
+          </div>
+          <div class="input-group">
+            <label>Repeticiones</label>
+            <input type="number" id="serie-reps" placeholder="0" />
+          </div>
+          <div class="input-group">
+            <label>RIR (0-5)</label>
+            <input type="number" id="serie-rir" placeholder="2" min="0" max="5" />
+          </div>
+          <div class="input-group">
+            <label>Notas (opcional)</label>
+            <textarea id="serie-notas" rows="2" placeholder="Sensaciones, técnica, etc."></textarea>
+          </div>
+          <button class="btn" id="guardar-serie">Guardar serie</button>
+          <div class="series-list" id="series-registradas"></div>
+          <button class="btn btn-secondary" id="finalizar-ejercicio">Finalizar ejercicio</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="biblioteca" class="tab-content hidden">
+      <div class="card">
+        <h2>Buscar ejercicio</h2>
+        <div class="filters" id="filtros-grupo"></div>
+        <div class="filters" id="filtros-material"></div>
+        <div class="exercise-list" id="biblioteca-lista"></div>
+      </div>
+    </section>
+
+    <section id="cardio" class="tab-content hidden">
+      <div class="card">
+        <h2>Registrar cardio</h2>
+        <div class="input-group">
+          <label>Tipo</label>
+          <select id="cardio-tipo">
+            <option value="bicicleta">Bicicleta</option>
+            <option value="eliptica">Elíptica</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Duración (minutos)</label>
+          <input type="number" id="cardio-duracion" placeholder="20" />
+        </div>
+        <div class="input-group">
+          <label>Resistencia (1-10)</label>
+          <input type="number" id="cardio-resistencia" placeholder="5" min="1" max="10" />
+        </div>
+        <div class="input-group">
+          <label>Distancia (km, opcional)</label>
+          <input type="number" id="cardio-distancia" placeholder="5.0" step="0.1" />
+        </div>
+        <div class="input-group">
+          <label>Notas</label>
+          <textarea id="cardio-notas" rows="2" placeholder="Sensaciones, ritmo, etc."></textarea>
+        </div>
+        <button class="btn" id="guardar-cardio">Guardar cardio</button>
+      </div>
+    </section>
+
+    <section id="estadisticas" class="tab-content hidden">
+      <div class="card">
+        <h2>Tus estadísticas</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-entrenos">0</div>
+            <div class="stat-label">Entrenamientos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-series">0</div>
+            <div class="stat-label">Series totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-cardios">0</div>
+            <div class="stat-label">Sesiones cardio</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ajustes" class="tab-content hidden">
+      <div class="card">
+        <h2>Copia de seguridad</h2>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Exporta tus datos para no perderlos o impórtalos en otro dispositivo.</p>
+        <button class="btn" id="exportar-datos">Exportar copia</button>
+        <button class="btn btn-secondary" id="importar-datos">Importar copia</button>
+        <input type="file" id="archivo-importar" accept=".json" class="hidden" />
+      </div>
+      <div class="card">
+        <h2>Borrar datos</h2>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">Esto eliminará todos tus entrenamientos y cardio guardados.</p>
+        <button class="btn btn-secondary" id="borrar-datos">Borrar todo</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let biblioteca = [];
+    let rutinaActual = 'push';
+    let ejercicioSeleccionado = null;
+    let seriesTemporales = [];
+
+    const rutinas = {
+      push: ['01-press-banca-barra', '02-press-inclinado-barra', '04-press-plano-mancuernas', '07-aperturas-planas-mancuernas', '12-flexiones'],
+      pull: ['15-jalon-pecho-medio', '16-jalon-pecho-ancho', '20-remo-sentado-maquina', '21-remo-sentado-estrecho', '22-remo-barra-inclinado'],
+      legs: ['30-sentadilla-barra', '31-prensa', '32-zancadas', '34-extension-cuadriceps', '35-curl-femoral'],
+      upper: ['01-press-banca-barra', '15-jalon-pecho-medio', '04-press-plano-mancuernas', '20-remo-sentado-maquina'],
+      lower: ['30-sentadilla-barra', '31-prensa', '34-extension-cuadriceps', '35-curl-femoral', '38-elevacion-gemelos']
+    };
+
+    async function cargarBiblioteca() {
+      try {
+        const respuesta = await fetch('biblioteca-ejercicios.json');
+        biblioteca = await respuesta.json();
+      } catch (e) {
+        console.error('Error cargando biblioteca:', e);
+        biblioteca = [];
+      }
+    }
+
+    function obtenerEjercicioPorId(id) {
+      return biblioteca.find(e => e.id === id) || null;
+    }
+
+    function renderizarRutina() {
+      const contenedor = document.getElementById('rutina-ejercicios');
+      contenedor.innerHTML = '';
+      const ids = rutinas[rutinaActual] || [];
+      ids.forEach(id => {
+        const ej = obtenerEjercicioPorId(id);
+        if (!ej) return;
+        const item = document.createElement('div');
+        item.className = 'exercise-item';
+        item.innerHTML = `
+          <div class="exercise-title">${ej.nombre}</div>
+          <div class="exercise-muscle">${ej.grupo_muscular_principal}</div>
+        `;
+        item.addEventListener('click', () => abrirEjercicio(ej));
+        contenedor.appendChild(item);
+      });
+    }
+
+    function abrirEjercicio(ej) {
+      ejercicioSeleccionado = ej;
+      seriesTemporales = [];
+      document.getElementById('detalle-titulo').textContent = ej.nombre;
+      document.getElementById('detalle-musculo').textContent = ej.grupo_muscular_principal;
+      
+      const img = document.getElementById('detalle-imagen');
+      const nombreImagen = ej.id + '.png';
+      img.src = 'imagenes/' + nombreImagen;
+      img.alt = ej.nombre;
+      img.onerror = () => {
+        img.style.display = 'none';
+      };
+      img.onload = () => {
+        img.style.display = 'block';
+      };
+
+      document.getElementById('detalle-contenido').innerHTML = `
+        <p style="font-size:14px;line-height:1.6;">${ej.tecnica}</p>
+      `;
+      document.getElementById('registro-series').classList.remove('hidden');
+      document.getElementById('ejercicio-detalle').classList.remove('hidden');
+      renderizarSeries();
+    }
+
+    function renderizarSeries() {
+      const contenedor = document.getElementById('series-registradas');
+      contenedor.innerHTML = '';
+      seriesTemporales.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = 'series-item';
+        div.innerHTML = `Serie ${i+1}: ${s.peso} kg × ${s.reps} reps (RIR ${s.rir})${s.notas ? ' — ' + s.notas : ''}`;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function guardarSerie() {
+      const peso = parseFloat(document.getElementById('serie-peso').value) || 0;
+      const reps = parseInt(document.getElementById('serie-reps').value) || 0;
+      const rir = parseInt(document.getElementById('serie-rir').value) || 2;
+      const notas = document.getElementById('serie-notas').value.trim();
+      if (peso <= 0 || reps <= 0) {
+        alert('Introduce peso y repeticiones válidos');
+        return;
+      }
+      seriesTemporales.push({ peso, reps, rir, notas });
+      renderizarSeries();
+      document.getElementById('serie-peso').value = '';
+      document.getElementById('serie-reps').value = '';
+      document.getElementById('serie-rir').value = '2';
+      document.getElementById('serie-notas').value = '';
+    }
+
+    function finalizarEjercicio() {
+      if (seriesTemporales.length === 0) {
+        alert('Registra al menos una serie');
+        return;
+      }
+      const clave = 'gym_comunidad_series_' + ejercicioSeleccionado.id;
+      const existentes = JSON.parse(localStorage.getItem(clave) || '[]');
+      const nuevas = existentes.concat(seriesTemporales.map(s => ({
+        ...s,
+        fecha: new Date().toISOString()
+      })));
+      localStorage.setItem(clave, JSON.stringify(nuevas));
+      alert('Ejercicio guardado');
+      document.getElementById('ejercicio-detalle').classList.add('hidden');
+      ejercicioSeleccionado = null;
+      seriesTemporales = [];
+      actualizarEstadisticas();
+    }
+
+    function renderizarBiblioteca() {
+      const contenedor = document.getElementById('biblioteca-lista');
+      contenedor.innerHTML = '';
+      const grupoActivo = document.querySelector('#filtros-grupo .filter-btn.active')?.dataset.grupo || 'todos';
+      const materialActivo = document.querySelector('#filtros-material .filter-btn.active')?.dataset.material || 'todos';
+      
+      let filtrados = biblioteca;
+      if (grupoActivo !== 'todos') {
+        filtrados = filtrados.filter(e => e.grupo_muscular_principal.toLowerCase().includes(grupoActivo));
+      }
+      if (materialActivo !== 'todos') {
+        filtrados = filtrados.filter(e => e.material.toLowerCase().includes(materialActivo));
+      }
+
+      filtrados.forEach(ej => {
+        const item = document.createElement('div');
+        item.className = 'exercise-item';
+        item.innerHTML = `
+          <div class="exercise-title">${ej.nombre}</div>
+          <div class="exercise-muscle">${ej.grupo_muscular_principal} · ${ej.material}</div>
+        `;
+        item.addEventListener('click', () => abrirEjercicio(ej));
+        contenedor.appendChild(item);
+      });
+    }
+
+    function actualizarEstadisticas() {
+      let entrenos = 0, series = 0, cardios = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const clave = localStorage.key(i);
+        if (clave.startsWith('gym_comunidad_series_')) {
+          const datos = JSON.parse(localStorage.getItem(clave) || '[]');
+          series += datos.length;
+          if (datos.length > 0) entrenos++;
+        }
+        if (clave.startsWith('gym_comunidad_cardio_')) {
+          const datos = JSON.parse(localStorage.getItem(clave) || '[]');
+          cardios += datos.length;
+        }
+      }
+      document.getElementById('stat-entrenos').textContent = entrenos;
+      document.getElementById('stat-series').textContent = series;
+      document.getElementById('stat-cardios').textContent = cardios;
+    }
+
+    function exportarDatos() {
+      const datos = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const clave = localStorage.key(i);
+        if (clave.startsWith('gym_comunidad_')) {
+          datos[clave] = localStorage.getItem(clave);
+        }
+      }
+      const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'gym-comunidad-copia.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importarDatos() {
+      document.getElementById('archivo-importar').click();
+    }
+
+    function procesarImportacion(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const datos = JSON.parse(e.target.result);
+          Object.keys(datos).forEach(clave => {
+            localStorage.setItem(clave, datos[clave]);
+          });
+          alert('Datos importados correctamente');
+          actualizarEstadisticas();
+        } catch (err) {
+          alert('Error al importar: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function borrarDatos() {
+      if (!confirm('¿Seguro que quieres borrar todos tus datos?')) return;
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const clave = localStorage.key(i);
+        if (clave.startsWith('gym_comunidad_')) {
+          localStorage.removeItem(clave);
+        }
+      }
+      alert('Datos borrados');
+      actualizarEstadisticas();
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await cargarBiblioteca();
+      renderizarRutina();
+      renderizarBiblioteca();
+      actualizarEstadisticas();
+
+      document.querySelectorAll('.nav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab).classList.remove('hidden');
+        });
+      });
+
+      document.getElementById('rutina-select').addEventListener('change', (e) => {
+        rutinaActual = e.target.value;
+        renderizarRutina();
+      });
+
+      document.getElementById('guardar-serie').addEventListener('click', guardarSerie);
+      document.getElementById('finalizar-ejercicio').addEventListener('click', finalizarEjercicio);
+      document.getElementById('cambiar-ejercicio').addEventListener('click', () => {
+        document.getElementById('ejercicio-detalle').classList.add('hidden');
+        ejercicioSeleccionado = null;
+      });
+
+      document.querySelectorAll('#filtros-grupo').forEach(cont => {
+        cont.innerHTML = '';
+        ['todos', 'pecho', 'espalda', 'hombros', 'brazos', 'piernas', 'gluteos', 'abdominales'].forEach(g => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn' + (g === 'todos' ? ' active' : '');
+          btn.dataset.grupo = g;
+          btn.textContent = g.charAt(0).toUpperCase() + g.slice(1);
+          btn.addEventListener('click', () => {
+            cont.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderizarBiblioteca();
+          });
+          cont.appendChild(btn);
+        });
+      });
+
+      document.querySelectorAll('#filtros-material').forEach(cont => {
+        cont.innerHTML = '';
+        ['todos', 'barra', 'mancuernas', 'polea', 'maquina', 'peso corporal'].forEach(m => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn' + (m === 'todos' ? ' active' : '');
+          btn.dataset.material = m;
+          btn.textContent = m.charAt(0).toUpperCase() + m.slice(1);
+          btn.addEventListener('click', () => {
+            cont.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderizarBiblioteca();
+          });
+          cont.appendChild(btn);
+        });
+      });
+
+      document.getElementById('guardar-cardio').addEventListener('click', () => {
+        const tipo = document.getElementById('cardio-tipo').value;
+        const duracion = parseInt(document.getElementById('cardio-duracion').value) || 0;
+        const resistencia = parseInt(document.getElementById('cardio-resistencia').value) || 0;
+        const distancia = parseFloat(document.getElementById('cardio-distancia').value) || null;
+        const notas = document.getElementById('cardio-notas').value.trim();
+        if (duracion <= 0 || resistencia <= 0) {
+          alert('Introduce duración y resistencia válidas');
+          return;
+        }
+        const clave = 'gym_comunidad_cardio_' + tipo;
+        const existentes = JSON.parse(localStorage.getItem(clave) || '[]');
+        existentes.push({ duracion, resistencia, distancia, notas, fecha: new Date().toISOString() });
+        localStorage.setItem(clave, JSON.stringify(existentes));
+        alert('Cardio guardado');
+        document.getElementById('cardio-duracion').value = '';
+        document.getElementById('cardio-resistencia').value = '';
+        document.getElementById('cardio-distancia').value = '';
+        document.getElementById('cardio-notas').value = '';
+        actualizarEstadisticas();
+      });
+
+      document.getElementById('exportar-datos').addEventListener('click', exportarDatos);
+      document.getElementById('importar-datos').addEventListener('click', importarDatos);
+      document.getElementById('archivo-importar').addEventListener('change', procesarImportacion);
+      document.getElementById('borrar-datos').addEventListener('click', borrarDatos);
+    });
+  </script>
+</body>
+</html>
