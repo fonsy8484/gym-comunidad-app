@@ -1,1094 +1,1693 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mi Entrenamiento</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* CSS va en el bloque 2 */
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gym Comunidad</title>
+
+<style>
+:root{
+  --bg:#070b11;
+  --panel:#101822;
+  --panel2:#0b1119;
+  --line:#223149;
+  --text:#f5f8ff;
+  --muted:#9eabba;
+  --blue:#3785ff;
+  --green:#6bd477;
+  --red:#ff604f;
+  --orange:#ff9b4d;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  padding-bottom:88px;
+}
+
+.top{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  background:rgba(7,11,17,.94);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+}
+
+.top h1{
+  margin:0;
+  font-size:23px;
+}
+
+.weeknav{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.icon,.btn{
+  border:0;
+  border-radius:11px;
+  background:var(--blue);
+  color:#fff;
+  padding:9px 12px;
+  font:inherit;
+}
+
+.icon,.btn.alt{
+  background:#142135;
+  border:1px solid var(--line);
+}
+
+.wrap{
+  max-width:760px;
+  margin:auto;
+  padding:16px;
+}
+
+.view{display:none}
+.view.active{display:block}
+
+.card,.exercise{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:16px;
+  margin-bottom:14px;
+}
+
+.hero{
+  overflow:hidden;
+  position:relative;
+}
+
+.greet{
+  color:var(--green);
+  margin:0 0 5px;
+  font-weight:700;
+}
+
+.hero h2{
+  font-size:29px;
+  line-height:1.08;
+  margin:0;
+}
+
+.green{color:var(--green)}
+.muted{color:var(--muted)}
+
+.weekgrid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+  margin:18px 0 13px;
+}
+
+.weekday{
+  border-radius:13px;
+  text-align:center;
+  padding:8px 2px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.weekday b{
+  display:block;
+  font-size:14px;
+  margin-top:5px;
+  color:inherit;
+}
+
+.weekday.today{
+  background:#172433;
+  color:var(--green);
+  outline:1px solid #28415b;
+}
+
+.weekday.done:after{
+  content:'✓';
+  display:grid;
+  place-items:center;
+  margin:7px auto 0;
+  background:var(--green);
+  color:#102019;
+  border-radius:50%;
+  width:21px;
+  height:21px;
+  font-size:14px;
+  font-weight:800;
+}
+
+.start{
+  display:flex;
+  gap:11px;
+  align-items:center;
+  margin-top:12px;
+}
+
+.start button{
+  flex:1;
+  background:linear-gradient(110deg,var(--blue),var(--green));
+  font-weight:800;
+  letter-spacing:.2px;
+  padding:15px;
+}
+
+.streak{
+  font-size:12px;
+  color:var(--green);
+  white-space:nowrap;
+}
+
+.stats3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:13px;
+}
+
+.mini{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:9px;
+  text-align:center;
+}
+
+.mini b{
+  display:block;
+  font-size:16px;
+}
+
+.mini span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.progressbar{
+  height:9px;
+  background:#070b11;
+  border-radius:99px;
+  overflow:hidden;
+  margin:11px 0;
+}
+
+.progressbar i{
+  display:block;
+  background:linear-gradient(90deg,var(--blue),var(--green));
+  height:100%;
+  width:0;
+  transition:.25s;
+}
+
+.exercise{
+  padding:14px;
+}
+
+.exhead{
+  display:flex;
+  gap:13px;
+  align-items:center;
+}
+
+.muscle-photo{
+  width:142px;
+  height:176px;
+  flex:none;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid #2a3a51;
+  background:#080d14;
+  cursor:zoom-in;
+  position:relative;
+}
+
+.muscle-photo img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.muscle-photo span{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:6px 7px;
+  font-size:10px;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  text-align:center;
+}
+
+.exhead h3{
+  font-size:21px;
+  line-height:1.15;
+  margin:0 0 7px;
+}
+
+.tag{
+  display:inline-block;
+  border:1px solid #2a4735;
+  color:var(--green);
+  padding:5px 8px;
+  border-radius:10px;
+  font-size:12px;
+}
+
+.meta{
+  font-size:13px;
+  color:var(--muted);
+  margin:7px 0 0;
+}
+
+.video{color:#5d9dff}
+
+.labels,.set{
+  display:grid;
+  grid-template-columns:39px 1fr 1fr 72px 49px;
+  gap:7px;
+  align-items:center;
+}
+
+.labels{
+  margin:15px 8px 5px;
+  color:var(--muted);
+  font-size:11px;
+  text-align:center;
+}
+
+.set{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  padding:8px;
+  border-radius:14px;
+  margin:7px 0;
+}
+
+.setno{
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+}
+
+input,textarea{
+  width:100%;
+  min-width:0;
+  background:#080d14;
+  border:1px solid #2b3a50;
+  color:var(--text);
+  border-radius:11px;
+  padding:10px;
+  font:inherit;
+  font-size:16px;
+}
+
+input::placeholder,textarea::placeholder{
+  color:#758194;
+}
+
+.check{
+  width:43px;
+  height:43px;
+  border-radius:11px;
+  border:0;
+  background:#172330;
+  color:#fff;
+  font-size:23px;
+}
+
+.check.done{
+  background:var(--green);
+  color:#103018;
+}
+
+.add{
+  width:100%;
+  margin-top:8px;
+  padding:12px;
+  border:1px solid #2d7743;
+  border-radius:13px;
+  background:#112117;
+  color:var(--green);
+  font-size:16px;
+  font-weight:700;
+}
+
+.rest{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+  border-top:1px solid var(--line);
+  padding-top:11px;
+  margin-top:12px;
+}
+
+.rest b{
+  font-size:13px;
+  color:var(--muted);
+  margin-right:auto;
+}
+
+.time{
+  font-variant-numeric:tabular-nums;
+  min-width:53px;
+  text-align:right;
+}
+
+.advice{
+  margin-top:11px;
+  border:1px solid #244b77;
+  background:#0c1e34;
+  border-radius:13px;
+  padding:10px;
+  font-size:13px;
+  line-height:1.38;
+}
+
+.advice b{color:#96c5ff}
+
+.details{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.details summary{cursor:pointer}
+.details p{line-height:1.35}
+
+.note{
+  margin-top:10px;
+  resize:vertical;
+}
+
+.plans{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.plan,.daybtn{
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:15px;
+  padding:14px;
+  text-align:left;
+  font:inherit;
+}
+
+.plan.selected{
+  outline:2px solid var(--blue);
+}
+
+.plan small,.daybtn small{
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.daylist{
+  display:grid;
+  gap:8px;
+  margin-top:14px;
+}
+
+.block{
+  margin-top:15px;
+  border-top:1px solid var(--line);
+  padding-top:15px;
+}
+
+.block h3{margin:0 0 6px}
+
+.metrics{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.metric{
+  padding:14px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  text-align:center;
+}
+
+.metric b{
+  display:block;
+  font-size:23px;
+}
+
+.metric span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.muscles{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.muscle{
+  display:flex;
+  justify-content:space-between;
+  padding:9px;
+  border-radius:11px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  font-size:13px;
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:30;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:8px 15px calc(8px + env(safe-area-inset-bottom));
+  background:rgba(7,11,17,.96);
+  border-top:1px solid var(--line);
+}
+
+.nav{
+  background:transparent;
+  border:0;
+  color:var(--muted);
+  padding:11px 2px;
+  border-radius:12px;
+  font:inherit;
+  font-size:15px;
+}
+
+.nav.active{
+  background:#152238;
+  color:#fff;
+}
+
+.danger{
+  background:#3b171d;
+  color:#ffc6ca;
+}
+
+.empty{
+  color:var(--muted);
+  text-align:center;
+  padding:16px;
+}
+
+.photo-modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  place-items:center;
+  padding:20px;
+  background:rgba(0,0,0,.86);
+  backdrop-filter:blur(5px);
+}
+
+.photo-modal.open{
+  display:grid;
+}
+
+.photo-modal-inner{
+  width:min(94vw,520px);
+  background:#0b1119;
+  border:1px solid #314562;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 20px 60px #000;
+}
+
+.photo-modal-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+}
+
+.photo-close{
+  border:1px solid var(--line);
+  background:#172330;
+  color:#fff;
+  border-radius:10px;
+  padding:7px 10px;
+  font-size:16px;
+}
+
+.photo-modal img{
+  display:block;
+  width:100%;
+  height:auto;
+  background:#05080c;
+}
+
+.photo-modal p{
+  margin:0;
+  padding:0 14px 14px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.35;
+}
+
+@media(max-width:430px){
+  .muscle-photo{
+    width:122px;
+    height:157px;
+  }
+
+  .exhead h3{font-size:19px}
+
+  .labels,.set{
+    grid-template-columns:29px 1fr 1fr 55px 41px;
+    gap:5px;
+  }
+
+  .labels{
+    font-size:10px;
+    margin-left:4px;
+    margin-right:4px;
+  }
+
+  .set{padding:6px}
+  .setno{font-size:18px}
+  .set input{padding:9px 5px}
+  .check{width:37px;height:39px}
+  .hero h2{font-size:26px}
+  .weeknav{font-size:11px}
+}
+</style>
 </head>
+
 <body>
 
-  <!-- PORTADA -->
-  <section id="pantalla-portada" class="pantalla activa">
-    <div class="portada-fondo"></div>
-    <div class="portada-contenido">
-      <h1 class="portada-titulo">Mi Entrenamiento</h1>
-      <p class="portada-saludo">Hola, Fonsy 👋</p>
-      <p class="portada-frase">“Cada entrenamiento cuenta.”</p>
-      <button class="btn-primary btn-grande" onclick="irAPantalla('pantalla-inicio')">
-        Empezar entrenamiento
-      </button>
-      <button class="btn-secundario" onclick="irAPantalla('pantalla-progreso-portada')">
-        Ver mi progreso
-      </button>
-    </div>
-  </section>
+<header class="top">
+  <h1 id="head">Inicio</h1>
 
-  <!-- INICIO -->
-  <section id="pantalla-inicio" class="pantalla">
-    <header class="header-simple">
-      <h2>Hola, Fonsy 👋</h2>
-    </header>
+  <div class="weeknav">
+    <button class="icon" id="back">◀</button>
+    <span id="weeklabel"></span>
+    <button class="icon" id="forward">▶</button>
+  </div>
+</header>
 
-    <div class="panel-inicio">
-      <div class="tarjeta-inicio" onclick="abrirRutinaDelDia()">
-        <h3>Entrenamiento de hoy</h3>
-        <p id="resumen-rutina-hoy">Cargando…</p>
-        <button class="btn-primary">Ver y comenzar</button>
-      </div>
+<main class="wrap">
 
-      <div class="tarjeta-inicio" onclick="irAPantalla('pantalla-sesion-libre')">
-        <h3>Sesión libre</h3>
-        <p>Crea una sesión con los ejercicios que quieras</p>
-        <button class="btn-secundario">Crear sesión</button>
-      </div>
+<!-- INICIO -->
+<section class="view active" id="home">
 
-      <div class="tarjeta-inicio" onclick="irAPantalla('pantalla-cardio')">
-        <h3>Cardio</h3>
-        <p>Registra bici, elíptica, natación u otra actividad</p>
-        <button class="btn-secundario">Registrar</button>
-      </div>
+  <div class="card hero">
+    <p class="greet">¡Vamos! 💪</p>
+    <h2>Tu entrenamiento de hoy</h2>
+    <h2 class="green" id="homeworkout">Pull A — Espalda y bíceps</h2>
 
-      <div class="tarjeta-inicio-resumen" onclick="irAPantalla('pantalla-progreso-portada')">
-        <h3>Resumen</h3>
-        <p id="resumen-inicio">Cargando resumen…</p>
-      </div>
+    <div id="calendar" class="weekgrid"></div>
+
+    <div class="start">
+      <button id="start">EMPEZAR ENTRENAMIENTO 💪</button>
+      <span class="streak" id="streak">🔥 0 racha</span>
     </div>
 
-    <nav class="nav-inferior">
-      <button class="nav-item activo" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
-    </nav>
-  </section>
+    <div class="stats3">
+      <div class="mini"><b id="hEx">0</b><span>ejercicios</span></div>
+      <div class="mini"><b id="hSets">0</b><span>series</span></div>
+      <div class="mini"><b>~60</b><span>minutos</span></div>
+    </div>
 
-  <!-- RUTINA DEL DÍA -->
-  <section id="pantalla-rutina-del-dia" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
-      <h2 id="titulo-rutina-del-dia">Entrenamiento de hoy</h2>
-    </header>
+    <div class="progressbar"><i id="homebar"></i></div>
 
-    <div class="contenido-rutina">
-      <div class="info-rutina">
-        <p id="info-rutina-del-dia">Cargando…</p>
-        <p>Estado de hoy: <strong id="estado-hoy">Normal</strong> <button class="btn-mini" onclick="cambiarEstadoHoy()">Cambiar</button></p>
-      </div>
+    <p id="homeprogress" class="muted" style="margin:0;font-size:13px">
+      Cada serie cuenta. Hoy construyes tu progreso.
+    </p>
+  </div>
 
-      <button class="btn-primary btn-grande" onclick="iniciarModoGuiado()">
-        COMENZAR MODO GUIADO
+  <div class="card">
+    <h3 style="margin:0 0 5px">Bloque actual — Semanas 1–4</h3>
+    <p class="muted" style="margin:0;font-size:13px">
+      Mantén los ejercicios principales y suma repeticiones. Los accesorios cambiarán en la semana 3.
+    </p>
+  </div>
+
+</section>
+
+<!-- ENTRENAMIENTO -->
+<section class="view" id="workout">
+  <div id="workoutList"></div>
+</section>
+
+<!-- RUTINA -->
+<section class="view" id="routine">
+
+  <div class="card">
+
+    <h2 style="margin-top:0">Rutina y variaciones</h2>
+
+    <div class="plans">
+      <button class="plan" data-plan="PPL">
+        <b>PPL</b>
+        <small>Push · Pull · Legs</small>
       </button>
 
-      <h3>Ejercicios de hoy</h3>
-      <ul id="lista-ejercicios-rutina" class="lista-ejercicios-rutina">
-        <!-- Se rellena con JS -->
-      </ul>
-    </div>
-  </section>
-
-  <!-- MODO GUIADO: EJERCICIO -->
-  <section id="pantalla-modo-guiado" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="salirModoGuiado()">← Salir</button>
-      <h2 id="titulo-modo-guiado">Ejercicio</h2>
-    </header>
-
-    <div class="contenido-modo-guiado">
-      <img id="foto-ejercicio-guiado" class="foto-ejercicio-grande" src="" alt="Ejercicio">
-      <h3 id="nombre-ejercicio-guiado">Nombre del ejercicio</h3>
-      <p id="descripcion-ejercicio-guiado" class="descripcion-ejercicio"></p>
-
-      <div class="series-guiado" id="series-guiado">
-        <!-- Series dinámicas -->
-      </div>
-
-      <button class="btn-primary btn-grande" onclick="siguienteEjercicio()">
-        Siguiente ejercicio
+      <button class="plan" data-plan="UL">
+        <b>Upper / Lower</b>
+        <small>Torso · Pierna</small>
       </button>
     </div>
-  </section>
 
-  <!-- CATÁLOGO DE EJERCICIOS -->
-  <section id="pantalla-ejercicios" class="pantalla">
-    <header class="header-simple">
-      <h2>Catálogo de ejercicios</h2>
-    </header>
+    <div class="block">
+      <h3 id="blocktitle">Bloque 1 — Semanas 1–4</h3>
 
-    <div class="buscador-filtros">
-      <input id="buscador-ejercicios" type="text" placeholder="Buscar ejercicio…" oninput="filtrarEjercicios()">
-      <select id="filtro-grupo" onchange="filtrarEjercicios()">
-        <option value="">Todos los grupos</option>
-        <option value="Pecho">Pecho</option>
-        <option value="Espalda">Espalda</option>
-        <option value="Hombro">Hombro</option>
-        <option value="Bíceps">Bíceps</option>
-        <option value="Tríceps">Tríceps</option>
-        <option value="Cuádriceps">Cuádriceps</option>
-        <option value="Femoral">Femoral</option>
-        <option value="Glúteo">Glúteo</option>
-        <option value="Pantorrilla">Pantorrilla</option>
-        <option value="Abdomen">Abdomen</option>
-        <option value="Lumbar">Lumbar</option>
-        <option value="Cuerpo completo">Cuerpo completo</option>
-      </select>
+      <p class="muted" id="blocktext" style="font-size:13px;margin:0">
+        Principales fijos; accesorios con rotación en semana 3.
+      </p>
+
+      <button class="btn alt" id="toggleVariation" style="margin-top:10px">
+        Ver / activar variaciones
+      </button>
     </div>
 
-    <div id="lista-ejercicios-catalogo" class="lista-ejercicios-catalogo">
-      <!-- Se rellena con JS -->
+    <div id="days" class="daylist"></div>
+
+  </div>
+
+</section>
+
+<!-- PROGRESO -->
+<section class="view" id="progress">
+
+  <div class="card">
+
+    <h2 style="margin-top:0">Resumen semanal</h2>
+
+    <div class="metrics">
+      <div class="metric"><b id="pd">0/6</b><span>Días completados</span></div>
+      <div class="metric"><b id="ps">0</b><span>Series hechas</span></div>
+      <div class="metric"><b id="pv">0 kg</b><span>Volumen total</span></div>
+      <div class="metric"><b id="pe">0</b><span>Ejercicios usados</span></div>
     </div>
 
-    <nav class="nav-inferior">
-      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
-      <button class="nav-item activo" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
-    </nav>
-  </section>
+    <h3>Series por zona</h3>
+    <div class="muscles" id="pm"></div>
 
-  <!-- FICHA DE EJERCICIO -->
-  <section id="pantalla-ficha-ejercicio" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-ejercicios')">←</button>
-      <h2 id="nombre-ficha-ejercicio">Ejercicio</h2>
-    </header>
+  </div>
 
-    <div class="contenido-ficha">
-      <img id="foto-ficha-ejercicio" class="foto-ejercicio-grande" src="" alt="Ejercicio">
-      <p id="descripcion-ficha-ejercicio" class="descripcion-ejercicio"></p>
+  <div class="card">
 
-      <h3>Mis marcas</h3>
-      <p id="marcas-ficha-ejercicio">Aún no hay registros.</p>
+    <h3 style="margin-top:0">Copia de seguridad</h3>
 
-      <h3>Historial reciente</h3>
-      <ul id="historial-ficha-ejercicio" class="lista-simple"></ul>
-    </div>
-  </section>
+    <p class="muted" style="font-size:13px">
+      Los datos se guardan solo en este navegador. Exporta una copia de vez en cuando.
+    </p>
 
-  <!-- SESIÓN LIBRE -->
-  <section id="pantalla-sesion-libre" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
-      <h2>Sesión libre</h2>
-    </header>
+    <button class="btn" id="export">Exportar</button>
+    <button class="btn alt" id="import">Importar</button>
 
-    <div class="contenido-sesion-libre">
-      <p>Selecciona ejercicios del catálogo para crear una sesión personalizada.</p>
-      <button class="btn-secundario" onclick="irAPantalla('pantalla-ejercicios')">Ir al catálogo</button>
-      <ul id="lista-sesion-libre" class="lista-simple"></ul>
-      <button class="btn-primary" onclick="iniciarSesionLibre()">Comenzar sesión</button>
-    </div>
-  </section>
+    <input hidden id="file" type="file" accept="application/json">
 
-  <!-- CARDIO -->
-  <section id="pantalla-cardio" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
-      <h2>Cardio</h2>
-    </header>
+    <button class="btn danger" id="reset" style="display:block;margin-top:11px">
+      Reiniciar semana mostrada
+    </button>
 
-    <div class="contenido-cardio">
-      <label>Tipo de actividad</label>
-      <select id="cardio-tipo">
-        <option value="Bici">Bici</option>
-        <option value="Elíptica">Elíptica</option>
-        <option value="Natación">Natación</option>
-        <option value="Cinta">Cinta</option>
-        <option value="Otra">Otra</option>
-      </select>
+  </div>
 
-      <label>Duración (min)</label>
-      <input id="cardio-duracion" type="number" min="1" value="20">
+</section>
 
-      <label>Distancia (km, opcional)</label>
-      <input id="cardio-distancia" type="number" min="0" step="0.1" value="0">
+</main>
 
-      <label>Esfuerzo percibido (1–10)</label>
-      <input id="cardio-esfuerzo" type="number" min="1" max="10" value="5">
+<nav class="bottom">
+  <button class="nav active" data-v="home">Inicio</button>
+  <button class="nav" data-v="routine">Rutina</button>
+  <button class="nav" data-v="progress">Progreso</button>
+</nav>
 
-      <button class="btn-primary btn-grande" onclick="guardarCardio()">Guardar cardio</button>
-    </div>
-  </section>
+<div class="photo-modal" id="photoModal">
 
-  <!-- PROGRESO: PORTADA -->
-  <section id="pantalla-progreso-portada" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
-      <h2>Progreso</h2>
-    </header>
+  <div class="photo-modal-inner">
 
-    <div class="panel-progreso">
-      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-calendario')">
-        <h3>Calendario</h3>
-        <p>Días de entrenamiento</p>
-      </div>
-      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-marcas')">
-        <h3>Marcas y récords</h3>
-        <p>Pesos, repeticiones y volumen</p>
-      </div>
-      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-historial')">
-        <h3>Historial</h3>
-        <p>Sesiones y cardio anteriores</p>
-      </div>
-      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-peso-corporal')">
-        <h3>Peso corporal</h3>
-        <p>Registro opcional y evolución</p>
-      </div>
+    <div class="photo-modal-top">
+      <b id="photoModalTitle">Músculos trabajados</b>
+      <button class="photo-close" id="photoClose">Cerrar</button>
     </div>
 
-    <nav class="nav-inferior">
-      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
-      <button class="nav-item activo" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
-    </nav>
-  </section>
+    <img id="photoModalImage" alt="Músculo trabajado">
 
-  <!-- CALENDARIO -->
-  <section id="pantalla-calendario" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
-      <h2>Calendario</h2>
-    </header>
-    <div class="contenido-calendario">
-      <p>Próximamente: vista mensual de tus entrenamientos.</p>
-    </div>
-  </section>
+    <p id="photoModalText"></p>
 
-  <!-- MARCAS -->
-  <section id="pantalla-marcas" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
-      <h2>Marcas y récords</h2>
-    </header>
-    <div class="contenido-marcas">
-      <p>Próximamente: tus mejores pesos, repeticiones y volumen por ejercicio.</p>
-    </div>
-  </section>
+  </div>
 
-  <!-- HISTORIAL -->
-  <section id="pantalla-historial" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
-      <h2>Historial</h2>
-    </header>
-    <div class="contenido-historial">
-      <p>Próximamente: lista de sesiones y cardio anteriores.</p>
-    </div>
-  </section>
+</div>
 
-  <!-- PESO CORPORAL -->
-  <section id="pantalla-peso-corporal" class="pantalla">
-    <header class="header-simple">
-      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
-      <h2>Peso corporal</h2>
-    </header>
-    <div class="contenido-peso">
-      <p>Próximamente: registro y gráfica de tu peso corporal.</p>
-    </div>
-  </section>
-
-  <!-- PERFIL -->
-  <section id="pantalla-perfil" class="pantalla">
-    <header class="header-simple">
-      <h2>Perfil</h2>
-    </header>
-
-    <div class="contenido-perfil">
-      <div class="tarjeta-perfil">
-        <h3>Nombre</h3>
-        <p>Fonsy</p>
-      </div>
-      <div class="tarjeta-perfil">
-        <h3>Rutinas</h3>
-        <p>Push, Pull, Pierna</p>
-      </div>
-      <div class="tarjeta-perfil">
-        <h3>Copia de seguridad</h3>
-        <button class="btn-secundario" onclick="exportarDatos()">Exportar datos</button>
-        <button class="btn-secundario" onclick="importarDatos()">Importar datos</button>
-      </div>
-      <div class="tarjeta-perfil">
-        <h3>Ajustes</h3>
-        <p>Próximamente: notificaciones, unidades, tema, etc.</p>
-      </div>
-    </div>
-
-    <nav class="nav-inferior">
-      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
-      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
-      <button class="nav-item activo" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
-    </nav>
-  </section>
-
-  <script>
-    // JAVASCRIPT va en el bloque 3
-  </script>
-</body>
-</html>
-<style>
-  :root {
-    --fondo: #0b0f14;
-    --fondo-claro: #121821;
-    --texto: #e5e7eb;
-    --texto-suave: #9ca3af;
-    --primario: #3b82f6;
-    --primario-fuerte: #2563eb;
-    --borde: #1f2937;
-    --exito: #10b981;
-    --peligro: #ef4444;
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--fondo);
-    color: var(--texto);
-    line-height: 1.5;
-  }
-
-  .pantalla {
-    display: none;
-    min-height: 100vh;
-    padding-bottom: 80px;
-  }
-
-  .pantalla.activa {
-    display: block;
-  }
-
-  /* PORTADA */
-  #pantalla-portada {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-
-  .portada-fondo {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(59,130,246,0.25), transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(16,185,129,0.2), transparent 40%),
-      url('imagenes/portada1.png') center/cover no-repeat;
-    filter: brightness(0.6);
-    z-index: 0;
-  }
-
-  .portada-contenido {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 2rem;
-    max-width: 420px;
-  }
-
-  .portada-titulo {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.5rem;
-  }
-
-  .portada-saludo {
-    font-size: 1.1rem;
-    color: var(--texto-suave);
-    margin-bottom: 1.5rem;
-  }
-
-  .portada-frase {
-    font-size: 1rem;
-    color: var(--texto-suave);
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-
-  .btn-grande {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .btn-secundario {
-    margin-top: 0.75rem;
-    background: transparent;
-    border: 1px solid var(--borde);
-    color: var(--texto);
-    padding: 0.6rem 1rem;
-    border-radius: 10px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-  /* HEADER SIMPLE */
-  .header-simple {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    border-bottom: 1px solid var(--borde);
-    background: var(--fondo-claro);
-    position: sticky;
-    top: 0;
-    z-index: 2;
-  }
-
-  .header-simple h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  .btn-volver {
-    background: transparent;
-    border: none;
-    color: var(--texto);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    border-radius: 8px;
-  }
-
-  /* PANEL INICIO */
-  .panel-inicio {
-    padding: 1rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .tarjeta-inicio,
-  .tarjeta-inicio-resumen {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 14px;
-    padding: 1rem;
-    cursor: pointer;
-  }
-
-  .tarjeta-inicio h3,
-  .tarjeta-inicio-resumen h3 {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .tarjeta-inicio p,
-  .tarjeta-inicio-resumen p {
-    font-size: 0.9rem;
-    color: var(--texto-suave);
-    margin-bottom: 0.75rem;
-  }
-
-  /* NAV INFERIOR */
-  .nav-inferior {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--fondo-claro);
-    border-top: 1px solid var(--borde);
-    display: flex;
-    justify-content: space-around;
-    padding: 0.5rem 0.25rem;
-    z-index: 3;
-  }
-
-  .nav-item {
-    background: transparent;
-    border: none;
-    color: var(--texto-suave);
-    font-size: 0.85rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  .nav-item.activo {
-    color: var(--texto);
-    background: rgba(255,255,255,0.06);
-  }
-
-  /* BOTONES */
-  .btn-primary {
-    background: var(--primario);
-    color: white;
-    border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .btn-mini {
-    background: transparent;
-    border: 1px solid var(--borde);
-    color: var(--texto);
-    padding: 0.2rem 0.5rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    margin-left: 0.5rem;
-  }
-
-  /* RUTINA DEL DÍA */
-  .contenido-rutina {
-    padding: 1rem;
-  }
-
-  .info-rutina {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .lista-ejercicios-rutina {
-    list-style: none;
-    margin-top: 0.5rem;
-  }
-
-  .lista-ejercicios-rutina li {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-  }
-
-  /* MODO GUIADO */
-  .contenido-modo-guiado {
-    padding: 1rem;
-  }
-
-  .foto-ejercicio-grande {
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--borde);
-    margin-bottom: 1rem;
-  }
-
-  .descripcion-ejercicio {
-    color: var(--texto-suave);
-    margin-bottom: 1rem;
-  }
-
-  .series-guiado {
-    margin-bottom: 1rem;
-  }
-
-  .serie-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 0.5rem;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .serie-row input {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    color: var(--texto);
-    padding: 0.5rem;
-    border-radius: 8px;
-    width: 100%;
-  }
-
-  /* CATÁLOGO */
-  .buscador-filtros {
-    padding: 1rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .buscador-filtros input,
-  .buscador-filtros select {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    color: var(--texto);
-    padding: 0.6rem;
-    border-radius: 10px;
-  }
-
-  .lista-ejercicios-catalogo {
-    padding: 0 1rem 1rem;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .ejercicio-item {
-    display: grid;
-    grid-template-columns: 60px 1fr auto;
-    gap: 0.75rem;
-    align-items: center;
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 0.5rem;
-    cursor: pointer;
-  }
-
-  .ejercicio-item img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid var(--borde);
-  }
-
-  .ejercicio-nombre {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .ejercicio-grupo {
-    font-size: 0.8rem;
-    color: var(--texto-suave);
-  }
-
-  /* FICHA EJERCICIO */
-  .contenido-ficha {
-    padding: 1rem;
-  }
-
-  .lista-simple {
-    list-style: none;
-  }
-
-  .lista-simple li {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 10px;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-  }
-
-  /* SESIÓN LIBRE / CARDIO / PROGRESO / PERFIL */
-  .contenido-sesion-libre,
-  .contenido-cardio,
-  .contenido-calendario,
-  .contenido-marcas,
-  .contenido-historial,
-  .contenido-peso,
-  .contenido-perfil {
-    padding: 1rem;
-  }
-
-  .panel-progreso {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .tarjeta-progreso {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 1rem;
-    cursor: pointer;
-  }
-
-  .tarjeta-perfil {
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .contenido-cardio label {
-    display: block;
-    margin-bottom: 0.25rem;
-    font-weight: 500;
-  }
-
-  .contenido-cardio select,
-  .contenido-cardio input {
-    width: 100%;
-    background: var(--fondo-claro);
-    border: 1px solid var(--borde);
-    color: var(--texto);
-    padding: 0.6rem;
-    border-radius: 10px;
-    margin-bottom: 0.75rem;
-  }
-</style>
 <script>
-  // DATOS DE EJEMPLO (luego se conectarán a localStorage / backend)
-  const ejercicios = [
-    {
-      id: 'press-inclinado-mancuernas',
-      nombre: 'Press inclinado con mancuernas',
-      grupo: 'Pecho',
-      descripcion: 'Empuje horizontal inclinado para pecho superior, hombro frontal y tríceps.',
-      imagen: 'imagenes/IMG_9249.png'
-    },
-    {
-      id: 'press-banca-barra',
-      nombre: 'Press de banca con barra',
-      grupo: 'Pecho',
-      descripcion: 'Empuje horizontal clásico para pecho, hombro frontal y tríceps.',
-      imagen: 'imagenes/IMG_9250.png'
-    },
-    {
-      id: 'apertura-polea-alta',
-      nombre: 'Apertura en polea alta',
-      grupo: 'Pecho',
-      descripcion: 'Apertura en cruz para pecho, enfatizando el estiramiento y la contracción.',
-      imagen: 'imagenes/IMG_9251.png'
-    },
-    {
-      id: 'press-militar-mancuernas',
-      nombre: 'Press militar con mancuernas',
-      grupo: 'Hombro',
-      descripcion: 'Empuje vertical para deltoides anterior y medio, con tríceps como sinergista.',
-      imagen: 'imagenes/IMG_9252.png'
-    },
-    {
-      id: 'elevaciones-laterales',
-      nombre: 'Elevaciones laterales',
-      grupo: 'Hombro',
-      descripcion: 'Abducción de hombro para deltoides medio, clave para anchura.',
-      imagen: 'imagenes/IMG_9253.png'
-    },
-    {
-      id: 'face-pull',
-      nombre: 'Face pull',
-      grupo: 'Hombro',
-      descripcion: 'Tracción alta para deltoides posterior, romboides y manguito rotador.',
-      imagen: 'imagenes/IMG_9254.png'
-    },
-    {
-      id: 'extension-triceps-polea',
-      nombre: 'Extensión de tríceps en polea',
-      grupo: 'Tríceps',
-      descripcion: 'Empuje hacia abajo para tríceps, énfasis en cabeza lateral y medial.',
-      imagen: 'imagenes/IMG_9255.png'
-    },
-    {
-      id: 'dominadas',
-      nombre: 'Dominadas',
-      grupo: 'Espalda',
-      descripcion: 'Tracción vertical para dorsal ancho, redondo mayor y bíceps.',
-      imagen: 'imagenes/IMG_9256.png'
-    },
-    {
-      id: 'remo-barra',
-      nombre: 'Remo con barra',
-      grupo: 'Espalda',
-      descripcion: 'Tracción horizontal para dorsal, romboides y trapecio.',
-      imagen: 'imagenes/IMG_9257.png'
-    },
-    {
-      id: 'remo-gironda',
-      nombre: 'Remo en gironda',
-      grupo: 'Espalda',
-      descripcion: 'Tracción horizontal en máquina para espalda media y dorsal.',
-      imagen: 'imagenes/IMG_9258.png'
-    },
-    {
-      id: 'curl-biceps-barra',
-      nombre: 'Curl de bíceps con barra',
-      grupo: 'Bíceps',
-      descripcion: 'Flexión de codo para bíceps braquial y braquial anterior.',
-      imagen: 'imagenes/IMG_9259.png'
-    },
-    {
-      id: 'curl-martillo',
-      nombre: 'Curl martillo',
-      grupo: 'Bíceps',
-      descripcion: 'Flexión de codo en pronación para braquial y bíceps.',
-      imagen: 'imagenes/IMG_9260.png'
-    },
-    {
-      id: 'sentadilla-barra',
-      nombre: 'Sentadilla con barra',
-      grupo: 'Cuádriceps',
-      descripcion: 'Empuje de cadena posterior y anterior para cuádriceps, glúteo y adductores.',
-      imagen: 'imagenes/IMG_9261.png'
-    },
-    {
-      id: 'prensa',
-      nombre: 'Prensa de piernas',
-      grupo: 'Cuádriceps',
-      descripcion: 'Empuje en máquina para cuádriceps y glúteo, con menor demanda técnica.',
-      imagen: 'imagenes/IMG_9262.png'
-    },
-    {
-      id: 'extension-cuadriceps',
-      nombre: 'Extensión de cuádriceps',
-      grupo: 'Cuádriceps',
-      descripcion: 'Extensión de rodilla aislada para cuádriceps.',
-      imagen: 'imagenes/IMG_9263.png'
-    },
-    {
-      id: 'peso-muerto',
-      nombre: 'Peso muerto',
-      grupo: 'Femoral',
-      descripcion: 'Bisagra de codo para isquios, glúteo y espalda baja.',
-      imagen: 'imagenes/IMG_9264.png'
-    },
-    {
-      id: 'curl-femoral',
-      nombre: 'Curl femoral',
-      grupo: 'Femoral',
-      descripcion: 'Flexión de rodilla aislada para isquiosurales.',
-      imagen: 'imagenes/IMG_9265.png'
-    },
-    {
-      id: 'hip-thrust',
-      nombre: 'Hip thrust',
-      grupo: 'Glúteo',
-      descripcion: 'Empuje de cadera para glúteo mayor y medio.',
-      imagen: 'imagenes/IMG_9266.png'
-    },
-    {
-      id: 'elevacion-talones',
-      nombre: 'Elevación de talones',
-      grupo: 'Pantorrilla',
-      descripcion: 'Flexión plantar para gemelos y sóleo.',
-      imagen: 'imagenes/IMG_9267.png'
-    },
-    {
-      id: 'plancha',
-      nombre: 'Plancha abdominal',
-      grupo: 'Abdomen',
-      descripcion: 'Isométrico de core para recto abdominal y estabilizadores.',
-      imagen: 'imagenes/IMG_9268.png'
-    },
-    {
-      id: 'crunch',
-      nombre: 'Crunch abdominal',
-      grupo: 'Abdomen',
-      descripcion: 'Flexión de tronco para recto abdominal.',
-      imagen: 'imagenes/IMG_9269.png'
-    },
-    {
-      id: 'superman',
-      nombre: 'Superman lumbar',
-      grupo: 'Lumbar',
-      descripcion: 'Extensión de tronco para erectores espinales.',
-      imagen: 'imagenes/IMG_9270.png'
-    }
-  ];
 
-  const rutinas = {
-    push: {
-      nombre: 'Push',
-      descripcion: 'Pecho, hombro y tríceps',
-      ejercicios: [
-        'press-inclinado-mancuernas',
-        'press-banca-barra',
-        'apertura-polea-alta',
-        'press-militar-mancuernas',
-        'elevaciones-laterales',
-        'extension-triceps-polea'
-      ]
-    },
-    pull: {
-      nombre: 'Pull',
-      descripcion: 'Espalda, bíceps y hombro posterior',
-      ejercicios: [
-        'dominadas',
-        'remo-barra',
-        'remo-gironda',
-        'face-pull',
-        'curl-biceps-barra',
-        'curl-martillo'
-      ]
-    },
-    pierna: {
-      nombre: 'Pierna',
-      descripcion: 'Cuádriceps, femoral, glúteo y pantorrilla',
-      ejercicios: [
-        'sentadilla-barra',
-        'prensa',
-        'extension-cuadriceps',
-        'peso-muerto',
-        'curl-femoral',
-        'hip-thrust',
-        'elevacion-talones'
-      ]
+const dn=[
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábado',
+  'Domingo'
+];
+
+const e=(n,m,t,a,r)=>({
+  n,
+  m,
+  t,
+  a,
+  r:r||'8–12'
+});
+
+const P=[
+
+  [
+    'Push A',
+    'Pecho, hombro y tríceps',
+    [
+      e('Press de banca con barra','chest','Compuesto','Press con mancuernas'),
+      e('Press inclinado con mancuernas','upperchest','Compuesto','Press inclinado con barra'),
+      e('Aperturas en polea','chest','Aislamiento','Aperturas con mancuernas','10–15'),
+      e('Press militar','shoulderFront','Compuesto','Press con mancuernas'),
+      e('Elevaciones laterales','shoulderSide','Aislamiento','Elevaciones en polea','12–20'),
+      e('Tríceps en polea','triceps','Aislamiento','Fondos entre bancos','10–15')
+    ]
+  ],
+
+  [
+    'Pull A',
+    'Espalda, bíceps y antebrazo',
+    [
+      e('Jalones al pecho (agarre medio)','lats','Compuesto','Jalón neutro'),
+      e('Remo con barra','midback','Compuesto','Remo con mancuerna'),
+      e('Remo en polea baja','midback','Compuesto','Remo con barra'),
+      e('Face pull','upperback','Aislamiento','Pájaros con mancuernas','12–20'),
+      e('Curl de bíceps con barra','biceps','Aislamiento','Curl con mancuernas','10–15'),
+      e('Curl martillo','brachialis','Aislamiento','Curl en polea','10–15'),
+      e('Curl de muñeca (flexores)','forearmFlex','Antebrazo','Curl con mancuerna','12–20'),
+      e('Curl inverso de muñeca','forearmExt','Antebrazo','Curl inverso con barra','12–20')
+    ]
+  ],
+
+  [
+    'Legs A',
+    'Cuádriceps, femoral y gemelo',
+    [
+      e('Sentadilla con barra','quads','Compuesto','Sentadilla goblet'),
+      e('Zancadas con mancuernas','quads','Compuesto','Sentadilla búlgara','8–12'),
+      e('Peso muerto rumano','hamglute','Compuesto','Rumano con mancuernas'),
+      e('Curl femoral','hamglute','Aislamiento','Buenos días','10–15'),
+      e('Gemelos de pie','calves','Aislamiento','Gemelo a una pierna','12–20'),
+      e('Plancha abdominal','abs','Core','Crunch','30–60 s')
+    ]
+  ],
+
+  [
+    'Push B',
+    'Hombro, pecho y tríceps',
+    [
+      e('Press militar con barra','shoulderFront','Compuesto','Press mancuernas'),
+      e('Press plano con mancuernas','chest','Compuesto','Press con barra'),
+      e('Fondos o press cerrado','triceps','Compuesto','Tríceps en polea'),
+      e('Elevaciones laterales','shoulderSide','Aislamiento','Polea','12–20'),
+      e('Extensión tras nuca','triceps','Aislamiento','Polea','10–15')
+    ]
+  ],
+
+  [
+    'Pull B',
+    'Espalda, bíceps y antebrazo',
+    [
+      e('Jalón supino','lats','Compuesto','Jalón neutro'),
+      e('Remo mancuerna a una mano','midback','Compuesto','Remo barra'),
+      e('Encogimientos','upperback','Aislamiento','Remo al cuello ligero','10–15'),
+      e('Curl concentrado','biceps','Aislamiento','Curl predicador','10–15'),
+      e('Curl martillo','brachialis','Aislamiento','Curl cuerda','10–15'),
+      e('Curl de muñeca','forearmFlex','Antebrazo','Mancuerna','12–20')
+    ]
+  ],
+
+  [
+    'Legs B',
+    'Glúteo, femoral y abdomen',
+    [
+      e('Hip thrust','glutes','Compuesto','Puente de glúteo'),
+      e('Sentadilla búlgara','quads','Compuesto','Zancadas'),
+      e('Peso muerto rumano','hamglute','Compuesto','Buenos días'),
+      e('Curl femoral','hamglute','Aislamiento','Nordic asistido','10–15'),
+      e('Gemelo sentado','calves','Aislamiento','Gemelo de pie','12–20'),
+      e('Elevación de piernas','abs','Core','Plancha','10–20')
+    ]
+  ]
+
+];
+
+const U=[
+  P[0],
+  P[2],
+  P[3],
+  P[5],
+  P[1],
+  P[4]
+];
+
+let plans={
+  PPL:P,
+  UL:U
+};
+
+let plan=localStorage.gymPlanFinal||'PPL';
+let day=(new Date().getDay()+6)%7;
+let offset=0;
+let variation=false;
+
+function monday(){
+  let x=new Date();
+  let n=x.getDay()||7;
+
+  x.setDate(x.getDate()-n+1+offset*7);
+
+  return x.toISOString().slice(0,10);
+}
+
+function data(){
+  return JSON.parse(localStorage.gymFinal||'{}');
+}
+
+function put(x){
+  localStorage.gymFinal=JSON.stringify(x);
+}
+
+function week(){
+  let x=data();
+  let k=monday();
+
+  if(!x[k])x[k]={};
+
+  return[x,x[k]];
+}
+
+function id(d,i){
+  return plan+'-'+d+'-'+i;
+}
+
+function rec(d,i){
+  let[x,w]=week();
+  let k=id(d,i);
+
+  if(!w[k]){
+    w[k]={
+      sets:[{},{},{}],
+      note:''
+    };
+  }
+
+  put(x);
+
+  return w[k];
+}
+
+const label={
+  chest:'Pectoral medio',
+  upperchest:'Pectoral superior',
+  lats:'Dorsal ancho',
+  midback:'Espalda media',
+  upperback:'Trapecio y deltoide posterior',
+  shoulderFront:'Deltoide anterior',
+  shoulderSide:'Deltoide lateral',
+  biceps:'Bíceps',
+  triceps:'Tríceps',
+  brachialis:'Braquial y braquiorradial',
+  forearmFlex:'Flexores del antebrazo',
+  forearmExt:'Extensores del antebrazo',
+  quads:'Cuádriceps',
+  hamglute:'Femoral y glúteo',
+  glutes:'Glúteo',
+  calves:'Gemelo',
+  abs:'Abdomen'
+};
+
+const muscleImage={
+  chest:{
+    file:'pecho.png',
+    caption:'Pectoral mayor'
+  },
+
+  upperchest:{
+    file:'pectoral-superior.png',
+    caption:'Pectoral superior'
+  },
+
+  shoulderFront:{
+    file:'deltoide-anterior.png',
+    caption:'Deltoide anterior'
+  },
+
+  shoulderSide:{
+    file:'deltoide-lateral.png',
+    caption:'Deltoide lateral'
+  },
+
+  triceps:{
+    file:'triceps.png',
+    caption:'Tríceps'
+  },
+
+  lats:{
+    file:'dorsal-ancho.png',
+    caption:'Dorsal ancho'
+  },
+
+  midback:{
+    file:'espalda-media.png',
+    caption:'Espalda media'
+  },
+
+  upperback:{
+    file:'trapecio-deltoide-posterior.png',
+    caption:'Trapecio y deltoide posterior'
+  },
+
+  biceps:{
+    file:'biceps.png',
+    caption:'Bíceps'
+  },
+
+  brachialis:{
+    file:'biceps.png',
+    caption:'Braquial y braquiorradial'
+  },
+
+  forearmFlex:{
+    file:'flexores-antebrazo.png',
+    caption:'Flexores del antebrazo'
+  },
+
+  forearmExt:{
+    file:'extensores-antebrazo.png',
+    caption:'Extensores del antebrazo'
+  },
+
+  quads:{
+    file:'cuadriceps.png',
+    caption:'Cuádriceps'
+  },
+
+  hamglute:{
+    file:'femoral-gluteo.png',
+    caption:'Femoral y glúteo'
+  },
+
+  glutes:{
+    file:'gluteos.png',
+    caption:'Glúteos'
+  },
+
+  calves:{
+    file:'gemelos.png',
+    caption:'Gemelos'
+  },
+
+  abs:{
+    file:'abdomen.png',
+    caption:'Abdomen'
+  }
+};
+
+function musclePhoto(m){
+
+  let x=muscleImage[m]||muscleImage.chest;
+
+  return `
+    <div
+      class="muscle-photo"
+      role="button"
+      tabindex="0"
+      data-file="${x.file}"
+      data-title="${label[m]}"
+      data-caption="${x.caption}"
+      aria-label="Abrir imagen de ${label[m]}"
+    >
+      <img src="${x.file}" alt="${x.caption}">
+      <span>${x.caption} · tocar para ampliar</span>
+    </div>
+  `;
+}
+
+function openPhoto(card){
+
+  document.querySelector('#photoModalTitle').textContent=card.dataset.title;
+
+  document.querySelector('#photoModalText').textContent=
+    'Músculo principal trabajado: '+card.dataset.caption+'.';
+
+  let img=document.querySelector('#photoModalImage');
+
+  img.src=card.dataset.file;
+  img.alt=card.dataset.caption;
+
+  document.querySelector('#photoModal').classList.add('open');
+}
+
+function bindPhoto(a){
+
+  let card=a.querySelector('.muscle-photo');
+
+  card.onclick=()=>openPhoto(card);
+
+  card.onkeydown=z=>{
+    if(z.key==='Enter'||z.key===' '){
+      z.preventDefault();
+      openPhoto(card);
+    }
+  };
+}
+
+function today(){
+  return day===6?0:day;
+}
+
+function advice(q,e){
+
+  let s=q.sets.filter(x=>x.done);
+
+  let rs=s.map(x=>+x.r||0);
+
+  let rir=s
+    .map(x=>+x.rir)
+    .filter(x=>!isNaN(x));
+
+  let range=e.r.match(/(\d+)[–-](\d+)/);
+
+  if(!s.length){
+    return 'Registra las series para recibir tu consejo de progreso.';
+  }
+
+  if(
+    q.note.toLowerCase().includes('dolor')||
+    q.note.toLowerCase().includes('molestia')
+  ){
+    return 'Has anotado una molestia: no subas carga; reduce si hace falta y revisa técnica.';
+  }
+
+  if(!range){
+    return 'Mantén una técnica controlada y registra el esfuerzo para valorar la siguiente sesión.';
+  }
+
+  let lo=+range[1];
+  let hi=+range[2];
+
+  let same=new Set(s.map(x=>x.w)).size===1;
+
+  if(
+    s.length>=3 &&
+    rs.length>=3 &&
+    rs.every(x=>x>=hi) &&
+    same &&
+    (!rir.length||rir.every(x=>x>=1&&x<=3))
+  ){
+    return 'Sube al siguiente peso disponible la próxima sesión: completaste el máximo del rango con margen controlado.';
+  }
+
+  if(rs.some(x=>x<lo)){
+    return 'Mantén el peso o redúcelo ligeramente: intenta llegar al mínimo del rango con buena técnica.';
+  }
+
+  return 'Mantén este peso e intenta sumar una repetición total en la próxima sesión.';
+}
+
+function renderHome(){
+
+  let d=today();
+  let r=plans[plan][d];
+
+  document.querySelector('#homeworkout').textContent=
+    r[0]+' — '+r[1];
+
+  document.querySelector('#hEx').textContent=r[2].length;
+
+  let q=r[2].reduce((a,_,i)=>a+rec(d,i).sets.length,0);
+
+  document.querySelector('#hSets').textContent=q;
+
+  cal();
+
+  let done=r[2]
+    .flatMap((_,i)=>rec(d,i).sets)
+    .filter(x=>x.done)
+    .length;
+
+  document.querySelector('#homebar').style.width=
+    (done/q*100||0)+'%';
+
+  document.querySelector('#homeprogress').textContent=
+    done
+      ? `${done} / ${q} series completadas. Sigue así.`
+      : 'Cada serie cuenta. Hoy construyes tu progreso.';
+}
+
+function cal(){
+
+  let[,w]=week();
+
+  let out=document.querySelector('#calendar');
+
+  out.innerHTML='';
+
+  for(let i=0;i<7;i++){
+
+    let yes=Object.entries(w).some(([k,q])=>
+      k.startsWith(plan+'-'+i+'-') &&
+      q.sets.some(z=>z.done)
+    );
+
+    let a=document.createElement('div');
+
+    a.className=
+      'weekday '+
+      (i===today()?'today ':'')+
+      (yes?'done':'');
+
+    a.innerHTML=
+      dn[i].slice(0,3).toUpperCase()+
+      `<b>${i+1}</b>`;
+
+    out.appendChild(a);
+  }
+
+  document.querySelector('#weeklabel').textContent=
+    'Semana '+monday();
+}
+
+function exercise(d,i,e){
+
+  let q=rec(d,i);
+
+  let a=document.createElement('article');
+
+  a.className='exercise';
+
+  a.innerHTML=`
+
+    <div class="exhead">
+
+      ${musclePhoto(e.m)}
+
+      <div>
+
+        <h3>${e.n}</h3>
+
+        <span class="tag">💪 ${e.t}</span>
+
+        <p class="meta">
+          <b>Músculo principal:</b> ${label[e.m]}<br>
+          Rango: ${e.r} ·
+          <a
+            class="video"
+            target="_blank"
+            href="https://www.youtube.com/results?search_query=${encodeURIComponent(e.n+' técnica')}"
+          >
+            Ver vídeo
+          </a>
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="labels">
+      <span>Serie</span>
+      <span>Peso (kg)</span>
+      <span>Reps</span>
+      <span>RIR 0–4</span>
+      <span>Hecho</span>
+    </div>
+
+    <div class="setlist"></div>
+
+    <button class="add">⊕ Añadir serie</button>
+
+    <div class="rest">
+      <b>Descanso de este ejercicio</b>
+      <button class="btn r90">90 s</button>
+      <button class="btn alt r120">120 s</button>
+      <span class="time">00:00</span>
+    </div>
+
+    <div class="advice">
+      <b>Consejo para la próxima sesión:</b><br>
+      <span>${advice(q,e)}</span>
+    </div>
+
+    <details class="details">
+      <summary>Alternativa si está ocupado</summary>
+      <p>${e.a}</p>
+    </details>
+
+    <textarea
+      class="note"
+      rows="2"
+      placeholder="Notas: RIR, técnica, molestias, próxima vez..."
+    >${q.note||''}</textarea>
+  `;
+
+  bindPhoto(a);
+
+  let list=a.querySelector('.setlist');
+
+  function row(s,n){
+
+    let z=document.createElement('div');
+
+    z.className='set';
+
+    z.innerHTML=`
+
+      <span class="setno">${n}</span>
+
+      <input
+        inputmode="decimal"
+        placeholder="kg"
+        value="${s.w||''}"
+      >
+
+      <input
+        inputmode="numeric"
+        placeholder="reps"
+        value="${s.r||''}"
+      >
+
+      <input
+        inputmode="numeric"
+        placeholder="RIR"
+        value="${s.rir||''}"
+      >
+
+      <button class="check ${s.done?'done':''}">
+        ${s.done?'✓':''}
+      </button>
+    `;
+
+    z.querySelectorAll('input').forEach((x,j)=>{
+
+      x.oninput=()=>{
+
+        let t=rec(d,i);
+
+        t.sets[n-1][['w','r','rir'][j]]=x.value;
+
+        let[v,w]=week();
+
+        w[id(d,i)]=t;
+
+        put(v);
+
+        renderHome();
+      };
+
+    });
+
+    z.querySelector('.check').onclick=()=>{
+
+      let t=rec(d,i);
+
+      t.sets[n-1].done=!t.sets[n-1].done;
+
+      let[v,w]=week();
+
+      w[id(d,i)]=t;
+
+      put(v);
+
+      renderWorkout();
+    };
+
+    list.appendChild(z);
+  }
+
+  q.sets.forEach(row);
+
+  a.querySelector('.add').onclick=()=>{
+
+    let t=rec(d,i);
+
+    t.sets.push({});
+
+    let[v,w]=week();
+
+    w[id(d,i)]=t;
+
+    put(v);
+
+    renderWorkout();
+  };
+
+  a.querySelector('.note').oninput=x=>{
+
+    let t=rec(d,i);
+
+    t.note=x.target.value;
+
+    let[v,w]=week();
+
+    w[id(d,i)]=t;
+
+    put(v);
+  };
+
+  let it;
+
+  function timer(n){
+
+    clearInterval(it);
+
+    let left=n;
+
+    let o=a.querySelector('.time');
+
+    let show=()=>{
+
+      o.textContent=
+        String(Math.floor(left/60)).padStart(2,'0')+
+        ':'+
+        String(left%60).padStart(2,'0');
+    };
+
+    show();
+
+    it=setInterval(()=>{
+
+      left--;
+
+      if(left<0){
+
+        clearInterval(it);
+
+        o.textContent='✓ Listo';
+
+        navigator.vibrate&&navigator.vibrate([180,100,180]);
+
+      }else{
+        show();
+      }
+
+    },1000);
+  }
+
+  a.querySelector('.r90').onclick=()=>timer(90);
+
+  a.querySelector('.r120').onclick=()=>timer(120);
+
+  return a;
+}
+
+function renderWorkout(){
+
+  let d=today();
+  let r=plans[plan][d];
+
+  let o=document.querySelector('#workoutList');
+
+  o.innerHTML=`
+
+    <div class="card">
+      <p class="greet">¡Vamos! 💪</p>
+      <h2 style="margin:0">${dn[d]} — ${r[0]}</h2>
+      <p class="muted">${r[1]} · ${r[2].length} ejercicios</p>
+    </div>
+  `;
+
+  r[2].forEach((x,i)=>o.appendChild(exercise(d,i,x)));
+
+  renderHome();
+}
+
+function renderRoutine(){
+
+  document.querySelectorAll('.plan').forEach(x=>
+    x.classList.toggle('selected',x.dataset.plan===plan)
+  );
+
+  let a=document.querySelector('#days');
+
+  a.innerHTML='';
+
+  plans[plan].forEach((r,i)=>{
+
+    let b=document.createElement('button');
+
+    b.className='daybtn';
+
+    b.innerHTML=`
+      <b>${dn[i]} — ${r[0]}</b>
+      <small>${r[1]}</small>
+    `;
+
+    b.onclick=()=>{
+      day=i;
+      show('workout');
+    };
+
+    a.appendChild(b);
+  });
+
+  document.querySelector('#blocktitle').textContent=
+    variation
+      ? 'Bloque de variación activo'
+      : 'Bloque 1 — Semanas 1–4';
+
+  document.querySelector('#blocktext').textContent=
+    variation
+      ? 'Has activado variaciones: conserva los patrones, cambia agarres y accesorios.'
+      : 'Mantén principales. Puedes activar variaciones al empezar una nueva fase.';
+}
+
+function renderProgress(){
+
+  let[,w]=week();
+
+  let sets=0;
+  let vol=0;
+  let used=0;
+  let m={};
+  let ds=new Set;
+
+  Object.entries(w).forEach(([k,q])=>{
+
+    let p=k.split('-');
+
+    let e=plans[p[0]]?.[+p[1]]?.[2][+p[2]];
+
+    let u=false;
+
+    q.sets.forEach(s=>{
+
+      if(s.done){
+
+        sets++;
+
+        u=true;
+
+        vol+=(+s.w||0)*(+s.r||0);
+
+        m[label[e?.m]||'Otros']=
+          (m[label[e?.m]||'Otros']||0)+1;
+      }
+    });
+
+    if(u){
+      used++;
+      ds.add(p[1]);
+    }
+  });
+
+  document.querySelector('#pd').textContent=ds.size+'/6';
+
+  document.querySelector('#ps').textContent=sets;
+
+  document.querySelector('#pv').textContent=
+    Math.round(vol)+' kg';
+
+  document.querySelector('#pe').textContent=used;
+
+  document.querySelector('#pm').innerHTML=
+    Object.entries(m)
+      .map(x=>`
+        <div class="muscle">
+          <span>${x[0]}</span>
+          <b>${x[1]}</b>
+        </div>
+      `)
+      .join('')
+    ||
+    '<p class="empty">Completa una serie para comenzar tu seguimiento.</p>';
+}
+
+function show(v){
+
+  document.querySelectorAll('.view').forEach(x=>
+    x.classList.toggle('active',x.id===v)
+  );
+
+  // CORRECCIÓN PRINCIPAL: scroll arriba en cada cambio de pantalla
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'instant'
+  });
+
+  document.querySelector('#head').textContent={
+    home:'Inicio',
+    workout:'Entrenamiento',
+    routine:'Rutina',
+    progress:'Progreso'
+  }[v];
+
+  if(v==='home')renderHome();
+
+  if(v==='workout')renderWorkout();
+
+  if(v==='routine')renderRoutine();
+
+  if(v==='progress')renderProgress();
+}
+
+document.querySelectorAll('.nav').forEach(x=>
+  x.onclick=()=>show(x.dataset.v)
+);
+
+document.querySelector('#start').onclick=()=>show('workout');
+
+document.querySelectorAll('.plan').forEach(x=>
+
+  x.onclick=()=>{
+
+    plan=x.dataset.plan;
+
+    localStorage.gymPlanFinal=plan;
+
+    renderRoutine();
+
+    renderHome();
+  }
+);
+
+document.querySelector('#toggleVariation').onclick=()=>{
+
+  variation=!variation;
+
+  renderRoutine();
+};
+
+document.querySelector('#back').onclick=()=>{
+
+  offset--;
+
+  show(document.querySelector('.view.active').id);
+};
+
+document.querySelector('#forward').onclick=()=>{
+
+  offset++;
+
+  show(document.querySelector('.view.active').id);
+};
+
+document.querySelector('#export').onclick=()=>{
+
+  let a=document.createElement('a');
+
+  a.href=URL.createObjectURL(
+    new Blob(
+      [localStorage.gymFinal||'{}'],
+      {type:'application/json'}
+    )
+  );
+
+  a.download='gym-comunidad-copia.json';
+
+  a.click();
+};
+
+document.querySelector('#import').onclick=()=>
+  document.querySelector('#file').click();
+
+document.querySelector('#file').onchange=e=>{
+
+  let f=e.target.files[0];
+
+  let r=new FileReader();
+
+  r.onload=()=>{
+
+    try{
+
+      JSON.parse(r.result);
+
+      localStorage.gymFinal=r.result;
+
+      show('home');
+
+      alert('Datos importados');
+
+    }catch{
+
+      alert('Archivo no válido');
     }
   };
 
-  // ESTADO GLOBAL SIMPLE
-  let estadoHoy = 'Normal';
-  let rutinaActual = rutinas.push; // ejemplo
-  let indiceEjercicioGuiado = 0;
+  if(f)r.readAsText(f);
+};
 
-  // NAVEGACIÓN
-  function irAPantalla(id) {
-    document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-    document.getElementById(id).classList.add('activa');
-    window.scrollTo(0, 0);
+document.querySelector('#reset').onclick=()=>{
+
+  if(confirm('¿Borrar los datos de esta semana?')){
+
+    let x=data();
+
+    delete x[monday()];
+
+    put(x);
+
+    renderProgress();
   }
+};
 
-  function abrirRutinaDelDia() {
-    document.getElementById('titulo-rutina-del-dia').textContent = rutinaActual.nombre;
-    document.getElementById('info-rutina-del-dia').textContent =
-      `${rutinaActual.descripcion} · ${rutinaActual.ejercicios.length} ejercicios`;
-    const lista = document.getElementById('lista-ejercicios-rutina');
-    lista.innerHTML = '';
-    rutinaActual.ejercicios.forEach(id => {
-      const ej = ejercicios.find(e => e.id === id);
-      const li = document.createElement('li');
-      li.textContent = ej.nombre;
-      li.onclick = () => abrirFichaEjercicio(ej.id);
-      lista.appendChild(li);
-    });
-    irAPantalla('pantalla-rutina-del-dia');
+document.querySelector('#photoClose').onclick=()=>{
+
+  document.querySelector('#photoModal').classList.remove('open');
+};
+
+document.querySelector('#photoModal').onclick=e=>{
+
+  if(e.target.id==='photoModal'){
+
+    document.querySelector('#photoClose').click();
   }
+};
 
-  function cambiarEstadoHoy() {
-    const estados = ['Normal', 'Cansado', 'Muy fresco'];
-    const idx = estados.indexOf(estadoHoy);
-    estadoHoy = estados[(idx + 1) % estados.length];
-    document.getElementById('estado-hoy').textContent = estadoHoy;
-  }
+show('home');
 
-  function iniciarModoGuiado() {
-    indiceEjercicioGuiado = 0;
-    cargarEjercicioGuiado();
-    irAPantalla('pantalla-modo-guiado');
-  }
-
-  function salirModoGuiado() {
-    irAPantalla('pantalla-rutina-del-dia');
-  }
-
-  function cargarEjercicioGuiado() {
-    const id = rutinaActual.ejercicios[indiceEjercicioGuiado];
-    const ej = ejercicios.find(e => e.id === id);
-    document.getElementById('titulo-modo-guiado').textContent = `Ejercicio ${indiceEjercicioGuiado + 1}/${rutinaActual.ejercicios.length}`;
-    document.getElementById('nombre-ejercicio-guiado').textContent = ej.nombre;
-    document.getElementById('descripcion-ejercicio-guiado').textContent = ej.descripcion;
-    document.getElementById('foto-ejercicio-guiado').src = ej.imagen;
-
-    const contenedor = document.getElementById('series-guiado');
-    contenedor.innerHTML = '';
-    for (let i = 1; i <= 3; i++) {
-      const row = document.createElement('div');
-      row.className = 'serie-row';
-      row.innerHTML = `
-        <input type="number" placeholder="Peso" min="0">
-        <input type="number" placeholder="Reps" min="0">
-        <input type="number" placeholder="RIR" min="0" max="10">
-        <button class="btn-mini">OK</button>
-      `;
-      contenedor.appendChild(row);
-    }
-  }
-
-  function siguienteEjercicio() {
-    if (indiceEjercicioGuiado < rutinaActual.ejercicios.length - 1) {
-      indiceEjercicioGuiado++;
-      cargarEjercicioGuiado();
-    } else {
-      alert('¡Entrenamiento completado! 🎉');
-      salirModoGuiado();
-    }
-  }
-
-  function filtrarEjercicios() {
-    const texto = document.getElementById('buscador-ejercicios').value.toLowerCase();
-    const grupo = document.getElementById('filtro-grupo').value;
-    const lista = document.getElementById('lista-ejercicios-catalogo');
-    lista.innerHTML = '';
-
-    ejercicios.forEach(ej => {
-      if (grupo && ej.grupo !== grupo) return;
-      if (texto && !ej.nombre.toLowerCase().includes(texto)) return;
-
-      const item = document.createElement('div');
-      item.className = 'ejercicio-item';
-      item.innerHTML = `
-        <img src="${ej.imagen}" alt="${ej.nombre}">
-        <div>
-          <div class="ejercicio-nombre">${ej.nombre}</div>
-          <div class="ejercicio-grupo">${ej.grupo}</div>
-        </div>
-        <button class="btn-mini" onclick="abrirFichaEjercicio('${ej.id}')">Ver</button>
-      `;
-      lista.appendChild(item);
-    });
-  }
-
-  function abrirFichaEjercicio(id) {
-    const ej = ejercicios.find(e => e.id === id);
-    document.getElementById('nombre-ficha-ejercicio').textContent = ej.nombre;
-    document.getElementById('foto-ficha-ejercicio').src = ej.imagen;
-    document.getElementById('descripcion-ficha-ejercicio').textContent = ej.descripcion;
-    document.getElementById('marcas-ficha-ejercicio').textContent = 'Aún no hay registros.';
-    document.getElementById('historial-ficha-ejercicio').innerHTML = '';
-    irAPantalla('pantalla-ficha-ejercicio');
-  }
-
-  function guardarCardio() {
-    const tipo = document.getElementById('cardio-tipo').value;
-    const duracion = document.getElementById('cardio-duracion').value;
-    const distancia = document.getElementById('cardio-distancia').value;
-    const esfuerzo = document.getElementById('cardio-esfuerzo').value;
-    alert(`Cardio guardado:\n${tipo} · ${duracion} min · ${distancia} km · Esfuerzo ${esfuerzo}/10`);
-    irAPantalla('pantalla-inicio');
-  }
-
-  function exportarDatos() {
-    const datos = { ejercicios, rutinas, estadoHoy };
-    const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'mi-entrenamiento-backup.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function importarDatos() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
-    input.onchange = e => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = ev => {
-        try {
-          const datos = JSON.parse(ev.target.result);
-          alert('Datos importados correctamente. Recarga la página para aplicar cambios.');
-        } catch {
-          alert('Archivo no válido.');
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
-  }
-
-  // INICIALIZACIÓN
-  window.addEventListener('DOMContentLoaded', () => {
-    filtrarEjercicios();
-    document.getElementById('resumen-rutina-hoy').textContent =
-      `${rutinaActual.nombre} · ${rutinaActual.ejercicios.length} ejercicios`;
-    document.getElementById('resumen-inicio').textContent =
-      'Racha: 3 días · Última sesión: ayer';
-    irAPantalla('pantalla-portada');
-  });
 </script>
+
+</body>
+</html>
+
