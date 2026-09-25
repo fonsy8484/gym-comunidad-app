@@ -1,3549 +1,1094 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07111f">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mi Entrenamiento</title>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #07111f;
-      --bg-soft: #0d1b2f;
-      --surface: #101f34;
-      --surface-2: #142842;
-      --surface-3: #0a1728;
-      --text: #f6f8fc;
-      --muted: #9aabc2;
-      --muted-2: #6f819a;
-      --accent: #ff6b17;
-      --accent-2: #ff9d2e;
-      --accent-soft: rgba(255, 107, 23, .16);
-      --success: #2ed17e;
-      --danger: #ff5d68;
-      --border: rgba(165, 191, 224, .15);
-      --shadow: 0 18px 44px rgba(0, 0, 0, .28);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html {
-      background: var(--bg);
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      min-width: 320px;
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 15% -10%, rgba(255, 107, 23, .18), transparent 34%),
-        radial-gradient(circle at 90% 12%, rgba(28, 100, 166, .22), transparent 32%),
-        var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    }
-
-    button, input, select, textarea { font: inherit; }
-
-    button {
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    button, a { -webkit-tap-highlight-color: transparent; }
-
-    .app {
-      width: min(100%, 520px);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: env(safe-area-inset-top) 16px calc(92px + env(safe-area-inset-bottom));
-      overflow-x: hidden;
-    }
-
-    .screen { display: none; }
-    .screen.active { display: block; animation: fadeIn .2s ease; }
-
-    @keyframes fadeIn {
-      from { opacity: .3; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-height: 52px;
-      margin: 4px 0 14px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      flex: 0 0 40px;
-      border-radius: 14px;
-      color: #fff;
-      font-size: 21px;
-      background: linear-gradient(135deg, var(--accent), #e94412);
-      box-shadow: 0 10px 22px rgba(255, 107, 23, .25);
-    }
-
-    .brand strong {
-      display: block;
-      font-size: 15px;
-      line-height: 1.1;
-      letter-spacing: -.25px;
-    }
-
-    .brand span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .icon-button {
-      display: grid;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      flex: 0 0 42px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      color: var(--text);
-      background: rgba(16, 31, 52, .88);
-      cursor: pointer;
-    }
-
-    .hero {
-      position: relative;
-      min-height: 320px;
-      display: flex;
-      align-items: flex-end;
-      overflow: hidden;
-      margin: 4px 0 18px;
-      padding: 22px;
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 28px;
-      background:
-        linear-gradient(0deg, rgba(4, 10, 18, .98) 0%, rgba(4, 10, 18, .65) 45%, rgba(4, 10, 18, .08) 100%),
-        linear-gradient(130deg, #172c45, #0a1624);
-      box-shadow: var(--shadow);
-      isolation: isolate;
-    }
-
-    .hero::before {
-      position: absolute;
-      z-index: -1;
-      inset: 0;
-      content: "";
-      background-image: var(--hero-image);
-      background-position: center;
-      background-size: cover;
-      opacity: .77;
-      transform: scale(1.02);
-    }
-
-    .hero-content { width: 100%; }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      margin-bottom: 8px;
-      color: #ffd2b5;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .7px;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      width: 7px;
-      height: 7px;
-      content: "";
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(255, 107, 23, .18);
-    }
-
-    h1, h2, h3, p { margin-top: 0; }
-
-    .hero h1 {
-      max-width: 310px;
-      margin-bottom: 8px;
-      font-size: clamp(29px, 8vw, 40px);
-      line-height: 1.02;
-      letter-spacing: -1.4px;
-    }
-
-    .hero p {
-      max-width: 285px;
-      margin-bottom: 18px;
-      color: #d5deea;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 46px;
-      padding: 12px 16px;
-      border: 1px solid transparent;
-      border-radius: 14px;
-      color: var(--text);
-      font-weight: 800;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform .15s ease, filter .15s ease;
-    }
-
-    .button:active { transform: scale(.98); }
-
-    .button.primary {
-      color: #fff;
-      background: linear-gradient(115deg, var(--accent), #f24b10);
-      box-shadow: 0 12px 24px rgba(255, 91, 18, .24);
-    }
-
-    .button.secondary {
-      border-color: var(--border);
-      background: var(--surface);
-    }
-
-    .button.ghost {
-      min-height: 38px;
-      padding: 8px 11px;
-      border-color: var(--border);
-      border-radius: 11px;
-      color: var(--muted);
-      background: transparent;
-      font-size: 13px;
-    }
-
-    .button.full { display: flex; width: 100%; }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 22px 2px 10px;
-    }
-
-    .section-heading h2 {
-      margin: 0;
-      font-size: 19px;
-      letter-spacing: -.45px;
-    }
-
-    .section-heading button {
-      padding: 0;
-      border: 0;
-      color: var(--accent-2);
-      background: transparent;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(19, 38, 63, .98), rgba(12, 27, 46, .98));
-      box-shadow: var(--shadow);
-    }
-
-    .card.pad { padding: 16px; }
-
-    .today-card {
-      position: relative;
-      overflow: hidden;
-      padding: 17px;
-    }
-
-    .today-card::after {
-      position: absolute;
-      right: -34px;
-      bottom: -50px;
-      width: 150px;
-      height: 150px;
-      content: "";
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 107, 23, .23), transparent 68%);
-      pointer-events: none;
-    }
-
-    .card-label {
-      margin-bottom: 6px;
-      color: var(--accent-2);
-      font-size: 12px;
-      font-weight: 850;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-    }
-
-    .today-title {
-      margin: 0 0 5px;
-      font-size: 22px;
-      letter-spacing: -.6px;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .today-actions {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      margin-top: 16px;
-    }
-
-    .today-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .mini-tag {
-      padding: 6px 9px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 9px;
-      color: #bfd0e5;
-      background: rgba(6, 16, 29, .38);
-      font-size: 12px;
-    }
-
-    .quick-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .quick-action {
-      min-height: 104px;
-      padding: 13px 10px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      color: var(--text);
-      text-align: left;
-      background: rgba(14, 31, 51, .85);
-      cursor: pointer;
-    }
-
-    .quick-icon {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      margin-bottom: 13px;
-      border-radius: 12px;
-      font-size: 18px;
-      background: var(--accent-soft);
-    }
-
-    .quick-action strong {
-      display: block;
-      font-size: 13px;
-    }
-
-    .quick-action span {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .week-card { padding: 15px; }
-
-    .week-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .week-top strong { font-size: 15px; }
-    .week-top span { color: var(--muted); font-size: 12px; }
-
-    .week-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-    }
-
-    .day {
-      display: grid;
-      place-items: center;
-      gap: 6px;
-      min-height: 53px;
-      border-radius: 13px;
-      color: var(--muted);
-      font-size: 11px;
-      background: rgba(5, 16, 28, .4);
-    }
-
-    .day b {
-      display: grid;
-      place-items: center;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .day.done b { color: #06160e; background: var(--success); }
-    .day.today { outline: 1px solid var(--accent); background: rgba(255, 107, 23, .11); }
-    .day.today b { color: #fff; background: var(--accent); }
-
-    .progress-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-    }
-
-    .metric {
-      padding: 13px 10px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      text-align: center;
-      background: rgba(10, 24, 41, .65);
-    }
-
-    .metric strong {
-      display: block;
-      margin-bottom: 4px;
-      color: var(--accent-2);
-      font-size: 20px;
-      letter-spacing: -.5px;
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 10px;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      z-index: 30;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      justify-content: center;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      pointer-events: none;
-    }
-
-    .bottom-nav-inner {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      width: min(calc(100vw - 24px), 496px);
-      padding: 7px 4px;
-      border: 1px solid rgba(170, 196, 230, .18);
-      border-radius: 22px;
-      background: rgba(8, 19, 33, .9);
-      box-shadow: 0 12px 38px rgba(0, 0, 0, .38);
-      backdrop-filter: blur(16px);
-      pointer-events: auto;
-    }
-
-    .nav-item {
-      display: grid;
-      place-items: center;
-      gap: 3px;
-      min-height: 49px;
-      border: 0;
-      border-radius: 14px;
-      color: var(--muted-2);
-      background: transparent;
-      font-size: 10px;
-      font-weight: 750;
-      cursor: pointer;
-    }
-
-    .nav-item .nav-icon { font-size: 19px; line-height: 1; }
-    .nav-item.active { color: #fff; background: rgba(255, 107, 23, .18); }
-    .nav-item.active .nav-icon { color: var(--accent-2); }
-
-    .page-title {
-      margin: 4px 0 4px;
-      font-size: 27px;
-      letter-spacing: -1px;
-    }
-
-    .page-subtitle {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .choice-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-      margin-top: 12px;
-    }
-
-    .choice {
-      padding: 12px 6px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      color: var(--muted);
-      background: rgba(6, 16, 29, .36);
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .choice.active {
-      border-color: rgba(255, 107, 23, .7);
-      color: #fff;
-      background: var(--accent-soft);
-    }
-
-    .routine-list, .exercise-list, .history-list { display: grid; gap: 10px; }
-
-    .exercise-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      min-height: 82px;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 17px;
-      color: var(--text);
-      text-align: left;
-      background: rgba(9, 22, 38, .72);
-      cursor: pointer;
-    }
-
-    .exercise-row img, .exercise-placeholder {
-      display: grid;
-      place-items: center;
-      width: 58px;
-      height: 60px;
-      flex: 0 0 58px;
-      overflow: hidden;
-      border-radius: 13px;
-      color: var(--accent-2);
-      object-fit: cover;
-      background: linear-gradient(135deg, #263b55, #152438);
-      font-size: 23px;
-    }
-
-    .exercise-row-body { min-width: 0; flex: 1; }
-    .exercise-row-body strong { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
-    .exercise-row-body span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
-    .exercise-row .arrow { color: var(--muted-2); font-size: 19px; }
-
-    .search {
-      width: 100%;
-      min-height: 48px;
-      padding: 11px 13px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      outline: 0;
-      color: var(--text);
-      background: rgba(6, 16, 29, .62);
-    }
-
-    .search:focus { border-color: rgba(255, 107, 23, .8); }
-
-    .chips {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      margin: 12px -2px 14px;
-      padding: 2px;
-      scrollbar-width: none;
-    }
-
-    .chips::-webkit-scrollbar { display: none; }
-
-    .chip {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--muted);
-      background: rgba(11, 26, 44, .7);
-      font-size: 12px;
-      font-weight: 750;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .chip.active {
-      border-color: var(--accent);
-      color: #fff;
-      background: var(--accent);
-    }
-
-    .hidden { display: none !important; }
-
-    @media (max-width: 360px) {
-      .app { padding-right: 12px; padding-left: 12px; }
-      .hero { padding: 18px; border-radius: 23px; }
-      .quick-grid { gap: 7px; }
-      .quick-action { padding: 11px 8px; }
-    }
+    /* CSS va en el bloque 2 */
   </style>
 </head>
 <body>
-  <main class="app">
-    <!-- INICIO -->
-    <section id="inicio" class="screen active">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">🏋️</div>
-          <div>
-            <strong>Mi Entrenamiento</strong>
-            <span>Tu progreso, a tu ritmo</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="openScreen('perfil')" aria-label="Abrir perfil">⚙️</button>
-      </header>
 
-      <section class="hero" id="hero">
-        <div class="hero-content">
-          <div class="eyebrow">Tu momento empieza ahora</div>
-          <h1>Hola, Fonsy 👋</h1>
-          <p id="dailyQuote">Cada serie cuenta. Hoy entrenas para estar más fuerte mañana.</p>
-          <button class="button primary" type="button" onclick="openScreen('entrenar')">
-            Empezar entrenamiento <span>→</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="today-card card">
-        <div class="card-label">Entrenamiento de hoy</div>
-        <h2 class="today-title" id="homeWorkoutTitle">Push · Pecho, hombro y tríceps</h2>
-        <p class="muted" id="homeWorkoutDescription">Una sesión de fuerza equilibrada de aproximadamente 60 minutos.</p>
-        <div class="today-meta">
-          <span class="mini-tag" id="homeWorkoutCount">6 ejercicios</span>
-          <span class="mini-tag">~60 min</span>
-          <span class="mini-tag" id="homeWorkoutLevel">Estado: normal</span>
-        </div>
-        <div class="today-actions">
-          <button class="button primary" type="button" onclick="startTodayWorkout()">Comenzar</button>
-          <button class="button ghost" type="button" onclick="generateAlternative()">Alternativa</button>
-        </div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Acceso rápido</h2>
-      </div>
-
-      <section class="quick-grid">
-        <button class="quick-action" type="button" onclick="startFreeWorkout()">
-          <div class="quick-icon">⚡</div>
-          <strong>Sesión libre</strong>
-          <span>Elige tus ejercicios</span>
-        </button>
-        <button class="quick-action" type="button" onclick="openCardio()">
-          <div class="quick-icon">🚴</div>
-          <strong>Cardio</strong>
-          <span>Bici, elíptica o natación</span>
-        </button>
-        <button class="quick-action" type="button" onclick="openScreen('ejercicios')">
-          <div class="quick-icon">⌕</div>
-          <strong>Ejercicios</strong>
-          <span>Busca y aprende</span>
-        </button>
-      </section>
-
-      <div class="section-heading">
-        <h2>Tu semana</h2>
-        <button type="button" onclick="openScreen('progreso')">Ver progreso</button>
-      </div>
-
-      <section class="week-card card">
-        <div class="week-top">
-          <div>
-            <strong id="weekSummary">Tu semana empieza hoy</strong>
-            <span id="weekCaption">Completa una sesión para construir tu racha.</span>
-          </div>
-          <span aria-hidden="true">🔥</span>
-        </div>
-        <div id="weekDays" class="week-days"></div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Resumen</h2>
-      </div>
-
-      <section class="progress-strip">
-        <div class="metric">
-          <strong id="homeSessions">0</strong>
-          <span>Entrenamientos</span>
-        </div>
-        <div class="metric">
-          <strong id="homeSets">0</strong>
-          <span>Series guardadas</span>
-        </div>
-        <div class="metric">
-          <strong id="homeCardio">0</strong>
-          <span>Cardio</span>
-        </div>
-      </section>
-    </section>
-
-    <!-- ENTRENAR -->
-    <section id="entrenar" class="screen">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">▶</div>
-          <div>
-            <strong>Entrenar</strong>
-            <span>Fuerza, core y movilidad</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="openScreen('inicio')" aria-label="Volver al inicio">⌂</button>
-      </header>
-
-      <h1 class="page-title">Tu entrenamiento</h1>
-      <p class="page-subtitle">La rutina se adapta a cómo te encuentres. Tú decides el ritmo.</p>
-
-      <section class="card pad">
-        <div class="card-label">Antes de empezar</div>
-        <h2 style="margin-bottom:6px;font-size:19px">¿Cómo te encuentras hoy?</h2>
-        <p class="muted">Usaremos esto para ajustar el volumen recomendado.</p>
-        <div class="choice-row" id="energyChoices">
-          <button class="choice" type="button" data-energy="energia">⚡<br>Con energía</button>
-          <button class="choice active" type="button" data-energy="normal">●<br>Normal</button>
-          <button class="choice" type="button" data-energy="cansado">☁<br>Cansado</button>
-        </div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Plan sugerido</h2>
-        <button type="button" onclick="generateAlternative()">Cambiar</button>
-      </div>
-
-      <section class="today-card card">
-        <div class="card-label" id="trainRoutineLabel">Día de fuerza</div>
-        <h2 class="today-title" id="trainRoutineTitle">Push · Pecho, hombro y tríceps</h2>
-        <p class="muted" id="trainRoutineText">Ejercicios seleccionados para progresar con el material que tienes disponible.</p>
-        <div class="today-meta">
-          <span class="mini-tag" id="trainRoutineCount">6 ejercicios</span>
-          <span class="mini-tag" id="trainRoutineDuration">~60 min</span>
-        </div>
-        <button class="button primary full" type="button" onclick="startTodayWorkout()">Empezar esta sesión →</button>
-      </section>
-
-      <div class="section-heading">
-        <h2>Otras opciones</h2>
-      </div>
-
-      <section class="quick-grid">
-        <button class="quick-action" type="button" onclick="selectProgram('core')">
-          <div class="quick-icon">◉</div>
-          <strong>Core</strong>
-          <span>Abdomen y estabilidad</span>
-        </button>
-        <button class="quick-action" type="button" onclick="selectProgram('movilidad')">
-          <div class="quick-icon">↔</div>
-          <strong>Movilidad</strong>
-          <span>Calienta o recupérate</span>
-        </button>
-        <button class="quick-action" type="button" onclick="startFreeWorkout()">
-          <div class="quick-icon">＋</div>
-          <strong>Libre</strong>
-          <span>Crea tu sesión</span>
-        </button>
-      </section>
-
-      <div class="section-heading">
-        <h2>Mis rutinas</h2>
-        <button type="button" onclick="createRoutinePrompt()">Nueva rutina</button>
-      </div>
-
-      <div id="routineList" class="routine-list"></div>
-    </section>
-
-    <!-- SESIÓN ACTIVA -->
-    <section id="sesion" class="screen">
-      <header class="topbar">
-        <button class="icon-button" type="button" onclick="leaveWorkout()" aria-label="Salir de sesión">←</button>
-        <div class="brand" style="flex:1">
-          <div>
-            <strong id="sessionTitle">Entrenamiento</strong>
-            <span id="sessionClock">00:00</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="finishWorkout()" aria-label="Finalizar sesión">✓</button>
-      </header>
-
-      <section class="card pad">
-        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-          <div>
-            <div class="card-label">Progreso de sesión</div>
-            <strong id="sessionProgressText">0 de 0 ejercicios</strong>
-          </div>
-          <span class="mini-tag" id="sessionVolume">0 kg</span>
-        </div>
-        <div style="height:8px;margin-top:12px;overflow:hidden;border-radius:99px;background:#07111f">
-          <div id="sessionProgressBar" style="width:0%;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .25s ease"></div>
-        </div>
-      </section>
-
-      <div id="sessionExercises" class="exercise-list"></div>
-
-      <button class="button secondary full" type="button" style="margin-top:14px" onclick="addExerciseToSession()">
-        ＋ Añadir ejercicio a la sesión
+  <!-- PORTADA -->
+  <section id="pantalla-portada" class="pantalla activa">
+    <div class="portada-fondo"></div>
+    <div class="portada-contenido">
+      <h1 class="portada-titulo">Mi Entrenamiento</h1>
+      <p class="portada-saludo">Hola, Fonsy 👋</p>
+      <p class="portada-frase">“Cada entrenamiento cuenta.”</p>
+      <button class="btn-primary btn-grande" onclick="irAPantalla('pantalla-inicio')">
+        Empezar entrenamiento
       </button>
-
-      <button class="button primary full" type="button" style="margin-top:10px" onclick="finishWorkout()">
-        Finalizar entrenamiento
+      <button class="btn-secundario" onclick="irAPantalla('pantalla-progreso-portada')">
+        Ver mi progreso
       </button>
-    </section>
+    </div>
+  </section>
 
-    <!-- DETALLE DE EJERCICIO -->
-    <section id="detalle" class="screen">
-      <header class="topbar">
-        <button class="icon-button" type="button" onclick="closeExerciseDetail()" aria-label="Volver">←</button>
-        <div class="brand" style="flex:1">
-          <div>
-            <strong>Ejercicio</strong>
-            <span id="detailSmallText">Técnica y registro</span>
-          </div>
-        </div>
-        <button class="icon-button" id="favoriteButton" type="button" onclick="toggleFavoriteCurrent()" aria-label="Favorito">♡</button>
-      </header>
+  <!-- INICIO -->
+  <section id="pantalla-inicio" class="pantalla">
+    <header class="header-simple">
+      <h2>Hola, Fonsy 👋</h2>
+    </header>
 
-      <div id="exerciseDetailContent"></div>
-    </section>
-
-    <!-- EJERCICIOS -->
-    <section id="ejercicios" class="screen">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">⌕</div>
-          <div>
-            <strong>Ejercicios</strong>
-            <span>Aprende, guarda y progresa</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="showFavoritesOnly()" aria-label="Ver favoritos">♡</button>
-      </header>
-
-      <h1 class="page-title">Biblioteca</h1>
-      <p class="page-subtitle">Encuentra ejercicios por músculo, material o nombre.</p>
-
-      <input id="exerciseSearch" class="search" type="search" placeholder="Buscar: press, jalón, bíceps…" autocomplete="off">
-
-      <div id="exerciseChips" class="chips"></div>
-      <div id="exerciseLibrary" class="exercise-list"></div>
-    </section>
-    <!-- PROGRESO -->
-    <section id="progreso" class="screen">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">↗</div>
-          <div>
-            <strong>Progreso</strong>
-            <span>Tu esfuerzo se convierte en datos</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="openScreen('inicio')" aria-label="Inicio">⌂</button>
-      </header>
-
-      <h1 class="page-title">Tu progreso</h1>
-      <p class="page-subtitle">Mira tu constancia, récords personales e historial de entrenamiento.</p>
-
-      <section class="progress-strip">
-        <div class="metric">
-          <strong id="progressWorkouts">0</strong>
-          <span>Sesiones</span>
-        </div>
-        <div class="metric">
-          <strong id="progressVolume">0</strong>
-          <span>Kg de volumen</span>
-        </div>
-        <div class="metric">
-          <strong id="progressStreak">0</strong>
-          <span>Racha días</span>
-        </div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Calendario</h2>
-        <button type="button" onclick="renderProgress()">Actualizar</button>
+    <div class="panel-inicio">
+      <div class="tarjeta-inicio" onclick="abrirRutinaDelDia()">
+        <h3>Entrenamiento de hoy</h3>
+        <p id="resumen-rutina-hoy">Cargando…</p>
+        <button class="btn-primary">Ver y comenzar</button>
       </div>
 
-      <section class="card pad">
-        <div id="calendarMonthLabel" style="margin-bottom:14px;font-size:15px;font-weight:800"></div>
-        <div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:7px"></div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Récords personales</h2>
+      <div class="tarjeta-inicio" onclick="irAPantalla('pantalla-sesion-libre')">
+        <h3>Sesión libre</h3>
+        <p>Crea una sesión con los ejercicios que quieras</p>
+        <button class="btn-secundario">Crear sesión</button>
       </div>
 
-      <section class="card pad">
-        <div id="personalRecords" class="history-list"></div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Última actividad</h2>
+      <div class="tarjeta-inicio" onclick="irAPantalla('pantalla-cardio')">
+        <h3>Cardio</h3>
+        <p>Registra bici, elíptica, natación u otra actividad</p>
+        <button class="btn-secundario">Registrar</button>
       </div>
 
-      <section class="card pad">
-        <div id="recentActivity" class="history-list"></div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Seguimiento corporal</h2>
-        <button type="button" onclick="toggleBodyForm()">Añadir</button>
-      </div>
-
-      <section class="card pad">
-        <p class="muted">Opcional. Registra tu peso corporal o una nota de progreso. Las fotos privadas podrán añadirse más adelante con protección por PIN.</p>
-        <div id="bodyForm" class="hidden">
-          <label class="form-label" for="bodyWeight">Peso corporal (kg)</label>
-          <input id="bodyWeight" class="search" type="number" min="0" step="0.1" placeholder="Ej. 75.5">
-          <label class="form-label" for="bodyNote">Nota</label>
-          <input id="bodyNote" class="search" type="text" placeholder="Ej. Semana de buena energía">
-          <button class="button primary full" type="button" style="margin-top:12px" onclick="saveBodyLog()">Guardar seguimiento</button>
-        </div>
-        <div id="bodyHistory" class="history-list" style="margin-top:12px"></div>
-      </section>
-    </section>
-
-    <!-- PERFIL -->
-    <section id="perfil" class="screen">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">☻</div>
-          <div>
-            <strong>Perfil</strong>
-            <span>Ajustes y tus datos</span>
-          </div>
-        </div>
-        <button class="icon-button" type="button" onclick="openScreen('inicio')" aria-label="Inicio">⌂</button>
-      </header>
-
-      <section class="card pad" style="display:flex;gap:14px;align-items:center">
-        <div style="display:grid;place-items:center;width:58px;height:58px;flex:0 0 58px;border-radius:19px;background:linear-gradient(135deg,var(--accent),#d94212);font-size:28px">🏋️</div>
-        <div style="min-width:0">
-          <h1 style="margin:0 0 5px;font-size:23px;letter-spacing:-.7px" id="profileName">Fonsy</h1>
-          <p class="muted" style="margin:0">Construyendo fuerza, salud y constancia.</p>
-        </div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Mi perfil</h2>
-      </div>
-
-      <section class="card pad">
-        <label class="form-label" for="nameInput">Nombre que aparecerá en la app</label>
-        <input id="nameInput" class="search" type="text" value="Fonsy" maxlength="28">
-        <button class="button primary full" type="button" style="margin-top:12px" onclick="saveProfile()">Guardar nombre</button>
-      </section>
-
-      <div class="section-heading">
-        <h2>Mis rutinas</h2>
-        <button type="button" onclick="createRoutinePrompt()">Crear</button>
-      </div>
-
-      <section class="card pad">
-        <p class="muted">Puedes crear tus propias rutinas. En esta primera versión se guardarán en este móvil y podrás abrirlas desde Entrenar.</p>
-        <div id="profileRoutineList" class="history-list"></div>
-      </section>
-
-      <div class="section-heading">
-        <h2>Copia de seguridad</h2>
-      </div>
-
-      <section class="card pad">
-        <p class="muted">Exporta una copia antes de cambiar de móvil o borrar los datos del navegador. Más adelante podremos sincronizarlo con una cuenta personal.</p>
-        <button class="button primary full" type="button" onclick="exportData()">Exportar mis datos</button>
-        <button class="button secondary full" type="button" style="margin-top:10px" onclick="document.getElementById('importFile').click()">Importar una copia</button>
-        <input id="importFile" class="hidden" type="file" accept="application/json,.json">
-      </section>
-
-      <div class="section-heading">
-        <h2>Datos y privacidad</h2>
-      </div>
-
-      <section class="card pad">
-        <p class="muted">Tus registros se guardan localmente en este navegador. Borrar los datos no elimina la aplicación ni las imágenes.</p>
-        <button class="button secondary full" type="button" onclick="clearData()">Borrar mis datos guardados</button>
-      </section>
-    </section>
-
-    <!-- CARDIO -->
-    <section id="cardio" class="screen">
-      <header class="topbar">
-        <button class="icon-button" type="button" onclick="openScreen('inicio')" aria-label="Volver">←</button>
-        <div class="brand" style="flex:1">
-          <div>
-            <strong>Cardio</strong>
-            <span>Tú eliges cuándo hacerlo</span>
-          </div>
-        </div>
-      </header>
-
-      <h1 class="page-title">Registrar cardio</h1>
-      <p class="page-subtitle">Bicicleta, elíptica, natación u otra actividad. Sin objetivos obligatorios.</p>
-
-      <section class="card pad">
-        <div class="choice-row" id="cardioTypeChoices">
-          <button class="choice active" type="button" data-cardio="Bicicleta">🚴<br>Bici</button>
-          <button class="choice" type="button" data-cardio="Elíptica">◌<br>Elíptica</button>
-          <button class="choice" type="button" data-cardio="Natación">🏊<br>Natación</button>
-        </div>
-
-        <div class="choice-row" style="grid-template-columns:1fr 1fr;margin-top:9px">
-          <button class="choice" type="button" data-cardio="Caminata">🚶<br>Caminata</button>
-          <button class="choice" type="button" data-cardio="Otra actividad">＋<br>Otra</button>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px">
-          <div>
-            <label class="form-label" for="cardioMinutes">Duración (min)</label>
-            <input id="cardioMinutes" class="search" inputmode="numeric" type="number" min="1" placeholder="30">
-          </div>
-          <div>
-            <label class="form-label" for="cardioIntensity">Intensidad (1–10)</label>
-            <input id="cardioIntensity" class="search" inputmode="numeric" type="number" min="1" max="10" placeholder="5">
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-          <div>
-            <label class="form-label" for="cardioDistance">Distancia (km)</label>
-            <input id="cardioDistance" class="search" inputmode="decimal" type="number" min="0" step="0.01" placeholder="Opcional">
-          </div>
-          <div>
-            <label class="form-label" for="cardioCalories">Calorías</label>
-            <input id="cardioCalories" class="search" inputmode="numeric" type="number" min="0" placeholder="Opcional">
-          </div>
-        </div>
-
-        <div id="swimFields" class="hidden" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-          <div>
-            <label class="form-label" for="swimLengths">Largos</label>
-            <input id="swimLengths" class="search" inputmode="numeric" type="number" min="0" placeholder="Ej. 20">
-          </div>
-          <div>
-            <label class="form-label" for="poolLength">Piscina (m)</label>
-            <select id="poolLength" class="search">
-              <option value="25">25 m</option>
-              <option value="50">50 m</option>
-              <option value="0">Otra</option>
-            </select>
-          </div>
-        </div>
-
-        <label class="form-label" for="cardioNotes" style="margin-top:10px">Notas</label>
-        <textarea id="cardioNotes" class="search" rows="3" placeholder="Sensaciones, ritmo, estilo de natación…"></textarea>
-
-        <button class="button primary full" type="button" style="margin-top:13px" onclick="saveCardio()">Guardar cardio</button>
-      </section>
-
-      <div class="section-heading">
-        <h2>Últimas sesiones</h2>
-      </div>
-
-      <section class="card pad">
-        <div id="cardioHistory" class="history-list"></div>
-      </section>
-    </section>
-
-    <!-- MODAL DE DESCANSO -->
-    <div id="restOverlay" class="hidden" style="position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:22px;background:rgba(2,8,15,.78);backdrop-filter:blur(10px)">
-      <div class="card pad" style="width:min(100%,390px);text-align:center">
-        <div style="font-size:42px;margin:4px 0 7px">⏱</div>
-        <div class="card-label">Descanso</div>
-        <h2 style="font-size:42px;margin:0 0 5px;letter-spacing:-1.5px" id="restClock">01:30</h2>
-        <p class="muted" id="restHint">Recupera el aire. La siguiente serie también cuenta.</p>
-        <div style="display:flex;gap:10px;margin-top:15px">
-          <button class="button secondary" type="button" style="flex:1" onclick="addRestTime(30)">+30 s</button>
-          <button class="button primary" type="button" style="flex:1" onclick="closeRestTimer()">Listo</button>
-        </div>
+      <div class="tarjeta-inicio-resumen" onclick="irAPantalla('pantalla-progreso-portada')">
+        <h3>Resumen</h3>
+        <p id="resumen-inicio">Cargando resumen…</p>
       </div>
     </div>
 
-    <style>
-      .form-label {
-        display: block;
-        margin: 12px 0 6px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 750;
-      }
-
-      textarea.search {
-        resize: vertical;
-        min-height: 78px;
-      }
-
-      .history-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 11px 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .history-item:last-child { border-bottom: 0; }
-
-      .history-item strong {
-        display: block;
-        font-size: 13px;
-      }
-
-      .history-item span {
-        display: block;
-        margin-top: 4px;
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .detail-hero {
-        position: relative;
-        overflow: hidden;
-        min-height: 315px;
-        border: 1px solid var(--border);
-        border-radius: 25px;
-        background: linear-gradient(145deg,#203952,#0b192b);
-      }
-
-      .detail-hero img {
-        width: 100%;
-        height: 315px;
-        object-fit: cover;
-      }
-
-      .detail-fallback {
-        display: grid;
-        place-items: center;
-        height: 315px;
-        color: var(--accent-2);
-        background:
-          radial-gradient(circle at 50% 32%, rgba(255,107,23,.32), transparent 26%),
-          linear-gradient(145deg,#203952,#0b192b);
-        font-size: 78px;
-      }
-
-      .detail-overlay {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 48px 17px 16px;
-        background: linear-gradient(0deg,rgba(4,10,18,.98),transparent);
-      }
-
-      .detail-overlay h1 {
-        margin: 0 0 5px;
-        font-size: 24px;
-        letter-spacing: -.8px;
-      }
-
-      .detail-overlay p {
-        margin: 0;
-        color: #d1dceb;
-        font-size: 13px;
-      }
-
-      .exercise-info {
-        display: grid;
-        grid-template-columns: repeat(3,1fr);
-        gap: 8px;
-        margin-top: 12px;
-      }
-
-      .exercise-info div {
-        padding: 11px 7px;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        text-align: center;
-        background: rgba(8,19,33,.65);
-      }
-
-      .exercise-info strong {
-        display: block;
-        margin-bottom: 4px;
-        color: var(--accent-2);
-        font-size: 12px;
-      }
-
-      .exercise-info span {
-        color: var(--muted);
-        font-size: 10px;
-      }
-
-      .set-row {
-        display: grid;
-        grid-template-columns: 29px 1fr 1fr 55px;
-        gap: 8px;
-        align-items: end;
-        padding: 10px 0;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .set-row:last-child { border-bottom: 0; }
-
-      .set-number {
-        display: grid;
-        place-items: center;
-        width: 28px;
-        height: 36px;
-        margin-bottom: 0;
-        border-radius: 10px;
-        color: var(--muted);
-        background: rgba(5,16,28,.58);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .set-row input {
-        width: 100%;
-        min-height: 36px;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        outline: 0;
-        color: var(--text);
-        background: #07111f;
-        text-align: center;
-      }
-
-      .set-done {
-        min-height: 36px;
-        padding: 7px 3px;
-        border: 1px solid rgba(46,209,126,.45);
-        border-radius: 10px;
-        color: #b8f3d2;
-        background: rgba(46,209,126,.12);
-        font-size: 12px;
-        font-weight: 800;
-        cursor: pointer;
-      }
-
-      .set-done.done {
-        color: #06160e;
-        background: var(--success);
-      }
-    </style>
-    <nav class="bottom-nav" aria-label="Navegación principal">
-      <div class="bottom-nav-inner">
-        <button class="nav-item active" type="button" data-screen="inicio" onclick="openScreen('inicio')">
-          <span class="nav-icon">⌂</span><span>Inicio</span>
-        </button>
-        <button class="nav-item" type="button" data-screen="entrenar" onclick="openScreen('entrenar')">
-          <span class="nav-icon">▶</span><span>Entrenar</span>
-        </button>
-        <button class="nav-item" type="button" data-screen="ejercicios" onclick="openScreen('ejercicios')">
-          <span class="nav-icon">⌕</span><span>Ejercicios</span>
-        </button>
-        <button class="nav-item" type="button" data-screen="progreso" onclick="openScreen('progreso')">
-          <span class="nav-icon">↗</span><span>Progreso</span>
-        </button>
-        <button class="nav-item" type="button" data-screen="perfil" onclick="openScreen('perfil')">
-          <span class="nav-icon">☻</span><span>Perfil</span>
-        </button>
-      </div>
+    <nav class="nav-inferior">
+      <button class="nav-item activo" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
     </nav>
-  </main>
+  </section>
+
+  <!-- RUTINA DEL DÍA -->
+  <section id="pantalla-rutina-del-dia" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
+      <h2 id="titulo-rutina-del-dia">Entrenamiento de hoy</h2>
+    </header>
+
+    <div class="contenido-rutina">
+      <div class="info-rutina">
+        <p id="info-rutina-del-dia">Cargando…</p>
+        <p>Estado de hoy: <strong id="estado-hoy">Normal</strong> <button class="btn-mini" onclick="cambiarEstadoHoy()">Cambiar</button></p>
+      </div>
+
+      <button class="btn-primary btn-grande" onclick="iniciarModoGuiado()">
+        COMENZAR MODO GUIADO
+      </button>
+
+      <h3>Ejercicios de hoy</h3>
+      <ul id="lista-ejercicios-rutina" class="lista-ejercicios-rutina">
+        <!-- Se rellena con JS -->
+      </ul>
+    </div>
+  </section>
+
+  <!-- MODO GUIADO: EJERCICIO -->
+  <section id="pantalla-modo-guiado" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="salirModoGuiado()">← Salir</button>
+      <h2 id="titulo-modo-guiado">Ejercicio</h2>
+    </header>
+
+    <div class="contenido-modo-guiado">
+      <img id="foto-ejercicio-guiado" class="foto-ejercicio-grande" src="" alt="Ejercicio">
+      <h3 id="nombre-ejercicio-guiado">Nombre del ejercicio</h3>
+      <p id="descripcion-ejercicio-guiado" class="descripcion-ejercicio"></p>
+
+      <div class="series-guiado" id="series-guiado">
+        <!-- Series dinámicas -->
+      </div>
+
+      <button class="btn-primary btn-grande" onclick="siguienteEjercicio()">
+        Siguiente ejercicio
+      </button>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO DE EJERCICIOS -->
+  <section id="pantalla-ejercicios" class="pantalla">
+    <header class="header-simple">
+      <h2>Catálogo de ejercicios</h2>
+    </header>
+
+    <div class="buscador-filtros">
+      <input id="buscador-ejercicios" type="text" placeholder="Buscar ejercicio…" oninput="filtrarEjercicios()">
+      <select id="filtro-grupo" onchange="filtrarEjercicios()">
+        <option value="">Todos los grupos</option>
+        <option value="Pecho">Pecho</option>
+        <option value="Espalda">Espalda</option>
+        <option value="Hombro">Hombro</option>
+        <option value="Bíceps">Bíceps</option>
+        <option value="Tríceps">Tríceps</option>
+        <option value="Cuádriceps">Cuádriceps</option>
+        <option value="Femoral">Femoral</option>
+        <option value="Glúteo">Glúteo</option>
+        <option value="Pantorrilla">Pantorrilla</option>
+        <option value="Abdomen">Abdomen</option>
+        <option value="Lumbar">Lumbar</option>
+        <option value="Cuerpo completo">Cuerpo completo</option>
+      </select>
+    </div>
+
+    <div id="lista-ejercicios-catalogo" class="lista-ejercicios-catalogo">
+      <!-- Se rellena con JS -->
+    </div>
+
+    <nav class="nav-inferior">
+      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
+      <button class="nav-item activo" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
+    </nav>
+  </section>
+
+  <!-- FICHA DE EJERCICIO -->
+  <section id="pantalla-ficha-ejercicio" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-ejercicios')">←</button>
+      <h2 id="nombre-ficha-ejercicio">Ejercicio</h2>
+    </header>
+
+    <div class="contenido-ficha">
+      <img id="foto-ficha-ejercicio" class="foto-ejercicio-grande" src="" alt="Ejercicio">
+      <p id="descripcion-ficha-ejercicio" class="descripcion-ejercicio"></p>
+
+      <h3>Mis marcas</h3>
+      <p id="marcas-ficha-ejercicio">Aún no hay registros.</p>
+
+      <h3>Historial reciente</h3>
+      <ul id="historial-ficha-ejercicio" class="lista-simple"></ul>
+    </div>
+  </section>
+
+  <!-- SESIÓN LIBRE -->
+  <section id="pantalla-sesion-libre" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
+      <h2>Sesión libre</h2>
+    </header>
+
+    <div class="contenido-sesion-libre">
+      <p>Selecciona ejercicios del catálogo para crear una sesión personalizada.</p>
+      <button class="btn-secundario" onclick="irAPantalla('pantalla-ejercicios')">Ir al catálogo</button>
+      <ul id="lista-sesion-libre" class="lista-simple"></ul>
+      <button class="btn-primary" onclick="iniciarSesionLibre()">Comenzar sesión</button>
+    </div>
+  </section>
+
+  <!-- CARDIO -->
+  <section id="pantalla-cardio" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
+      <h2>Cardio</h2>
+    </header>
+
+    <div class="contenido-cardio">
+      <label>Tipo de actividad</label>
+      <select id="cardio-tipo">
+        <option value="Bici">Bici</option>
+        <option value="Elíptica">Elíptica</option>
+        <option value="Natación">Natación</option>
+        <option value="Cinta">Cinta</option>
+        <option value="Otra">Otra</option>
+      </select>
+
+      <label>Duración (min)</label>
+      <input id="cardio-duracion" type="number" min="1" value="20">
+
+      <label>Distancia (km, opcional)</label>
+      <input id="cardio-distancia" type="number" min="0" step="0.1" value="0">
+
+      <label>Esfuerzo percibido (1–10)</label>
+      <input id="cardio-esfuerzo" type="number" min="1" max="10" value="5">
+
+      <button class="btn-primary btn-grande" onclick="guardarCardio()">Guardar cardio</button>
+    </div>
+  </section>
+
+  <!-- PROGRESO: PORTADA -->
+  <section id="pantalla-progreso-portada" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-inicio')">←</button>
+      <h2>Progreso</h2>
+    </header>
+
+    <div class="panel-progreso">
+      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-calendario')">
+        <h3>Calendario</h3>
+        <p>Días de entrenamiento</p>
+      </div>
+      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-marcas')">
+        <h3>Marcas y récords</h3>
+        <p>Pesos, repeticiones y volumen</p>
+      </div>
+      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-historial')">
+        <h3>Historial</h3>
+        <p>Sesiones y cardio anteriores</p>
+      </div>
+      <div class="tarjeta-progreso" onclick="irAPantalla('pantalla-peso-corporal')">
+        <h3>Peso corporal</h3>
+        <p>Registro opcional y evolución</p>
+      </div>
+    </div>
+
+    <nav class="nav-inferior">
+      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
+      <button class="nav-item activo" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
+    </nav>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section id="pantalla-calendario" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
+      <h2>Calendario</h2>
+    </header>
+    <div class="contenido-calendario">
+      <p>Próximamente: vista mensual de tus entrenamientos.</p>
+    </div>
+  </section>
+
+  <!-- MARCAS -->
+  <section id="pantalla-marcas" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
+      <h2>Marcas y récords</h2>
+    </header>
+    <div class="contenido-marcas">
+      <p>Próximamente: tus mejores pesos, repeticiones y volumen por ejercicio.</p>
+    </div>
+  </section>
+
+  <!-- HISTORIAL -->
+  <section id="pantalla-historial" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
+      <h2>Historial</h2>
+    </header>
+    <div class="contenido-historial">
+      <p>Próximamente: lista de sesiones y cardio anteriores.</p>
+    </div>
+  </section>
+
+  <!-- PESO CORPORAL -->
+  <section id="pantalla-peso-corporal" class="pantalla">
+    <header class="header-simple">
+      <button class="btn-volver" onclick="irAPantalla('pantalla-progreso-portada')">←</button>
+      <h2>Peso corporal</h2>
+    </header>
+    <div class="contenido-peso">
+      <p>Próximamente: registro y gráfica de tu peso corporal.</p>
+    </div>
+  </section>
+
+  <!-- PERFIL -->
+  <section id="pantalla-perfil" class="pantalla">
+    <header class="header-simple">
+      <h2>Perfil</h2>
+    </header>
+
+    <div class="contenido-perfil">
+      <div class="tarjeta-perfil">
+        <h3>Nombre</h3>
+        <p>Fonsy</p>
+      </div>
+      <div class="tarjeta-perfil">
+        <h3>Rutinas</h3>
+        <p>Push, Pull, Pierna</p>
+      </div>
+      <div class="tarjeta-perfil">
+        <h3>Copia de seguridad</h3>
+        <button class="btn-secundario" onclick="exportarDatos()">Exportar datos</button>
+        <button class="btn-secundario" onclick="importarDatos()">Importar datos</button>
+      </div>
+      <div class="tarjeta-perfil">
+        <h3>Ajustes</h3>
+        <p>Próximamente: notificaciones, unidades, tema, etc.</p>
+      </div>
+    </div>
+
+    <nav class="nav-inferior">
+      <button class="nav-item" onclick="irAPantalla('pantalla-inicio')">Inicio</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-ejercicios')">Ejercicios</button>
+      <button class="nav-item" onclick="irAPantalla('pantalla-progreso-portada')">Progreso</button>
+      <button class="nav-item activo" onclick="irAPantalla('pantalla-perfil')">Perfil</button>
+    </nav>
+  </section>
 
   <script>
-    /* =========================================================
-       MI ENTRENAMIENTO · DATOS Y AJUSTES
-       ========================================================= */
-
-    const STORAGE_KEY = 'miEntrenamientoDataV1';
-
-    const defaultData = {
-      profile: { name: 'Fonsy' },
-      sets: [],
-      workouts: [],
-      cardio: [],
-      body: [],
-      favorites: [],
-      customRoutines: [],
-      currentProgram: 'push',
-      energy: 'normal'
-    };
-
-    let data = loadData();
-    let activeScreen = 'inicio';
-    let activeGroup = 'Todos';
-    let favoriteOnly = false;
-    let currentExerciseId = null;
-    let currentDetailFromSession = false;
-    let activeWorkout = null;
-    let sessionStartedAt = null;
-    let sessionTimerId = null;
-    let restSeconds = 0;
-    let restTimerId = null;
-    let selectedCardioType = 'Bicicleta';
-
-    const quotes = [
-      'Cada serie cuenta. Hoy entrenas para estar más fuerte mañana.',
-      'No necesitas ser perfecto. Solo necesitas empezar.',
-      'La constancia convierte pequeñas acciones en grandes cambios.',
-      'Entrena con intención. Descansa con orgullo. Repite.',
-      'Tu progreso no se compara: se construye.',
-      'Haz hoy lo que tu futuro yo agradecerá.'
-    ];
-
-    const heroImages = [
-      "url('https://images.pexels.com/photos/4162582/pexels-photo-4162582.jpeg?auto=compress&cs=tinysrgb&w=1200')",
-      "url('https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1200')"
-    ];
-
-    function loadData() {
-      try {
-        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (!raw || typeof raw !== 'object') return structuredClone(defaultData);
-
-        return {
-          ...structuredClone(defaultData),
-          ...raw,
-          profile: { ...defaultData.profile, ...(raw.profile || {}) },
-          sets: Array.isArray(raw.sets) ? raw.sets : [],
-          workouts: Array.isArray(raw.workouts) ? raw.workouts : [],
-          cardio: Array.isArray(raw.cardio) ? raw.cardio : [],
-          body: Array.isArray(raw.body) ? raw.body : [],
-          favorites: Array.isArray(raw.favorites) ? raw.favorites : [],
-          customRoutines: Array.isArray(raw.customRoutines) ? raw.customRoutines : []
-        };
-      } catch {
-        return structuredClone(defaultData);
-      }
-    }
-
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      renderHome();
-      renderProgress();
-      renderProfile();
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? '').replace(/[&<>"']/g, char => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-      }[char]));
-    }
-
-    function uid(prefix = 'id') {
-      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    }
-
-    function toLocalDateKey(date) {
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    function formatDate(date) {
-      return new Date(date).toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-
-    function formatNumber(value) {
-      return new Intl.NumberFormat('es-ES', { maximumFractionDigits: 1 }).format(Number(value) || 0);
-    }
-
-    function todayKey() {
-      return toLocalDateKey(new Date());
-    }
-
-    function getGreetingQuote() {
-      const day = new Date().getDate();
-      return quotes[day % quotes.length];
-    }
-
-    function imagePath(fileName) {
-      if (!fileName) return '';
-      return `imagenes/${fileName}`;
-    }
-
-    function imageFallbackHTML(icon = '🏋️', className = 'exercise-placeholder') {
-      return `<div class="${className}" aria-hidden="true">${icon}</div>`;
-    }
-
-    /* =========================================================
-       EJERCICIOS
-       Las imágenes reales disponibles usan extensión .jpeg.
-       Si una imagen falla, se muestra una reserva profesional.
-       ========================================================= */
-
-    const imageFiles = {
-      'press-banca-barra': 'IMG_9372.png',
-'press-inclinado-barra': 'IMG_9371.png',
-'press-plano-mancuernas': 'IMG_9370.png',
-'press-inclinado-mancuernas': 'IMG_9369.png',
-'aperturas-planas': 'IMG_9368.png',
-'aperturas-inclinadas': 'IMG_9367.png',
-'cruce-alto-bajo': 'IMG_9366.png',
-'cruce-bajo-alto': 'IMG_9365.png',
-'press-polea-unilateral': 'IMG_9364.png',
-'flexiones': 'IMG_9363.png',
-'flexiones-inclinadas': 'IMG_9362.png',
-'flexiones-elevadas': 'IMG_9361.png',
-'jalon-medio': 'IMG_9360.png',
-'jalon-ancho': 'IMG_9359.png',
-'jalon-supino': 'IMG_9358.png',
-'jalon-unilateral': 'IMG_9357.png',
-'pulldown-rectos': 'IMG_9356.png',
-'remo-maquina': 'IMG_9355.png',
-'remo-estrecho': 'IMG_9354.png',
-'remo-barra': 'IMG_9353.png',
-'remo-pendlay': 'IMG_9352.png',
-'remo-mancuerna': 'IMG_9351.png'
-
-    };
-
-    const exercises = [
-      {
-        id: 'press-banca-barra',
-        name: 'Press de banca con barra',
-        group: 'Pecho',
-        secondary: 'Tríceps · Hombro anterior',
-        material: 'Barra · Banco · Rack',
-        image: imageFiles['press-banca-barra'],
-        icon: '🏋️',
-        target: '3 × 6–10',
-        rest: 120,
-        technique: [
-          'Acuéstate con los pies firmes, glúteos apoyados y escápulas atrás.',
-          'Baja la barra de forma controlada hacia la parte media del pecho.',
-          'Empuja manteniendo los codos aproximadamente a 45 grados del torso.',
-          'Mantén muñecas neutras y termina sin perder la posición de hombros.'
-        ],
-        mistakes: [
-          'Rebotar la barra sobre el pecho.',
-          'Despegar los glúteos del banco.',
-          'Abrir demasiado los codos o perder tensión de escápulas.'
-        ],
-        alternatives: 'Press plano con mancuernas · Flexiones'
-      },
-      {
-        id: 'press-inclinado-barra',
-        name: 'Press inclinado con barra',
-        group: 'Pecho',
-        secondary: 'Pecho superior · Tríceps',
-        material: 'Barra · Banco inclinado',
-        image: imageFiles['press-inclinado-barra'],
-        icon: '🏋️',
-        target: '3 × 8–12',
-        rest: 120,
-        technique: [
-          'Ajusta el banco a una inclinación moderada de 30 a 45 grados.',
-          'Mantén escápulas retraídas y pies estables en el suelo.',
-          'Baja hacia la parte alta del pecho con control.',
-          'Empuja sin elevar los hombros hacia las orejas.'
-        ],
-        mistakes: [
-          'Usar el banco demasiado vertical.',
-          'Encoger los hombros durante el empuje.',
-          'Bajar la barra demasiado rápido o sin control.'
-        ],
-        alternatives: 'Press inclinado con mancuernas · Cruce bajo a alto'
-      },
-      {
-        id: 'press-plano-mancuernas',
-        name: 'Press plano con mancuernas',
-        group: 'Pecho',
-        secondary: 'Tríceps · Hombro anterior',
-        material: 'Mancuernas · Banco',
-        image: imageFiles['press-plano-mancuernas'],
-        icon: '🏋️',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Apoya espalda y pies firmemente.',
-          'Baja las mancuernas a los lados del pecho manteniendo muñecas firmes.',
-          'Empuja hacia arriba de forma controlada.',
-          'Mantén los hombros atrás, no hacia delante.'
-        ],
-        mistakes: [
-          'Chocar las mancuernas arriba.',
-          'Perder estabilidad de muñeca.',
-          'Usar un recorrido demasiado corto.'
-        ],
-        alternatives: 'Press de banca con barra · Flexiones'
-      },
-      {
-        id: 'press-inclinado-mancuernas',
-        name: 'Press inclinado con mancuernas',
-        group: 'Pecho',
-        secondary: 'Pecho superior · Tríceps',
-        material: 'Mancuernas · Banco inclinado',
-        image: imageFiles['press-inclinado-mancuernas'],
-        icon: '🏋️',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Coloca el banco entre 30 y 45 grados.',
-          'Baja las mancuernas a la altura del pecho alto con control.',
-          'Mantén los codos en una trayectoria cómoda, no completamente abiertos.',
-          'Empuja en diagonal hacia arriba sin perder la tensión de escápulas.'
-        ],
-        mistakes: [
-          'Inclinar demasiado el banco y cargar todo el hombro.',
-          'Abrir los codos en exceso.',
-          'Usar un peso que no puedes controlar en la bajada.'
-        ],
-        alternatives: 'Press inclinado con barra · Aperturas inclinadas'
-      },
-      {
-        id: 'aperturas-planas',
-        name: 'Aperturas planas con mancuernas',
-        group: 'Pecho',
-        secondary: 'Pectoral mayor',
-        material: 'Mancuernas · Banco',
-        image: imageFiles['aperturas-planas'],
-        icon: '↔',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Mantén una ligera flexión de codos.',
-          'Abre en arco hasta sentir estiramiento cómodo en el pecho.',
-          'Cierra como si abrazaras un barril grande.',
-          'Controla la bajada y no pierdas posición de hombros.'
-        ],
-        mistakes: [
-          'Bajar demasiado y forzar la articulación.',
-          'Convertir el ejercicio en un press.',
-          'Elegir demasiado peso.'
-        ],
-        alternatives: 'Cruce de poleas · Flexiones'
-      },
-      {
-        id: 'aperturas-inclinadas',
-        name: 'Aperturas inclinadas con mancuernas',
-        group: 'Pecho',
-        secondary: 'Pecho superior',
-        material: 'Mancuernas · Banco inclinado',
-        image: imageFiles['aperturas-inclinadas'],
-        icon: '↗',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Ajusta una inclinación moderada.',
-          'Mantén codos ligeramente flexionados durante todo el arco.',
-          'Abre con control y vuelve a cerrar apretando el pecho.',
-          'Evita elevar los hombros.'
-        ],
-        mistakes: [
-          'Usar demasiado peso.',
-          'Perder la posición de los hombros.',
-          'Bajar sin control.'
-        ],
-        alternatives: 'Cruce bajo a alto · Press inclinado'
-      },
-      {
-        id: 'cruce-alto-bajo',
-        name: 'Cruce de poleas alto a bajo',
-        group: 'Pecho',
-        secondary: 'Pecho medio e inferior',
-        material: 'Polea',
-        image: imageFiles['cruce-alto-bajo'],
-        icon: '⌄',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Coloca las poleas altas y da un paso al frente.',
-          'Mantén el pecho alto y una ligera flexión de codos.',
-          'Lleva las manos hacia delante y abajo, cerca del ombligo.',
-          'Regresa lento manteniendo tensión.'
-        ],
-        mistakes: [
-          'Encoger los hombros.',
-          'Mover solo los brazos sin estabilizar el torso.',
-          'Perder el control al volver.'
-        ],
-        alternatives: 'Aperturas planas · Flexiones'
-      },
-      {
-        id: 'cruce-bajo-alto',
-        name: 'Cruce de poleas bajo a alto',
-        group: 'Pecho',
-        secondary: 'Pecho superior',
-        material: 'Polea',
-        image: imageFiles['cruce-bajo-alto'],
-        icon: '⌃',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Empieza con las poleas bajas.',
-          'Lleva los agarres hacia arriba y delante.',
-          'Mantén el pecho alto y el abdomen firme.',
-          'Aprieta el pecho al final del recorrido.'
-        ],
-        mistakes: [
-          'Impulsarte con las piernas.',
-          'Subir los hombros.',
-          'Arquear demasiado la espalda.'
-        ],
-        alternatives: 'Aperturas inclinadas · Press inclinado'
-      },
-      {
-        id: 'press-polea-unilateral',
-        name: 'Press de pecho unilateral en polea',
-        group: 'Pecho',
-        secondary: 'Core · Tríceps',
-        material: 'Polea',
-        image: imageFiles['press-polea-unilateral'],
-        icon: '→',
-        target: '3 × 10–12 por lado',
-        rest: 60,
-        technique: [
-          'Da un paso al frente y activa el abdomen.',
-          'Empuja el agarre desde el pecho hacia delante.',
-          'Evita rotar el tronco.',
-          'Regresa lento y controlado.'
-        ],
-        mistakes: [
-          'Girar demasiado el cuerpo.',
-          'Encoger el hombro.',
-          'Usar impulso.'
-        ],
-        alternatives: 'Press unilateral con mancuerna · Flexiones'
-      },
-      {
-        id: 'flexiones',
-        name: 'Flexiones',
-        group: 'Pecho',
-        secondary: 'Tríceps · Core',
-        material: 'Peso corporal',
-        image: imageFiles['flexiones'],
-        icon: '↕',
-        target: '3 × 8–20',
-        rest: 60,
-        technique: [
-          'Coloca las manos un poco más anchas que los hombros.',
-          'Mantén el cuerpo en una línea firme de cabeza a talones.',
-          'Baja el pecho cerca del suelo.',
-          'Empuja manteniendo el abdomen activo.'
-        ],
-        mistakes: [
-          'Hundir o elevar demasiado la cadera.',
-          'Abrir excesivamente los codos.',
-          'Realizar medio recorrido.'
-        ],
-        alternatives: 'Press banca · Flexiones inclinadas'
-      },
-      {
-        id: 'flexiones-inclinadas',
-        name: 'Flexiones inclinadas',
-        group: 'Pecho',
-        secondary: 'Pecho · Tríceps',
-        material: 'Banco · Peso corporal',
-        image: imageFiles['flexiones-inclinadas'],
-        icon: '↗',
-        target: '3 × 10–20',
-        rest: 60,
-        technique: [
-          'Apoya las manos en un banco estable.',
-          'Mantén el cuerpo recto.',
-          'Baja el pecho hacia el banco.',
-          'Empuja sin perder tensión en el core.'
-        ],
-        mistakes: [
-          'Doblar demasiado la cadera.',
-          'No bajar el pecho hacia el banco.',
-          'Encoger los hombros.'
-        ],
-        alternatives: 'Flexiones · Press inclinado'
-      },
-      {
-        id: 'flexiones-elevadas',
-        name: 'Flexiones con pies elevados',
-        group: 'Pecho',
-        secondary: 'Pecho superior · Hombro',
-        material: 'Banco · Peso corporal',
-        image: imageFiles['flexiones-elevadas'],
-        icon: '△',
-        target: '3 × 8–15',
-        rest: 75,
-        technique: [
-          'Coloca los pies en un banco estable.',
-          'Mantén la cadera alineada con el tronco.',
-          'Baja con control hasta una profundidad cómoda.',
-          'Empuja manteniendo el abdomen firme.'
-        ],
-        mistakes: [
-          'Elevar demasiado la cadera.',
-          'Forzar el cuello.',
-          'Acortar el recorrido.'
-        ],
-        alternatives: 'Press inclinado · Flexiones normales'
-      },
-      {
-        id: 'jalon-medio',
-        name: 'Jalón al pecho agarre medio',
-        group: 'Espalda',
-        secondary: 'Dorsal · Bíceps',
-        material: 'Jalón · Polea',
-        image: imageFiles['jalon-medio'],
-        icon: '↓',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Agarra la barra a una anchura cómoda.',
-          'Mantén el pecho alto y los hombros lejos de las orejas.',
-          'Lleva la barra hacia la parte alta del pecho.',
-          'Piensa en bajar los codos hacia las costillas.'
-        ],
-        mistakes: [
-          'Balancear demasiado el tronco.',
-          'Tirar la barra detrás de la nuca.',
-          'Encoger los hombros.'
-        ],
-        alternatives: 'Jalón ancho · Remo sentado'
-      },
-      {
-        id: 'jalon-ancho',
-        name: 'Jalón al pecho agarre ancho',
-        group: 'Espalda',
-        secondary: 'Dorsal ancho · Bíceps',
-        material: 'Jalón · Polea',
-        image: imageFiles['jalon-ancho'],
-        icon: '↓',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Usa un agarre ancho pero cómodo.',
-          'Baja la barra por delante de la cara.',
-          'Lleva los codos hacia abajo y atrás.',
-          'Controla la subida sin soltar la tensión.'
-        ],
-        mistakes: [
-          'Tirar solo con los brazos.',
-          'Inclinar demasiado el cuerpo.',
-          'Bajar tras la nuca.'
-        ],
-        alternatives: 'Jalón medio · Remo con barra'
-      },
-      {
-        id: 'jalon-supino',
-        name: 'Jalón al pecho agarre supino',
-        group: 'Espalda',
-        secondary: 'Dorsal · Bíceps',
-        material: 'Jalón · Polea',
-        image: imageFiles['jalon-supino'],
-        icon: '↓',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Utiliza agarre inverso a la anchura de hombros.',
-          'Mantén pecho alto y abdomen firme.',
-          'Lleva la barra hacia el pecho con control.',
-          'Sube de forma lenta, estirando dorsales.'
-        ],
-        mistakes: [
-          'Usar impulso de la espalda.',
-          'Elevar los hombros.',
-          'No controlar la fase de subida.'
-        ],
-        alternatives: 'Jalón medio · Remo con barra'
-      },
-      {
-        id: 'jalon-unilateral',
-        name: 'Jalón unilateral arrodillado',
-        group: 'Espalda',
-        secondary: 'Dorsal · Core',
-        material: 'Polea',
-        image: imageFiles['jalon-unilateral'],
-        icon: '↙',
-        target: '3 × 10–12 por lado',
-        rest: 60,
-        technique: [
-          'Arrodíllate de lado frente a la polea.',
-          'Mantén el tronco estable y sin rotar.',
-          'Lleva el agarre hacia la cadera.',
-          'Siente cómo trabaja el dorsal, no solo el bíceps.'
-        ],
-        mistakes: [
-          'Girar el cuerpo.',
-          'Tirar solo con el brazo.',
-          'Perder la postura lumbar.'
-        ],
-        alternatives: 'Jalón bilateral · Remo unilateral'
-      },
-      {
-        id: 'pulldown-rectos',
-        name: 'Pulldown con brazos rectos',
-        group: 'Espalda',
-        secondary: 'Dorsal ancho',
-        material: 'Polea',
-        image: imageFiles['pulldown-rectos'],
-        icon: '↓',
-        target: '3 × 12–15',
-        rest: 60,
-        technique: [
-          'Colócate de pie frente a la polea alta.',
-          'Mantén los codos casi rectos pero no bloqueados.',
-          'Lleva la barra hacia los muslos usando los dorsales.',
-          'Vuelve lento, sin arquear la zona lumbar.'
-        ],
-        mistakes: [
-          'Doblar mucho los codos.',
-          'Arquear la espalda.',
-          'Usar impulso.'
-        ],
-        alternatives: 'Jalón al pecho · Remo'
-      },
-      {
-        id: 'remo-maquina',
-        name: 'Remo sentado en máquina',
-        group: 'Espalda',
-        secondary: 'Dorsal · Romboides · Bíceps',
-        material: 'Máquina de remo',
-        image: imageFiles['remo-maquina'],
-        icon: '←',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Mantén el pecho alto y la espalda neutra.',
-          'Tira de los agarres hacia el tronco.',
-          'Lleva los hombros atrás al final sin encogerlos.',
-          'Vuelve de forma controlada.'
-        ],
-        mistakes: [
-          'Balancear el torso.',
-          'Encoger los hombros.',
-          'Tirar solo con los brazos.'
-        ],
-        alternatives: 'Remo con barra · Remo con mancuerna'
-      },
-      {
-        id: 'remo-estrecho',
-        name: 'Remo sentado agarre estrecho',
-        group: 'Espalda',
-        secondary: 'Dorsal · Bíceps',
-        material: 'Polea · Asa estrecha',
-        image: imageFiles['remo-estrecho'],
-        icon: '←',
-        target: '3 × 10–12',
-        rest: 75,
-        technique: [
-          'Siéntate erguido con el abdomen activo.',
-          'Lleva el asa hacia el abdomen bajo.',
-          'Mantén los codos cerca del cuerpo.',
-          'Controla la vuelta sin redondear la espalda.'
-        ],
-        mistakes: [
-          'Tirar hacia el pecho alto.',
-          'Elevar los hombros.',
-          'Redondear la zona lumbar.'
-        ],
-        alternatives: 'Remo en máquina · Remo unilateral'
-      },
-      {
-        id: 'remo-barra',
-        name: 'Remo con barra inclinado',
-        group: 'Espalda',
-        secondary: 'Dorsal · Espalda media · Bíceps',
-        material: 'Barra',
-        image: imageFiles['remo-barra'],
-        icon: '↙',
-        target: '3 × 6–10',
-        rest: 120,
-        technique: [
-          'Haz una bisagra de cadera con espalda neutra.',
-          'Mantén el torso inclinado sin moverte en exceso.',
-          'Lleva la barra hacia el abdomen.',
-          'Baja controlado conservando tensión.'
-        ],
-        mistakes: [
-          'Redondear la espalda baja.',
-          'Usar un tirón de cadera.',
-          'Llevar la barra demasiado alto.'
-        ],
-        alternatives: 'Remo Pendlay · Remo con mancuerna'
-      },
-      {
-        id: 'remo-pendlay',
-        name: 'Remo Pendlay',
-        group: 'Espalda',
-        secondary: 'Espalda media · Dorsal',
-        material: 'Barra',
-        image: imageFiles['remo-pendlay'],
-        icon: '↔',
-        target: '3 × 6–10',
-        rest: 120,
-        technique: [
-          'Comienza con la barra apoyada en el suelo.',
-          'Coloca el torso casi paralelo al suelo sin perder espalda neutra.',
-          'Tira explosivo hacia el abdomen.',
-          'Devuelve la barra al suelo en cada repetición.'
-        ],
-        mistakes: [
-          'Redondear la espalda.',
-          'No apoyar la barra entre repeticiones.',
-          'Elevar demasiado el torso.'
-        ],
-        alternatives: 'Remo con barra · Remo en máquina'
-      },
-      {
-        id: 'remo-mancuerna',
-        name: 'Remo con mancuerna unilateral',
-        group: 'Espalda',
-        secondary: 'Dorsal · Bíceps',
-        material: 'Mancuerna · Banco',
-        image: imageFiles['remo-mancuerna'],
-        icon: '↙',
-        target: '3 × 10–12 por lado',
-        rest: 75,
-        technique: [
-          'Apoya una mano y una rodilla sobre el banco.',
-          'Mantén el tronco estable y espalda neutra.',
-          'Lleva la mancuerna hacia la cadera.',
-          'Baja lento sintiendo el estiramiento del dorsal.'
-        ],
-        mistakes: [
-          'Girar el torso.',
-          'Elevar el hombro.',
-          'Tirar hacia el pecho en vez de hacia la cadera.'
-        ],
-        alternatives: 'Remo en máquina · Remo en polea'
-      },
-
-      /* Ejercicios sin foto propia: muestran una tarjeta de reserva elegante */
-      {
-        id: 'press-militar-mancuernas',
-        name: 'Press militar con mancuernas',
-        group: 'Hombros',
-        secondary: 'Deltoide anterior · Tríceps',
-        material: 'Mancuernas · Banco',
-        image: '',
-        icon: '↑',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Siéntate erguido y activa el abdomen.',
-          'Empieza con mancuernas a la altura de los hombros.',
-          'Empuja arriba sin arquear la espalda.',
-          'Baja de forma controlada.'
-        ],
-        mistakes: ['Arquear la zona lumbar.', 'Encoger hombros.', 'Usar impulso.'],
-        alternatives: 'Press militar con barra · Elevaciones laterales'
-      },
-      {
-        id: 'elevaciones-laterales',
-        name: 'Elevaciones laterales',
-        group: 'Hombros',
-        secondary: 'Deltoide lateral',
-        material: 'Mancuernas',
-        image: '',
-        icon: '↗',
-        target: '3 × 12–20',
-        rest: 60,
-        technique: [
-          'Mantén una ligera flexión en los codos.',
-          'Eleva las mancuernas hasta la altura de hombros.',
-          'Guía el movimiento con los codos.',
-          'Baja lento y controlado.'
-        ],
-        mistakes: ['Usar demasiado peso.', 'Balancear el torso.', 'Elevar más allá de lo necesario.'],
-        alternatives: 'Elevación lateral en polea · Press militar'
-      },
-      {
-        id: 'pajaro-mancuernas',
-        name: 'Pájaros con mancuernas',
-        group: 'Hombros',
-        secondary: 'Deltoide posterior · Espalda alta',
-        material: 'Mancuernas · Banco',
-        image: '',
-        icon: '↔',
-        target: '3 × 12–20',
-        rest: 60,
-        technique: [
-          'Inclina el torso con espalda neutra.',
-          'Abre los brazos hacia los lados.',
-          'Mantén ligera flexión de codos.',
-          'Aprieta la parte posterior del hombro.'
-        ],
-        mistakes: ['Balancear el cuerpo.', 'Usar demasiado peso.', 'Encoger hombros.'],
-        alternatives: 'Face pull · Reverse fly en polea'
-      },
-      {
-        id: 'curl-barra',
-        name: 'Curl de bíceps con barra',
-        group: 'Bíceps',
-        secondary: 'Braquial · Antebrazo',
-        material: 'Barra',
-        image: '',
-        icon: '⌃',
-        target: '3 × 8–12',
-        rest: 60,
-        technique: [
-          'Mantén los codos cerca del cuerpo.',
-          'Sube la barra sin mover los hombros.',
-          'Aprieta el bíceps arriba.',
-          'Baja lento hasta estirar sin bloquear.'
-        ],
-        mistakes: ['Balancear el cuerpo.', 'Adelantar los codos.', 'Usar demasiado peso.'],
-        alternatives: 'Curl alterno · Curl en polea'
-      },
-      {
-        id: 'curl-mancuernas',
-        name: 'Curl alterno con mancuernas',
-        group: 'Bíceps',
-        secondary: 'Braquial · Antebrazo',
-        material: 'Mancuernas',
-        image: '',
-        icon: '⌃',
-        target: '3 × 10–12',
-        rest: 60,
-        technique: [
-          'Mantén los hombros relajados.',
-          'Alterna ambos brazos con control.',
-          'Gira la palma hacia arriba durante la subida.',
-          'Baja lento y sin impulso.'
-        ],
-        mistakes: ['Balancear el torso.', 'Subir el hombro.', 'No controlar la bajada.'],
-        alternatives: 'Curl con barra · Curl martillo'
-      },
-      {
-        id: 'curl-martillo',
-        name: 'Curl martillo',
-        group: 'Bíceps',
-        secondary: 'Braquial · Antebrazo',
-        material: 'Mancuernas',
-        image: '',
-        icon: '↟',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Mantén las palmas enfrentadas.',
-          'Flexiona el codo sin mover el hombro.',
-          'Sube hasta contraer el bíceps.',
-          'Baja de forma controlada.'
-        ],
-        mistakes: ['Usar impulso.', 'Separar los codos.', 'Cargar demasiado peso.'],
-        alternatives: 'Curl alterno · Curl en polea'
-      },
-      {
-        id: 'extension-polea',
-        name: 'Extensión de tríceps en polea',
-        group: 'Tríceps',
-        secondary: 'Tríceps lateral y medial',
-        material: 'Polea',
-        image: '',
-        icon: '↓',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Mantén los codos pegados al cuerpo.',
-          'Empuja el agarre hacia abajo.',
-          'Extiende sin mover los hombros.',
-          'Vuelve lento sin elevar los codos.'
-        ],
-        mistakes: ['Abrir los codos.', 'Inclinar demasiado el torso.', 'Usar impulso.'],
-        alternatives: 'Extensión por encima de cabeza · Fondos en banco'
-      },
-      {
-        id: 'extension-mancuerna',
-        name: 'Extensión de tríceps por encima de la cabeza',
-        group: 'Tríceps',
-        secondary: 'Cabeza larga del tríceps',
-        material: 'Mancuerna',
-        image: '',
-        icon: '↑',
-        target: '3 × 10–15',
-        rest: 60,
-        technique: [
-          'Sujeta una mancuerna sobre la cabeza.',
-          'Mantén codos apuntando al frente.',
-          'Baja tras la cabeza con control.',
-          'Extiende sin arquear la espalda.'
-        ],
-        mistakes: ['Abrir demasiado los codos.', 'Arquear la espalda.', 'Bajar muy rápido.'],
-        alternatives: 'Extensión en polea · Press cerrado'
-      },
-      {
-        id: 'sentadilla-barra',
-        name: 'Sentadilla con barra',
-        group: 'Piernas',
-        secondary: 'Cuádriceps · Glúteos · Core',
-        material: 'Barra · Rack',
-        image: '',
-        icon: '⇣',
-        target: '3 × 6–10',
-        rest: 120,
-        technique: [
-          'Coloca la barra de forma segura sobre la espalda alta.',
-          'Mantén el pecho alto y el abdomen firme.',
-          'Desciende flexionando cadera y rodillas de forma coordinada.',
-          'Empuja el suelo para subir manteniendo rodillas alineadas.'
-        ],
-        mistakes: ['Perder la espalda neutra.', 'Colapsar rodillas hacia dentro.', 'Levantar talones.'],
-        alternatives: 'Sentadilla goblet · Zancadas'
-      },
-      {
-        id: 'sentadilla-goblet',
-        name: 'Sentadilla goblet',
-        group: 'Piernas',
-        secondary: 'Cuádriceps · Glúteos',
-        material: 'Mancuerna',
-        image: '',
-        icon: '⇣',
-        target: '3 × 10–15',
-        rest: 90,
-        technique: [
-          'Sujeta una mancuerna cerca del pecho.',
-          'Baja manteniendo torso firme.',
-          'Permite que las rodillas sigan la dirección de los pies.',
-          'Sube empujando desde el suelo.'
-        ],
-        mistakes: ['Redondear la espalda.', 'Elevar talones.', 'Caer con las rodillas hacia dentro.'],
-        alternatives: 'Sentadilla con barra · Zancadas'
-      },
-      {
-        id: 'peso-muerto-rumano',
-        name: 'Peso muerto rumano',
-        group: 'Piernas',
-        secondary: 'Isquiosurales · Glúteos · Espalda baja',
-        material: 'Barra o mancuernas',
-        image: '',
-        icon: '↙',
-        target: '3 × 8–12',
-        rest: 120,
-        technique: [
-          'Mantén una ligera flexión de rodillas.',
-          'Lleva la cadera hacia atrás conservando espalda neutra.',
-          'Baja la carga cerca de las piernas.',
-          'Sube apretando glúteos sin hiperextender la espalda.'
-        ],
-        mistakes: ['Redondear la espalda.', 'Convertirlo en sentadilla.', 'Alejar demasiado la carga del cuerpo.'],
-        alternatives: 'Curl femoral · Hip thrust'
-      },
-      {
-        id: 'curl-femoral',
-        name: 'Curl femoral sentado',
-        group: 'Piernas',
-        secondary: 'Isquiosurales',
-        material: 'Máquina de curl femoral',
-        image: '',
-        icon: '⌄',
-        target: '3 × 10–15',
-        rest: 75,
-        technique: [
-          'Ajusta el respaldo y el rodillo de la máquina.',
-          'Flexiona las rodillas de manera controlada.',
-          'Aprieta los isquios al final.',
-          'Vuelve lento sin golpear las pesas.'
-        ],
-        mistakes: ['Usar impulso.', 'Mover la cadera.', 'Recorrido incompleto.'],
-        alternatives: 'Peso muerto rumano · Puente de glúteo'
-      },
-      {
-        id: 'zancadas',
-        name: 'Zancadas con mancuernas',
-        group: 'Piernas',
-        secondary: 'Cuádriceps · Glúteos · Estabilidad',
-        material: 'Mancuernas',
-        image: '',
-        icon: '⇢',
-        target: '3 × 8–12 por pierna',
-        rest: 90,
-        technique: [
-          'Da un paso estable hacia delante.',
-          'Baja con el torso erguido.',
-          'Mantén la rodilla delantera alineada con el pie.',
-          'Empuja para volver a la posición inicial.'
-        ],
-        mistakes: ['Paso demasiado corto.', 'Rodilla hacia dentro.', 'Perder equilibrio por falta de control.'],
-        alternatives: 'Sentadilla goblet · Split squat'
-      },
-      {
-        id: 'hip-thrust',
-        name: 'Hip thrust con barra',
-        group: 'Piernas',
-        secondary: 'Glúteos · Isquiosurales',
-        material: 'Barra · Banco',
-        image: '',
-        icon: '↟',
-        target: '3 × 8–12',
-        rest: 90,
-        technique: [
-          'Apoya la parte alta de la espalda en un banco estable.',
-          'Coloca la barra sobre la cadera con protección.',
-          'Empuja con los talones y eleva la cadera.',
-          'Aprieta glúteos arriba sin arquear la espalda.'
-        ],
-        mistakes: ['Hiperextender la espalda.', 'Empujar solo con puntas de pies.', 'Colocar mal el banco.'],
-        alternatives: 'Puente de glúteo · Peso muerto rumano'
-      },
-      {
-        id: 'elevacion-gemelos',
-        name: 'Elevación de gemelos',
-        group: 'Piernas',
-        secondary: 'Gemelos · Sóleo',
-        material: 'Mancuernas · Peso corporal',
-        image: '',
-        icon: '↑',
-        target: '3 × 12–20',
-        rest: 45,
-        technique: [
-          'Apoya el antepié en una superficie estable si es posible.',
-          'Sube tan alto como puedas.',
-          'Pausa arriba y baja lentamente.',
-          'Mantén la rodilla según la variante elegida.'
-        ],
-        mistakes: ['Rebotar.', 'Hacer recorrido corto.', 'Ir demasiado rápido.'],
-        alternatives: 'Gemelo sentado · Elevación unilateral'
-      },
-      {
-        id: 'abdominal-plancha',
-        name: 'Plancha frontal',
-        group: 'Core',
-        secondary: 'Abdomen · Oblicuos · Estabilidad',
-        material: 'Peso corporal',
-        image: '',
-        icon: '▬',
-        target: '3 × 30–60 s',
-        rest: 45,
-        technique: [
-          'Apoya antebrazos y puntas de pies.',
-          'Mantén una línea recta de cabeza a talones.',
-          'Aprieta abdomen y glúteos.',
-          'Respira de forma controlada.'
-        ],
-        mistakes: ['Hundir la cadera.', 'Elevar demasiado los glúteos.', 'Aguantar la respiración.'],
-        alternatives: 'Dead bug · Plancha lateral'
-      },
-      {
-        id: 'crunch-polea',
-        name: 'Crunch en polea',
-        group: 'Core',
-        secondary: 'Recto abdominal',
-        material: 'Polea',
-        image: '',
-        icon: '⌄',
-        target: '3 × 10–15',
-        rest: 45,
-        technique: [
-          'Arrodíllate frente a una polea alta.',
-          'Mantén la cadera estable.',
-          'Flexiona el torso contrayendo el abdomen.',
-          'Vuelve despacio sin perder tensión.'
-        ],
-        mistakes: ['Tirar solo con los brazos.', 'Mover demasiado la cadera.', 'Usar carga excesiva.'],
-        alternatives: 'Crunch suelo · Elevaciones de piernas'
-      },
-      {
-        id: 'dead-bug',
-        name: 'Dead bug',
-        group: 'Core',
-        secondary: 'Abdomen profundo · Control lumbar',
-        material: 'Peso corporal',
-        image: '',
-        icon: '✦',
-        target: '3 × 8–12 por lado',
-        rest: 45,
-        technique: [
-          'Túmbate boca arriba con brazos arriba y rodillas a 90 grados.',
-          'Mantén la zona lumbar en contacto suave con el suelo.',
-          'Extiende brazo y pierna contrarios lentamente.',
-          'Vuelve y alterna lados.'
-        ],
-        mistakes: ['Arquear la espalda.', 'Moverse rápido.', 'Perder control al extender.'],
-        alternatives: 'Plancha frontal · Bird dog'
-      },
-      {
-        id: 'movilidad-hombros',
-        name: 'Movilidad de hombros y escápulas',
-        group: 'Movilidad',
-        secondary: 'Hombro · Escápulas',
-        material: 'Peso corporal o banda',
-        image: '',
-        icon: '↻',
-        target: '2 × 8–12',
-        rest: 30,
-        technique: [
-          'Realiza círculos lentos y controlados.',
-          'Activa suavemente las escápulas.',
-          'No fuerces rangos dolorosos.',
-          'Usa esta rutina como preparación antes de torso.'
-        ],
-        mistakes: ['Moverse con rapidez.', 'Forzar dolor.', 'Elevar hombros constantemente.'],
-        alternatives: 'Face pull ligero · Rotaciones externas'
-      },
-      {
-        id: 'estiramiento-piernas',
-        name: 'Estiramiento de piernas',
-        group: 'Movilidad',
-        secondary: 'Cuádriceps · Isquios · Glúteos',
-        material: 'Peso corporal',
-        image: '',
-        icon: '↔',
-        target: '5–8 min',
-        rest: 0,
-        technique: [
-          'Mantén cada posición con respiración tranquila.',
-          'Busca tensión suave, nunca dolor agudo.',
-          'Dedica atención a cuádriceps, isquios, glúteos y gemelos.',
-          'Úsalo al terminar la sesión o en un día suave.'
-        ],
-        mistakes: ['Rebotar.', 'Forzar rangos dolorosos.', 'Contener la respiración.'],
-        alternatives: 'Movilidad dinámica · Caminata suave'
-      }
-    ];
-
-    const programs = {
-      push: {
-        name: 'Push · Pecho, hombro y tríceps',
-        label: 'Día de fuerza',
-        description: 'Pecho, hombros y tríceps para progresar con buena técnica.',
-        exercises: [
-          'press-inclinado-mancuernas',
-          'press-banca-barra',
-          'cruce-bajo-alto',
-          'press-militar-mancuernas',
-          'elevaciones-laterales',
-          'extension-polea'
-        ]
-      },
-      pull: {
-        name: 'Pull · Espalda, bíceps y antebrazo',
-        label: 'Día de fuerza',
-        description: 'Tirón completo para espalda, bíceps y agarre.',
-        exercises: [
-          'jalon-medio',
-          'remo-maquina',
-          'remo-mancuerna',
-          'pulldown-rectos',
-          'curl-barra',
-          'curl-martillo'
-        ]
-      },
-      legs: {
-        name: 'Piernas · Fuerza y estabilidad',
-        label: 'Día de fuerza',
-        description: 'Cuádriceps, glúteos, femorales y gemelos.',
-        exercises: [
-          'sentadilla-goblet',
-          'peso-muerto-rumano',
-          'curl-femoral',
-          'zancadas',
-          'hip-thrust',
-          'elevacion-gemelos'
-        ]
-      },
-      torso: {
-        name: 'Torso · Pecho y espalda',
-        label: 'Día de fuerza',
-        description: 'Una sesión equilibrada para todo el torso.',
-        exercises: [
-          'press-plano-mancuernas',
-          'jalon-ancho',
-          'remo-estrecho',
-          'press-militar-mancuernas',
-          'curl-mancuernas',
-          'extension-polea'
-        ]
-      },
-      posterior: {
-        name: 'Piernas · Cadena posterior',
-        label: 'Día de fuerza',
-        description: 'Glúteos, isquiosurales, piernas y estabilidad.',
-        exercises: [
-          'peso-muerto-rumano',
-          'hip-thrust',
-          'curl-femoral',
-          'zancadas',
-          'elevacion-gemelos',
-          'dead-bug'
-        ]
-      },
-      core: {
-        name: 'Core · Abdomen y estabilidad',
-        label: 'Core y control',
-        description: 'Una sesión corta para abdomen, estabilidad y postura.',
-        exercises: [
-          'abdominal-plancha',
-          'crunch-polea',
-          'dead-bug',
-          'movilidad-hombros',
-          'estiramiento-piernas'
-        ]
-      },
-      movilidad: {
-        name: 'Movilidad · Recuperación activa',
-        label: 'Recuperación',
-        description: 'Muévete mejor, recupera y prepara tu siguiente sesión.',
-        exercises: [
-          'movilidad-hombros',
-          'dead-bug',
-          'estiramiento-piernas',
-          'abdominal-plancha'
-        ]
-      }
-    };
-    function getExercise(id) {
-      return exercises.find(exercise => exercise.id === id);
-    }
-
-    function getProgram(id) {
-      return programs[id] || programs.push;
-    }
-
-    function getDefaultProgramForToday() {
-      const order = ['push', 'pull', 'legs', 'core', 'torso', 'posterior', 'movilidad'];
-      const today = new Date().getDay();
-      return order[(today + 6) % order.length];
-    }
-
-    function getCurrentProgram() {
-      const id = data.currentProgram || getDefaultProgramForToday();
-      return getProgram(id);
-    }
-
-    function getAdjustedExerciseIds(program) {
-      const ids = [...program.exercises];
-
-      if (data.energy === 'cansado') return ids.slice(0, Math.max(4, ids.length - 1));
-      return ids;
-    }
-
-    function getSuggestedRest(exercise) {
-      if (!exercise) return 60;
-      if (data.energy === 'energia' && exercise.rest >= 90) return exercise.rest + 15;
-      if (data.energy === 'cansado') return Math.max(45, exercise.rest - 15);
-      return exercise.rest;
-    }
-
-    function getSetsForExercise(id) {
-      return data.sets.filter(set => set.exerciseId === id);
-    }
-
-    function getLastExerciseSet(id) {
-      return getSetsForExercise(id)
-        .sort((a, b) => new Date(b.date) - new Date(a.date))[0] || null;
-    }
-
-    function getPersonalBest(id) {
-      const sets = getSetsForExercise(id);
-      if (!sets.length) return null;
-      return [...sets].sort((a, b) => {
-        const volA = Number(a.kg || 0) * Number(a.reps || 0);
-        const volB = Number(b.kg || 0) * Number(b.reps || 0);
-        return volB - volA;
-      })[0];
-    }
-
-    function getWorkoutCount() {
-      return data.workouts.length;
-    }
-
-    function getTotalVolume() {
-      return data.sets.reduce((sum, set) => sum + ((Number(set.kg) || 0) * (Number(set.reps) || 0)), 0);
-    }
-
-    function getStreak() {
-      const dates = [...new Set(data.workouts.map(workout => toLocalDateKey(workout.date)))].sort().reverse();
-      if (!dates.length) return 0;
-
-      let streak = 0;
-      let expected = new Date();
-      expected.setHours(0, 0, 0, 0);
-
-      for (const key of dates) {
-        const current = new Date(`${key}T00:00:00`);
-        const difference = Math.round((expected - current) / 86400000);
-
-        if (difference === 0 || (streak === 0 && difference === 1)) {
-          streak += 1;
-          expected = current;
-          expected.setDate(expected.getDate() - 1);
-        } else if (difference > 1) {
-          break;
-        }
-      }
-      return streak;
-    }
-
-    function setHeroImage() {
-      const hero = document.getElementById('hero');
-      if (!hero) return;
-      hero.style.setProperty('--hero-image', heroImages[new Date().getDate() % heroImages.length]);
-    }
-
-    function openScreen(name) {
-      activeScreen = name;
-      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-      const screen = document.getElementById(name);
-      if (screen) screen.classList.add('active');
-
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.toggle('active', item.dataset.screen === name);
-      });
-
-      if (name === 'inicio') renderHome();
-      if (name === 'entrenar') renderTrain();
-      if (name === 'ejercicios') renderLibrary();
-      if (name === 'progreso') renderProgress();
-      if (name === 'perfil') renderProfile();
-      if (name === 'cardio') renderCardio();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderHome() {
-      setHeroImage();
-
-      const name = data.profile?.name?.trim() || 'Fonsy';
-      const program = getCurrentProgram();
-      const exerciseCount = getAdjustedExerciseIds(program).length;
-
-      const quote = document.getElementById('dailyQuote');
-      const homeTitle = document.getElementById('homeWorkoutTitle');
-      const homeDescription = document.getElementById('homeWorkoutDescription');
-      const homeCount = document.getElementById('homeWorkoutCount');
-      const homeLevel = document.getElementById('homeWorkoutLevel');
-
-      const heroTitle = document.querySelector('.hero h1');
-      if (heroTitle) heroTitle.textContent = `Hola, ${name} 👋`;
-      if (quote) quote.textContent = getGreetingQuote();
-      if (homeTitle) homeTitle.textContent = program.name;
-      if (homeDescription) homeDescription.textContent = program.description;
-      if (homeCount) homeCount.textContent = `${exerciseCount} ejercicios`;
-      if (homeLevel) homeLevel.textContent = `Estado: ${data.energy === 'energia' ? 'con energía' : data.energy}`;
-
-      document.getElementById('homeSessions').textContent = getWorkoutCount();
-      document.getElementById('homeSets').textContent = data.sets.length;
-      document.getElementById('homeCardio').textContent = data.cardio.length;
-
-      renderWeek();
-    }
-
-    function renderWeek() {
-      const container = document.getElementById('weekDays');
-      if (!container) return;
-
-      const labels = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-      const now = new Date();
-      const monday = new Date(now);
-      const offset = (now.getDay() + 6) % 7;
-      monday.setDate(now.getDate() - offset);
-
-      const workoutDates = new Set(data.workouts.map(workout => toLocalDateKey(workout.date)));
-      const today = todayKey();
-
-      let html = '';
-      for (let i = 0; i < 7; i += 1) {
-        const date = new Date(monday);
-        date.setDate(monday.getDate() + i);
-        const key = toLocalDateKey(date);
-        const done = workoutDates.has(key);
-        const isToday = key === today;
-        html += `
-          <div class="day ${done ? 'done' : ''} ${isToday ? 'today' : ''}">
-            <span>${labels[i]}</span>
-            <b>${done ? '✓' : date.getDate()}</b>
-          </div>
-        `;
-      }
-
-      container.innerHTML = html;
-
-      const sessionsThisWeek = data.workouts.filter(workout => {
-        const date = new Date(workout.date);
-        return date >= monday && date <= new Date(monday.getTime() + 7 * 86400000);
-      }).length;
-
-      document.getElementById('weekSummary').textContent =
-        sessionsThisWeek ? `${sessionsThisWeek} entrenamiento${sessionsThisWeek > 1 ? 's' : ''} esta semana` : 'Tu semana empieza hoy';
-
-      document.getElementById('weekCaption').textContent =
-        getStreak() ? `Racha actual: ${getStreak()} día${getStreak() > 1 ? 's' : ''}.` : 'Completa una sesión para construir tu racha.';
-    }
-
-    function renderTrain() {
-      const program = getCurrentProgram();
-      const ids = getAdjustedExerciseIds(program);
-
-      document.getElementById('trainRoutineLabel').textContent =
-        data.energy === 'cansado' ? 'Sesión ajustada' : program.label;
-      document.getElementById('trainRoutineTitle').textContent = program.name;
-      document.getElementById('trainRoutineText').textContent =
-        data.energy === 'cansado'
-          ? 'Hoy haremos una versión más corta y controlada. Recuperar también es progresar.'
-          : program.description;
-      document.getElementById('trainRoutineCount').textContent = `${ids.length} ejercicios`;
-      document.getElementById('trainRoutineDuration').textContent =
-        data.energy === 'cansado' ? '~45 min' : '~60 min';
-
-      document.querySelectorAll('[data-energy]').forEach(button => {
-        button.classList.toggle('active', button.dataset.energy === data.energy);
-      });
-
-      renderRoutineList();
-    }
-
-    function renderRoutineList() {
-      const list = document.getElementById('routineList');
-      if (!list) return;
-
-      const corePrograms = [
-        { id: 'push', subtitle: 'Pecho · Hombro · Tríceps' },
-        { id: 'pull', subtitle: 'Espalda · Bíceps · Antebrazo' },
-        { id: 'legs', subtitle: 'Piernas · Glúteos · Gemelos' },
-        { id: 'core', subtitle: 'Abdomen · Estabilidad' },
-        { id: 'torso', subtitle: 'Torso completo' },
-        { id: 'posterior', subtitle: 'Cadena posterior' }
-      ];
-
-      let html = corePrograms.map(item => {
-        const program = getProgram(item.id);
-        return `
-          <button class="exercise-row" type="button" onclick="selectProgram('${item.id}')">
-            <div class="exercise-placeholder">${item.id === 'legs' ? '⇣' : item.id === 'core' ? '◉' : '▶'}</div>
-            <div class="exercise-row-body">
-              <strong>${escapeHtml(program.name)}</strong>
-              <span>${escapeHtml(item.subtitle)} · ${program.exercises.length} ejercicios</span>
-            </div>
-            <span class="arrow">›</span>
-          </button>
-        `;
-      }).join('');
-
-      if (data.customRoutines.length) {
-        html += '<div class="section-heading" style="margin:18px 2px 8px"><h2 style="font-size:16px">Personalizadas</h2></div>';
-        html += data.customRoutines.map(routine => `
-          <button class="exercise-row" type="button" onclick="startCustomRoutine('${routine.id}')">
-            <div class="exercise-placeholder">★</div>
-            <div class="exercise-row-body">
-              <strong>${escapeHtml(routine.name)}</strong>
-              <span>${routine.exercises.length} ejercicios personalizados</span>
-            </div>
-            <span class="arrow">›</span>
-          </button>
-        `).join('');
-      }
-
-      list.innerHTML = html;
-    }
-
-    function selectProgram(id) {
-      data.currentProgram = id;
-      saveData();
-      openScreen('entrenar');
-    }
-
-    function generateAlternative() {
-      const alternatives = ['push', 'pull', 'legs', 'torso', 'posterior', 'core'];
-      const current = data.currentProgram || getDefaultProgramForToday();
-      const available = alternatives.filter(id => id !== current);
-      data.currentProgram = available[Math.floor(Math.random() * available.length)];
-      saveData();
-
-      const program = getCurrentProgram();
-      alert(`Nueva alternativa preparada: ${program.name}`);
-      openScreen('entrenar');
-    }
-
-    function startTodayWorkout() {
-      const program = getCurrentProgram();
-      const ids = getAdjustedExerciseIds(program);
-      startWorkout(program.name, ids, 'program');
-    }
-
-    function startFreeWorkout() {
-      startWorkout('Sesión libre', [], 'free');
-    }
-
-    function startCustomRoutine(id) {
-      const routine = data.customRoutines.find(item => item.id === id);
-      if (!routine) return;
-      startWorkout(routine.name, routine.exercises, 'custom');
-    }
-
-    function startWorkout(name, exerciseIds, source) {
-      activeWorkout = {
-        id: uid('workout'),
-        name,
-        source,
-        exerciseIds: [...exerciseIds],
-        completedExercises: [],
-        createdAt: new Date().toISOString()
-      };
-
-      sessionStartedAt = Date.now();
-      openScreen('sesion');
-      startSessionClock();
-      renderSession();
-    }
-
-    function startSessionClock() {
-      clearInterval(sessionTimerId);
-      sessionTimerId = setInterval(() => {
-        if (!sessionStartedAt) return;
-        const total = Math.floor((Date.now() - sessionStartedAt) / 1000);
-        const minutes = String(Math.floor(total / 60)).padStart(2, '0');
-        const seconds = String(total % 60).padStart(2, '0');
-        const clock = document.getElementById('sessionClock');
-        if (clock) clock.textContent = `${minutes}:${seconds}`;
-      }, 1000);
-    }
-
-    function renderSession() {
-      if (!activeWorkout) return;
-
-      const title = document.getElementById('sessionTitle');
-      if (title) title.textContent = activeWorkout.name;
-
-      const container = document.getElementById('sessionExercises');
-      const ids = activeWorkout.exerciseIds;
-      const completed = activeWorkout.completedExercises.length;
-      const percentage = ids.length ? Math.round((completed / ids.length) * 100) : 0;
-
-      document.getElementById('sessionProgressText').textContent = `${completed} de ${ids.length} ejercicios`;
-      document.getElementById('sessionProgressBar').style.width = `${percentage}%`;
-
-      const sessionSets = data.sets.filter(set => set.workoutId === activeWorkout.id);
-      const volume = sessionSets.reduce((sum, set) => sum + ((Number(set.kg) || 0) * (Number(set.reps) || 0)), 0);
-      document.getElementById('sessionVolume').textContent = `${formatNumber(volume)} kg`;
-
-      if (!ids.length) {
-        container.innerHTML = `
-          <section class="card pad" style="text-align:center">
-            <div style="font-size:34px;margin-bottom:8px">＋</div>
-            <h2 style="margin-bottom:7px">Añade tu primer ejercicio</h2>
-            <p class="muted">Una sesión libre te permite elegir cualquier ejercicio de la biblioteca.</p>
-            <button class="button primary full" type="button" onclick="addExerciseToSession()">Elegir ejercicio</button>
-          </section>
-        `;
-        return;
-      }
-
-      container.innerHTML = ids.map((id, index) => {
-        const exercise = getExercise(id);
-        if (!exercise) return '';
-        const done = activeWorkout.completedExercises.includes(id);
-        const last = getLastExerciseSet(id);
-        const image = exercise.image
-          ? `<img src="${imagePath(exercise.image)}" alt="" onerror="this.outerHTML=\`${imageFallbackHTML(exercise.icon)}\`">`
-          : imageFallbackHTML(exercise.icon);
-
-        return `
-          <button class="exercise-row" type="button" onclick="openExerciseDetail('${id}', true)">
-            ${image}
-            <div class="exercise-row-body">
-              <strong>${index + 1}. ${escapeHtml(exercise.name)} ${done ? '✓' : ''}</strong>
-              <span>${escapeHtml(exercise.target)} · ${last ? `Última: ${last.kg} kg × ${last.reps}` : 'Sin registros'}</span>
-            </div>
-            <span class="arrow">›</span>
-          </button>
-        `;
-      }).join('');
-    }
-
-    function addExerciseToSession() {
-      openScreen('ejercicios');
-      favoriteOnly = false;
-      renderLibrary();
-      alert('Toca un ejercicio de la biblioteca. Después pulsa “Añadir a sesión”.');
-    }
-
-    function leaveWorkout() {
-      if (!activeWorkout) {
-        openScreen('entrenar');
-        return;
-      }
-
-      if (confirm('¿Quieres salir? La sesión actual no se guardará como entrenamiento terminado.')) {
-        clearInterval(sessionTimerId);
-        activeWorkout = null;
-        sessionStartedAt = null;
-        openScreen('entrenar');
-      }
-    }
-
-    function finishWorkout() {
-      if (!activeWorkout) {
-        openScreen('entrenar');
-        return;
-      }
-
-      const durationSeconds = Math.floor((Date.now() - sessionStartedAt) / 1000);
-      const workoutSets = data.sets.filter(set => set.workoutId === activeWorkout.id);
-
-      if (!workoutSets.length && !activeWorkout.completedExercises.length) {
-        if (!confirm('No has guardado series. ¿Quieres finalizar igualmente?')) return;
-      }
-
-      data.workouts.unshift({
-        id: activeWorkout.id,
-        name: activeWorkout.name,
-        date: new Date().toISOString(),
-        durationSeconds,
-        exerciseIds: activeWorkout.exerciseIds,
-        completedExercises: activeWorkout.completedExercises,
-        setCount: workoutSets.length,
-        volume: workoutSets.reduce((sum, set) => sum + ((Number(set.kg) || 0) * (Number(set.reps) || 0)), 0)
-      });
-
-      clearInterval(sessionTimerId);
-      activeWorkout = null;
-      sessionStartedAt = null;
-      saveData();
-
-      alert('¡Entrenamiento guardado! Buen trabajo, Fonsy.');
-      openScreen('progreso');
-    }
-
-    function renderLibrary() {
-      const container = document.getElementById('exerciseLibrary');
-      const searchInput = document.getElementById('exerciseSearch');
-      const query = (searchInput?.value || '').toLowerCase().trim();
-
-      const groups = ['Todos', ...new Set(exercises.map(exercise => exercise.group))];
-      const chips = document.getElementById('exerciseChips');
-
-      chips.innerHTML = [
-        ...groups.map(group => `
-          <button class="chip ${activeGroup === group && !favoriteOnly ? 'active' : ''}" type="button" onclick="setActiveGroup('${group}')">
-            ${escapeHtml(group)}
-          </button>
-        `),
-        `<button class="chip ${favoriteOnly ? 'active' : ''}" type="button" onclick="showFavoritesOnly()">♡ Favoritos</button>`
-      ].join('');
-
-      const results = exercises.filter(exercise => {
-        const matchesGroup = activeGroup === 'Todos' || exercise.group === activeGroup;
-        const matchesFavorite = !favoriteOnly || data.favorites.includes(exercise.id);
-        const text = `${exercise.name} ${exercise.group} ${exercise.secondary} ${exercise.material}`.toLowerCase();
-        return matchesGroup && matchesFavorite && text.includes(query);
-      });
-
-      if (!results.length) {
-        container.innerHTML = `
-          <section class="card pad" style="text-align:center">
-            <div style="font-size:30px;margin-bottom:8px">⌕</div>
-            <h2 style="font-size:18px;margin-bottom:7px">No hemos encontrado ejercicios</h2>
-            <p class="muted">Prueba otro término o cambia el filtro de músculo.</p>
-          </section>
-        `;
-        return;
-      }
-
-      container.innerHTML = results.map(exercise => exerciseRowHTML(exercise, false)).join('');
-    }
-
-    function exerciseRowHTML(exercise, showAddButton) {
-      const last = getLastExerciseSet(exercise.id);
-      const image = exercise.image
-        ? `<img src="${imagePath(exercise.image)}" alt="" onerror="this.outerHTML=\`${imageFallbackHTML(exercise.icon)}\`">`
-        : imageFallbackHTML(exercise.icon);
-
-      return `
-        <button class="exercise-row" type="button" onclick="openExerciseDetail('${exercise.id}', ${Boolean(activeWorkout)})">
-          ${image}
-          <div class="exercise-row-body">
-            <strong>${escapeHtml(exercise.name)}</strong>
-            <span>${escapeHtml(exercise.group)} · ${escapeHtml(exercise.material)}${last ? ` · ${last.kg} kg × ${last.reps}` : ''}</span>
-          </div>
-          <span class="arrow">${showAddButton ? '+' : '›'}</span>
-        </button>
-      `;
-    }
-
-    function setActiveGroup(group) {
-      activeGroup = group;
-      favoriteOnly = false;
-      renderLibrary();
-    }
-
-    function showFavoritesOnly() {
-      favoriteOnly = !favoriteOnly;
-      activeGroup = 'Todos';
-      renderLibrary();
-    }
-
-    function openExerciseDetail(id, fromSession = false) {
-      const exercise = getExercise(id);
-      if (!exercise) return;
-
-      currentExerciseId = id;
-      currentDetailFromSession = fromSession;
-      const last = getLastExerciseSet(id);
-      const best = getPersonalBest(id);
-      const isFavorite = data.favorites.includes(id);
-
-      document.getElementById('favoriteButton').textContent = isFavorite ? '♥' : '♡';
-
-      const imageHTML = exercise.image
-        ? `<img src="${imagePath(exercise.image)}" alt="${escapeHtml(exercise.name)}" onerror="this.outerHTML='<div class=&quot;detail-fallback&quot;>${exercise.icon}</div>'">`
-        : `<div class="detail-fallback">${exercise.icon}</div>`;
-
-      const sessionAction = activeWorkout
-        ? `<button class="button primary full" type="button" onclick="addCurrentExerciseToSession()">＋ Añadir a sesión</button>`
-        : `<button class="button primary full" type="button" onclick="startSingleExerciseSession('${exercise.id}')">Entrenar este ejercicio</button>`;
-
-      document.getElementById('exerciseDetailContent').innerHTML = `
-        <section class="detail-hero">
-          ${imageHTML}
-          <div class="detail-overlay">
-            <h1>${escapeHtml(exercise.name)}</h1>
-            <p>${escapeHtml(exercise.group)} · ${escapeHtml(exercise.secondary)}</p>
-          </div>
-        </section>
-
-        <section class="exercise-info">
-          <div><strong>${escapeHtml(exercise.target)}</strong><span>Objetivo</span></div>
-          <div><strong>${exercise.rest || 45} s</strong><span>Descanso</span></div>
-          <div><strong>${data.favorites.includes(exercise.id) ? 'Sí' : 'No'}</strong><span>Favorito</span></div>
-        </section>
-
-        <section class="card pad" style="margin-top:14px">
-          <div class="card-label">Material</div>
-          <p style="margin:0;font-size:14px;line-height:1.5">${escapeHtml(exercise.material)}</p>
-        </section>
-
-        <section class="card pad" style="margin-top:14px">
-          <div class="card-label">Tu última marca</div>
-          <h2 style="font-size:20px;margin:0 0 5px">${last ? `${formatNumber(last.kg)} kg × ${last.reps} reps` : 'Aún no hay registros'}</h2>
-          <p class="muted" style="margin:0">${last ? `${formatDate(last.date)}${last.rir !== '' && last.rir !== undefined ? ` · RIR ${last.rir}` : ''}` : 'Guarda una serie para empezar a construir tu historial.'}</p>
-          ${best ? `<p class="muted" style="margin:9px 0 0">Mejor serie: ${formatNumber(best.kg)} kg × ${best.reps} reps</p>` : ''}
-        </section>
-
-        <section class="card pad" style="margin-top:14px">
-          <div class="card-label">Cómo hacerlo</div>
-          <ol style="margin:0;padding-left:20px;line-height:1.58;color:#e7eef8;font-size:14px">
-            ${exercise.technique.map(step => `<li style="margin:8px 0">${escapeHtml(step)}</li>`).join('')}
-          </ol>
-        </section>
-
-        <section class="card pad" style="margin-top:14px">
-          <div class="card-label">Evita estos errores</div>
-          <ul style="margin:0;padding-left:20px;line-height:1.58;color:#e7eef8;font-size:14px">
-            ${exercise.mistakes.map(item => `<li style="margin:8px 0">${escapeHtml(item)}</li>`).join('')}
-          </ul>
-          <p class="muted" style="margin:13px 0 0"><strong style="color:#dfe9f7">Alternativas:</strong> ${escapeHtml(exercise.alternatives)}</p>
-        </section>
-
-        <section class="card pad" style="margin-top:14px">
-          <div class="card-label">Registrar serie</div>
-          <p class="muted">Peso por mancuerna cuando el ejercicio usa dos mancuernas.</p>
-          <div id="setRows"></div>
-          <button class="button ghost full" type="button" style="margin-top:10px" onclick="addSetRow()">＋ Añadir serie</button>
-          <label class="form-label" for="exerciseNote">Nota de este ejercicio</label>
-          <input id="exerciseNote" class="search" type="text" placeholder="Ej. La próxima vez probar más peso">
-          <button class="button primary full" type="button" style="margin-top:12px" onclick="saveExerciseSets()">Guardar series y continuar</button>
-        </section>
-
-        <section style="margin-top:14px">
-          ${sessionAction}
-        </section>
-      `;
-
-      openScreen('detalle');
-      addSetRow(last);
-      addSetRow(last);
-      addSetRow(last);
-    }
-
-    function closeExerciseDetail() {
-      if (currentDetailFromSession || activeWorkout) {
-        openScreen('sesion');
-        renderSession();
-      } else {
-        openScreen('ejercicios');
-      }
-    }
-
-    function toggleFavoriteCurrent() {
-      if (!currentExerciseId) return;
-      const index = data.favorites.indexOf(currentExerciseId);
-      if (index >= 0) data.favorites.splice(index, 1);
-      else data.favorites.push(currentExerciseId);
-
-      saveData();
-      const button = document.getElementById('favoriteButton');
-      button.textContent = data.favorites.includes(currentExerciseId) ? '♥' : '♡';
-    }
-
-    function addSetRow(lastSet = null) {
-      const rows = document.getElementById('setRows');
-      if (!rows) return;
-
-      const number = rows.children.length + 1;
-      const kg = lastSet?.kg ?? '';
-      const reps = lastSet?.reps ?? '';
-      const rir = lastSet?.rir ?? '';
-
-      const row = document.createElement('div');
-      row.className = 'set-row';
-      row.innerHTML = `
-        <span class="set-number">${number}</span>
-        <input class="set-kg" inputmode="decimal" type="number" min="0" step="0.5" placeholder="kg" value="${kg}">
-        <input class="set-reps" inputmode="numeric" type="number" min="1" step="1" placeholder="reps" value="${reps}">
-        <button class="set-done" type="button" onclick="toggleSetDone(this)">✓</button>
-        <input class="set-rir hidden" inputmode="numeric" type="number" min="0" max="5" value="${rir}">
-      `;
-      rows.appendChild(row);
-    }
-
-    function toggleSetDone(button) {
-      button.classList.toggle('done');
-      button.textContent = button.classList.contains('done') ? 'Hecha' : '✓';
-    }
-
-    function saveExerciseSets() {
-      const exercise = getExercise(currentExerciseId);
-      if (!exercise) return;
-
-      const rows = [...document.querySelectorAll('#setRows .set-row')];
-      const note = document.getElementById('exerciseNote')?.value.trim() || '';
-      let saved = 0;
-
-      rows.forEach((row, index) => {
-        const kg = Number(row.querySelector('.set-kg').value);
-        const reps = Number(row.querySelector('.set-reps').value);
-        const rirInput = row.querySelector('.set-rir');
-        const rir = rirInput ? rirInput.value : '';
-
-        if (!Number.isFinite(reps) || reps < 1) return;
-
-        data.sets.unshift({
-          id: uid('set'),
-          workoutId: activeWorkout?.id || null,
-          exerciseId: exercise.id,
-          kg: Number.isFinite(kg) ? kg : 0,
-          reps,
-          rir,
-          note,
-          setNumber: index + 1,
-          date: new Date().toISOString()
-        });
-        saved += 1;
-      });
-
-      if (!saved) {
-        alert('Escribe al menos las repeticiones de una serie antes de guardar.');
-        return;
-      }
-
-      if (activeWorkout && !activeWorkout.completedExercises.includes(exercise.id)) {
-        activeWorkout.completedExercises.push(exercise.id);
-      }
-
-      saveData();
-
-      const rest = getSuggestedRest(exercise);
-      if (rest > 0) openRestTimer(rest);
-
-      alert(`${saved} serie${saved > 1 ? 's' : ''} guardada${saved > 1 ? 's' : ''}. ¡Buen trabajo!`);
-
-      if (activeWorkout) {
-        openScreen('sesion');
-        renderSession();
-      } else {
-        openExerciseDetail(exercise.id, false);
-      }
-    }
-
-    function addCurrentExerciseToSession() {
-      if (!activeWorkout || !currentExerciseId) {
-        startSingleExerciseSession(currentExerciseId);
-        return;
-      }
-
-      if (!activeWorkout.exerciseIds.includes(currentExerciseId)) {
-        activeWorkout.exerciseIds.push(currentExerciseId);
-        alert('Ejercicio añadido a la sesión.');
-      } else {
-        alert('Este ejercicio ya está en la sesión.');
-      }
-
-      openScreen('sesion');
-      renderSession();
-    }
-
-    function startSingleExerciseSession(id) {
-      const exercise = getExercise(id);
-      if (!exercise) return;
-      startWorkout(exercise.name, [id], 'single');
-    }
-
-    function openRestTimer(seconds) {
-      restSeconds = seconds;
-      document.getElementById('restOverlay').classList.remove('hidden');
-      updateRestClock();
-
-      clearInterval(restTimerId);
-      restTimerId = setInterval(() => {
-        restSeconds -= 1;
-        updateRestClock();
-        if (restSeconds <= 0) {
-          closeRestTimer();
-          alert('Descanso terminado. Cuando estés listo, continúa con la siguiente serie.');
-        }
-      }, 1000);
-    }
-
-    function updateRestClock() {
-      const seconds = Math.max(0, restSeconds);
-      const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const remainder = String(seconds % 60).padStart(2, '0');
-      const clock = document.getElementById('restClock');
-      if (clock) clock.textContent = `${minutes}:${remainder}`;
-    }
-
-    function addRestTime(seconds) {
-      restSeconds += seconds;
-      updateRestClock();
-    }
-
-    function closeRestTimer() {
-      clearInterval(restTimerId);
-      restTimerId = null;
-      document.getElementById('restOverlay').classList.add('hidden');
-    }
-
-    function openCardio() {
-      openScreen('cardio');
-    }
-
-    function renderCardio() {
-      document.querySelectorAll('[data-cardio]').forEach(button => {
-        button.classList.toggle('active', button.dataset.cardio === selectedCardioType);
-      });
-
-      const swim = selectedCardioType === 'Natación';
-      document.getElementById('swimFields').classList.toggle('hidden', !swim);
-
-      const history = document.getElementById('cardioHistory');
-      if (!data.cardio.length) {
-        history.innerHTML = '<p class="muted" style="margin:0">Todavía no has guardado sesiones de cardio.</p>';
-        return;
-      }
-
-      history.innerHTML = data.cardio.slice(0, 10).map(item => {
-        const extra = [
-          item.intensity ? `Intensidad ${item.intensity}` : '',
-          item.distance ? `${item.distance} km` : '',
-          item.swimMeters ? `${item.swimMeters} m` : ''
-        ].filter(Boolean).join(' · ');
-
-        return `
-          <div class="history-item">
-            <div>
-              <strong>${escapeHtml(item.type)} · ${item.minutes} min</strong>
-              <span>${formatDate(item.date)}${extra ? ` · ${escapeHtml(extra)}` : ''}${item.note ? ` · ${escapeHtml(item.note)}` : ''}</span>
-            </div>
-            <span style="color:var(--accent-2);font-size:19px">↗</span>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function saveCardio() {
-      const minutes = Number(document.getElementById('cardioMinutes').value);
-      const intensity = document.getElementById('cardioIntensity').value;
-      const distance = document.getElementById('cardioDistance').value;
-      const calories = document.getElementById('cardioCalories').value;
-      const note = document.getElementById('cardioNotes').value.trim();
-      const lengths = Number(document.getElementById('swimLengths').value || 0);
-      const poolLength = Number(document.getElementById('poolLength').value || 0);
-
-      if (!Number.isFinite(minutes) || minutes < 1) {
-        alert('Escribe la duración en minutos.');
-        return;
-      }
-
-      data.cardio.unshift({
-        id: uid('cardio'),
-        type: selectedCardioType,
-        minutes,
-        intensity,
-        distance,
-        calories,
-        note,
-        swimLengths: lengths || 0,
-        swimMeters: selectedCardioType === 'Natación' && lengths && poolLength ? lengths * poolLength : 0,
-        date: new Date().toISOString()
-      });
-
-      ['cardioMinutes', 'cardioIntensity', 'cardioDistance', 'cardioCalories', 'cardioNotes', 'swimLengths']
-        .forEach(id => { const element = document.getElementById(id); if (element) element.value = ''; });
-
-      saveData();
-      renderCardio();
-      alert('Cardio guardado correctamente.');
-    }
-
-    function renderProgress() {
-      document.getElementById('progressWorkouts').textContent = getWorkoutCount();
-      document.getElementById('progressVolume').textContent = formatNumber(getTotalVolume());
-      document.getElementById('progressStreak').textContent = getStreak();
-
-      renderCalendar();
-      renderRecords();
-      renderRecentActivity();
-      renderBodyHistory();
-    }
-
-    function renderCalendar() {
-      const grid = document.getElementById('calendarGrid');
-      const label = document.getElementById('calendarMonthLabel');
-      if (!grid || !label) return;
-
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const firstDay = new Date(year, month, 1);
-      const startOffset = (firstDay.getDay() + 6) % 7;
-      const lastDay = new Date(year, month + 1, 0).getDate();
-      const workoutDates = new Set(data.workouts.map(workout => toLocalDateKey(workout.date)));
-
-      label.textContent = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-
-      const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-      let html = days.map(day => `<div style="text-align:center;color:var(--muted);font-size:10px;font-weight:800">${day}</div>`).join('');
-
-      for (let i = 0; i < startOffset; i += 1) html += '<div></div>';
-
-      for (let day = 1; day <= lastDay; day += 1) {
-        const date = new Date(year, month, day);
-        const key = toLocalDateKey(date);
-        const isDone = workoutDates.has(key);
-        const isToday = key === todayKey();
-
-        html += `
-          <div style="
-            display:grid;place-items:center;min-height:34px;border-radius:11px;
-            color:${isDone ? '#06160e' : 'var(--muted)'};
-            background:${isDone ? 'var(--success)' : isToday ? 'rgba(255,107,23,.18)' : 'rgba(5,16,28,.48)'};
-            outline:${isToday ? '1px solid var(--accent)' : 'none'};
-            font-size:12px;font-weight:800">
-            ${day}
-          </div>
-        `;
-      }
-
-      grid.innerHTML = html;
-    }
-
-    function renderRecords() {
-      const container = document.getElementById('personalRecords');
-      if (!container) return;
-
-      const records = exercises.map(exercise => {
-        const best = getPersonalBest(exercise.id);
-        if (!best) return null;
-        return {
-          exercise,
-          best,
-          score: (Number(best.kg) || 0) * (Number(best.reps) || 0)
-        };
-      }).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 8);
-
-      if (!records.length) {
-        container.innerHTML = '<p class="muted" style="margin:0">Cuando guardes series, aquí aparecerán tus mejores marcas.</p>';
-        return;
-      }
-
-      container.innerHTML = records.map(item => `
-        <div class="history-item">
-          <div>
-            <strong>${escapeHtml(item.exercise.name)}</strong>
-            <span>${formatNumber(item.best.kg)} kg × ${item.best.reps} reps${item.best.rir !== '' && item.best.rir !== undefined ? ` · RIR ${item.best.rir}` : ''}</span>
-          </div>
-          <span style="color:var(--accent-2);font-size:18px">★</span>
-        </div>
-      `).join('');
-    }
-
-    function renderRecentActivity() {
-      const container = document.getElementById('recentActivity');
-      if (!container) return;
-
-      const activities = [
-        ...data.workouts.map(item => ({
-          type: 'workout',
-          date: item.date,
-          title: item.name,
-          detail: `${item.setCount || 0} series · ${formatNumber(item.volume || 0)} kg`
-        })),
-        ...data.cardio.map(item => ({
-          type: 'cardio',
-          date: item.date,
-          title: item.type,
-          detail: `${item.minutes} min${item.distance ? ` · ${item.distance} km` : ''}`
-        }))
-      ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
-
-      if (!activities.length) {
-        container.innerHTML = '<p class="muted" style="margin:0">Tu actividad aparecerá aquí cuando empieces a registrar entrenamientos.</p>';
-        return;
-      }
-
-      container.innerHTML = activities.map(item => `
-        <div class="history-item">
-          <div>
-            <strong>${item.type === 'workout' ? '🏋️' : '🚴'} ${escapeHtml(item.title)}</strong>
-            <span>${formatDate(item.date)} · ${escapeHtml(item.detail)}</span>
-          </div>
-          <span style="color:var(--muted);font-size:17px">›</span>
-        </div>
-      `).join('');
-    }
-
-    function toggleBodyForm() {
-      document.getElementById('bodyForm').classList.toggle('hidden');
-    }
-
-    function saveBodyLog() {
-      const weight = Number(document.getElementById('bodyWeight').value);
-      const note = document.getElementById('bodyNote').value.trim();
-
-      if (!Number.isFinite(weight) || weight <= 0) {
-        alert('Escribe un peso corporal válido.');
-        return;
-      }
-
-      data.body.unshift({
-        id: uid('body'),
-        weight,
-        note,
-        date: new Date().toISOString()
-      });
-
-      document.getElementById('bodyWeight').value = '';
-      document.getElementById('bodyNote').value = '';
-      document.getElementById('bodyForm').classList.add('hidden');
-      saveData();
-      renderBodyHistory();
-    }
-
-    function renderBodyHistory() {
-      const container = document.getElementById('bodyHistory');
-      if (!container) return;
-
-      if (!data.body.length) {
-        container.innerHTML = '<p class="muted" style="margin:0">Aún no hay datos corporales guardados.</p>';
-        return;
-      }
-
-      container.innerHTML = data.body.slice(0, 6).map(item => `
-        <div class="history-item">
-          <div>
-            <strong>${formatNumber(item.weight)} kg</strong>
-            <span>${formatDate(item.date)}${item.note ? ` · ${escapeHtml(item.note)}` : ''}</span>
-          </div>
-          <span style="color:var(--accent-2);font-size:17px">◉</span>
-        </div>
-      `).join('');
-    }
-
-    function renderProfile() {
-      const name = data.profile?.name?.trim() || 'Fonsy';
-      document.getElementById('profileName').textContent = name;
-      document.getElementById('nameInput').value = name;
-
-      const list = document.getElementById('profileRoutineList');
-      if (!data.customRoutines.length) {
-        list.innerHTML = '<p class="muted" style="margin:0">No has creado rutinas personales todavía.</p>';
-        return;
-      }
-
-      list.innerHTML = data.customRoutines.map(routine => `
-        <div class="history-item">
-          <div>
-            <strong>${escapeHtml(routine.name)}</strong>
-            <span>${routine.exercises.length} ejercicios</span>
-          </div>
-          <button class="button ghost" type="button" onclick="deleteCustomRoutine('${routine.id}')">Borrar</button>
-        </div>
-      `).join('');
-    }
-
-    function saveProfile() {
-      const name = document.getElementById('nameInput').value.trim();
-      data.profile.name = name || 'Fonsy';
-      saveData();
-      alert('Nombre actualizado.');
-    }
-
-    function createRoutinePrompt() {
-      const name = prompt('Nombre de la nueva rutina:', 'Mi rutina');
-      if (!name || !name.trim()) return;
-
-      const available = exercises.slice(0, 20).map((exercise, index) => `${index + 1}. ${exercise.name}`).join('\n');
-      const answer = prompt(
-        `Escribe los números de los ejercicios separados por comas.\n\n${available}\n\nEjemplo: 1, 4, 12`,
-        '1, 4, 12'
-      );
-
-      if (!answer) return;
-
-      const indexes = answer.split(',')
-        .map(value => Number(value.trim()) - 1)
-        .filter(index => Number.isInteger(index) && exercises[index]);
-
-      const ids = [...new Set(indexes.map(index => exercises[index].id))];
-
-      if (!ids.length) {
-        alert('No se ha seleccionado ningún ejercicio válido.');
-        return;
-      }
-
-      data.customRoutines.push({
-        id: uid('routine'),
-        name: name.trim(),
-        exercises: ids,
-        createdAt: new Date().toISOString()
-      });
-
-      saveData();
-      renderRoutineList();
-      alert('Rutina creada correctamente.');
-    }
-
-    function deleteCustomRoutine(id) {
-      if (!confirm('¿Quieres borrar esta rutina personalizada?')) return;
-      data.customRoutines = data.customRoutines.filter(routine => routine.id !== id);
-      saveData();
-      renderProfile();
-      renderRoutineList();
-    }
-
-    function exportData() {
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `mi-entrenamiento-copia-${todayKey()}.json`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function importData(file) {
-      if (!file) return;
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if (!parsed || typeof parsed !== 'object') throw new Error('Formato no válido');
-
-          data = {
-            ...structuredClone(defaultData),
-            ...parsed,
-            profile: { ...defaultData.profile, ...(parsed.profile || {}) },
-            sets: Array.isArray(parsed.sets) ? parsed.sets : [],
-            workouts: Array.isArray(parsed.workouts) ? parsed.workouts : [],
-            cardio: Array.isArray(parsed.cardio) ? parsed.cardio : [],
-            body: Array.isArray(parsed.body) ? parsed.body : [],
-            favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
-            customRoutines: Array.isArray(parsed.customRoutines) ? parsed.customRoutines : []
-          };
-
-          saveData();
-          alert('Copia importada correctamente.');
-          openScreen('inicio');
-        } catch {
-          alert('Ese archivo no es una copia válida de Mi Entrenamiento.');
-        }
-      };
-
-      reader.readAsText(file);
-    }
-
-    function clearData() {
-      if (!confirm('¿Seguro que quieres borrar todos tus datos guardados? Esta acción no se puede deshacer.')) return;
-      data = structuredClone(defaultData);
-      saveData();
-      openScreen('inicio');
-      alert('Datos borrados. La aplicación sigue instalada y lista para empezar de nuevo.');
-    }
-
-    function bindEvents() {
-      document.getElementById('exerciseSearch').addEventListener('input', renderLibrary);
-
-      document.querySelectorAll('[data-energy]').forEach(button => {
-        button.addEventListener('click', () => {
-          data.energy = button.dataset.energy;
-          saveData();
-          renderTrain();
-        });
-      });
-
-      document.querySelectorAll('[data-cardio]').forEach(button => {
-        button.addEventListener('click', () => {
-          selectedCardioType = button.dataset.cardio;
-          renderCardio();
-        });
-      });
-
-      document.getElementById('importFile').addEventListener('change', event => {
-        importData(event.target.files?.[0]);
-        event.target.value = '';
-      });
-    }
-
-    function init() {
-      bindEvents();
-
-      if (!data.currentProgram || !programs[data.currentProgram]) {
-        data.currentProgram = getDefaultProgramForToday();
-      }
-
-      if (!['energia', 'normal', 'cansado'].includes(data.energy)) {
-        data.energy = 'normal';
-      }
-
-      renderHome();
-      renderTrain();
-      renderLibrary();
-      renderProgress();
-      renderProfile();
-      renderCardio();
-      openScreen('inicio');
-    }
-
-    init();
+    // JAVASCRIPT va en el bloque 3
   </script>
 </body>
 </html>
+<style>
+  :root {
+    --fondo: #0b0f14;
+    --fondo-claro: #121821;
+    --texto: #e5e7eb;
+    --texto-suave: #9ca3af;
+    --primario: #3b82f6;
+    --primario-fuerte: #2563eb;
+    --borde: #1f2937;
+    --exito: #10b981;
+    --peligro: #ef4444;
+  }
 
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    line-height: 1.5;
+  }
+
+  .pantalla {
+    display: none;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  .pantalla.activa {
+    display: block;
+  }
+
+  /* PORTADA */
+  #pantalla-portada {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .portada-fondo {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(59,130,246,0.25), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(16,185,129,0.2), transparent 40%),
+      url('imagenes/portada1.png') center/cover no-repeat;
+    filter: brightness(0.6);
+    z-index: 0;
+  }
+
+  .portada-contenido {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    max-width: 420px;
+  }
+
+  .portada-titulo {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .portada-saludo {
+    font-size: 1.1rem;
+    color: var(--texto-suave);
+    margin-bottom: 1.5rem;
+  }
+
+  .portada-frase {
+    font-size: 1rem;
+    color: var(--texto-suave);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .btn-grande {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .btn-secundario {
+    margin-top: 0.75rem;
+    background: transparent;
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* HEADER SIMPLE */
+  .header-simple {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--borde);
+    background: var(--fondo-claro);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .header-simple h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .btn-volver {
+    background: transparent;
+    border: none;
+    color: var(--texto);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  /* PANEL INICIO */
+  .panel-inicio {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tarjeta-inicio,
+  .tarjeta-inicio-resumen {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 1rem;
+    cursor: pointer;
+  }
+
+  .tarjeta-inicio h3,
+  .tarjeta-inicio-resumen h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .tarjeta-inicio p,
+  .tarjeta-inicio-resumen p {
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    margin-bottom: 0.75rem;
+  }
+
+  /* NAV INFERIOR */
+  .nav-inferior {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--fondo-claro);
+    border-top: 1px solid var(--borde);
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 0.25rem;
+    z-index: 3;
+  }
+
+  .nav-item {
+    background: transparent;
+    border: none;
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .nav-item.activo {
+    color: var(--texto);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* BOTONES */
+  .btn-primary {
+    background: var(--primario);
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-mini {
+    background: transparent;
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+
+  /* RUTINA DEL DÍA */
+  .contenido-rutina {
+    padding: 1rem;
+  }
+
+  .info-rutina {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .lista-ejercicios-rutina {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+
+  .lista-ejercicios-rutina li {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+
+  /* MODO GUIADO */
+  .contenido-modo-guiado {
+    padding: 1rem;
+  }
+
+  .foto-ejercicio-grande {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--borde);
+    margin-bottom: 1rem;
+  }
+
+  .descripcion-ejercicio {
+    color: var(--texto-suave);
+    margin-bottom: 1rem;
+  }
+
+  .series-guiado {
+    margin-bottom: 1rem;
+  }
+
+  .serie-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .serie-row input {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 0.5rem;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  /* CATÁLOGO */
+  .buscador-filtros {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .buscador-filtros input,
+  .buscador-filtros select {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 0.6rem;
+    border-radius: 10px;
+  }
+
+  .lista-ejercicios-catalogo {
+    padding: 0 1rem 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .ejercicio-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+
+  .ejercicio-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+  }
+
+  .ejercicio-nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .ejercicio-grupo {
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+  }
+
+  /* FICHA EJERCICIO */
+  .contenido-ficha {
+    padding: 1rem;
+  }
+
+  .lista-simple {
+    list-style: none;
+  }
+
+  .lista-simple li {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* SESIÓN LIBRE / CARDIO / PROGRESO / PERFIL */
+  .contenido-sesion-libre,
+  .contenido-cardio,
+  .contenido-calendario,
+  .contenido-marcas,
+  .contenido-historial,
+  .contenido-peso,
+  .contenido-perfil {
+    padding: 1rem;
+  }
+
+  .panel-progreso {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .tarjeta-progreso {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+  }
+
+  .tarjeta-perfil {
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .contenido-cardio label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+
+  .contenido-cardio select,
+  .contenido-cardio input {
+    width: 100%;
+    background: var(--fondo-claro);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    padding: 0.6rem;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+  }
+</style>
+<script>
+  // DATOS DE EJEMPLO (luego se conectarán a localStorage / backend)
+  const ejercicios = [
+    {
+      id: 'press-inclinado-mancuernas',
+      nombre: 'Press inclinado con mancuernas',
+      grupo: 'Pecho',
+      descripcion: 'Empuje horizontal inclinado para pecho superior, hombro frontal y tríceps.',
+      imagen: 'imagenes/IMG_9249.png'
+    },
+    {
+      id: 'press-banca-barra',
+      nombre: 'Press de banca con barra',
+      grupo: 'Pecho',
+      descripcion: 'Empuje horizontal clásico para pecho, hombro frontal y tríceps.',
+      imagen: 'imagenes/IMG_9250.png'
+    },
+    {
+      id: 'apertura-polea-alta',
+      nombre: 'Apertura en polea alta',
+      grupo: 'Pecho',
+      descripcion: 'Apertura en cruz para pecho, enfatizando el estiramiento y la contracción.',
+      imagen: 'imagenes/IMG_9251.png'
+    },
+    {
+      id: 'press-militar-mancuernas',
+      nombre: 'Press militar con mancuernas',
+      grupo: 'Hombro',
+      descripcion: 'Empuje vertical para deltoides anterior y medio, con tríceps como sinergista.',
+      imagen: 'imagenes/IMG_9252.png'
+    },
+    {
+      id: 'elevaciones-laterales',
+      nombre: 'Elevaciones laterales',
+      grupo: 'Hombro',
+      descripcion: 'Abducción de hombro para deltoides medio, clave para anchura.',
+      imagen: 'imagenes/IMG_9253.png'
+    },
+    {
+      id: 'face-pull',
+      nombre: 'Face pull',
+      grupo: 'Hombro',
+      descripcion: 'Tracción alta para deltoides posterior, romboides y manguito rotador.',
+      imagen: 'imagenes/IMG_9254.png'
+    },
+    {
+      id: 'extension-triceps-polea',
+      nombre: 'Extensión de tríceps en polea',
+      grupo: 'Tríceps',
+      descripcion: 'Empuje hacia abajo para tríceps, énfasis en cabeza lateral y medial.',
+      imagen: 'imagenes/IMG_9255.png'
+    },
+    {
+      id: 'dominadas',
+      nombre: 'Dominadas',
+      grupo: 'Espalda',
+      descripcion: 'Tracción vertical para dorsal ancho, redondo mayor y bíceps.',
+      imagen: 'imagenes/IMG_9256.png'
+    },
+    {
+      id: 'remo-barra',
+      nombre: 'Remo con barra',
+      grupo: 'Espalda',
+      descripcion: 'Tracción horizontal para dorsal, romboides y trapecio.',
+      imagen: 'imagenes/IMG_9257.png'
+    },
+    {
+      id: 'remo-gironda',
+      nombre: 'Remo en gironda',
+      grupo: 'Espalda',
+      descripcion: 'Tracción horizontal en máquina para espalda media y dorsal.',
+      imagen: 'imagenes/IMG_9258.png'
+    },
+    {
+      id: 'curl-biceps-barra',
+      nombre: 'Curl de bíceps con barra',
+      grupo: 'Bíceps',
+      descripcion: 'Flexión de codo para bíceps braquial y braquial anterior.',
+      imagen: 'imagenes/IMG_9259.png'
+    },
+    {
+      id: 'curl-martillo',
+      nombre: 'Curl martillo',
+      grupo: 'Bíceps',
+      descripcion: 'Flexión de codo en pronación para braquial y bíceps.',
+      imagen: 'imagenes/IMG_9260.png'
+    },
+    {
+      id: 'sentadilla-barra',
+      nombre: 'Sentadilla con barra',
+      grupo: 'Cuádriceps',
+      descripcion: 'Empuje de cadena posterior y anterior para cuádriceps, glúteo y adductores.',
+      imagen: 'imagenes/IMG_9261.png'
+    },
+    {
+      id: 'prensa',
+      nombre: 'Prensa de piernas',
+      grupo: 'Cuádriceps',
+      descripcion: 'Empuje en máquina para cuádriceps y glúteo, con menor demanda técnica.',
+      imagen: 'imagenes/IMG_9262.png'
+    },
+    {
+      id: 'extension-cuadriceps',
+      nombre: 'Extensión de cuádriceps',
+      grupo: 'Cuádriceps',
+      descripcion: 'Extensión de rodilla aislada para cuádriceps.',
+      imagen: 'imagenes/IMG_9263.png'
+    },
+    {
+      id: 'peso-muerto',
+      nombre: 'Peso muerto',
+      grupo: 'Femoral',
+      descripcion: 'Bisagra de codo para isquios, glúteo y espalda baja.',
+      imagen: 'imagenes/IMG_9264.png'
+    },
+    {
+      id: 'curl-femoral',
+      nombre: 'Curl femoral',
+      grupo: 'Femoral',
+      descripcion: 'Flexión de rodilla aislada para isquiosurales.',
+      imagen: 'imagenes/IMG_9265.png'
+    },
+    {
+      id: 'hip-thrust',
+      nombre: 'Hip thrust',
+      grupo: 'Glúteo',
+      descripcion: 'Empuje de cadera para glúteo mayor y medio.',
+      imagen: 'imagenes/IMG_9266.png'
+    },
+    {
+      id: 'elevacion-talones',
+      nombre: 'Elevación de talones',
+      grupo: 'Pantorrilla',
+      descripcion: 'Flexión plantar para gemelos y sóleo.',
+      imagen: 'imagenes/IMG_9267.png'
+    },
+    {
+      id: 'plancha',
+      nombre: 'Plancha abdominal',
+      grupo: 'Abdomen',
+      descripcion: 'Isométrico de core para recto abdominal y estabilizadores.',
+      imagen: 'imagenes/IMG_9268.png'
+    },
+    {
+      id: 'crunch',
+      nombre: 'Crunch abdominal',
+      grupo: 'Abdomen',
+      descripcion: 'Flexión de tronco para recto abdominal.',
+      imagen: 'imagenes/IMG_9269.png'
+    },
+    {
+      id: 'superman',
+      nombre: 'Superman lumbar',
+      grupo: 'Lumbar',
+      descripcion: 'Extensión de tronco para erectores espinales.',
+      imagen: 'imagenes/IMG_9270.png'
+    }
+  ];
+
+  const rutinas = {
+    push: {
+      nombre: 'Push',
+      descripcion: 'Pecho, hombro y tríceps',
+      ejercicios: [
+        'press-inclinado-mancuernas',
+        'press-banca-barra',
+        'apertura-polea-alta',
+        'press-militar-mancuernas',
+        'elevaciones-laterales',
+        'extension-triceps-polea'
+      ]
+    },
+    pull: {
+      nombre: 'Pull',
+      descripcion: 'Espalda, bíceps y hombro posterior',
+      ejercicios: [
+        'dominadas',
+        'remo-barra',
+        'remo-gironda',
+        'face-pull',
+        'curl-biceps-barra',
+        'curl-martillo'
+      ]
+    },
+    pierna: {
+      nombre: 'Pierna',
+      descripcion: 'Cuádriceps, femoral, glúteo y pantorrilla',
+      ejercicios: [
+        'sentadilla-barra',
+        'prensa',
+        'extension-cuadriceps',
+        'peso-muerto',
+        'curl-femoral',
+        'hip-thrust',
+        'elevacion-talones'
+      ]
+    }
+  };
+
+  // ESTADO GLOBAL SIMPLE
+  let estadoHoy = 'Normal';
+  let rutinaActual = rutinas.push; // ejemplo
+  let indiceEjercicioGuiado = 0;
+
+  // NAVEGACIÓN
+  function irAPantalla(id) {
+    document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+    document.getElementById(id).classList.add('activa');
+    window.scrollTo(0, 0);
+  }
+
+  function abrirRutinaDelDia() {
+    document.getElementById('titulo-rutina-del-dia').textContent = rutinaActual.nombre;
+    document.getElementById('info-rutina-del-dia').textContent =
+      `${rutinaActual.descripcion} · ${rutinaActual.ejercicios.length} ejercicios`;
+    const lista = document.getElementById('lista-ejercicios-rutina');
+    lista.innerHTML = '';
+    rutinaActual.ejercicios.forEach(id => {
+      const ej = ejercicios.find(e => e.id === id);
+      const li = document.createElement('li');
+      li.textContent = ej.nombre;
+      li.onclick = () => abrirFichaEjercicio(ej.id);
+      lista.appendChild(li);
+    });
+    irAPantalla('pantalla-rutina-del-dia');
+  }
+
+  function cambiarEstadoHoy() {
+    const estados = ['Normal', 'Cansado', 'Muy fresco'];
+    const idx = estados.indexOf(estadoHoy);
+    estadoHoy = estados[(idx + 1) % estados.length];
+    document.getElementById('estado-hoy').textContent = estadoHoy;
+  }
+
+  function iniciarModoGuiado() {
+    indiceEjercicioGuiado = 0;
+    cargarEjercicioGuiado();
+    irAPantalla('pantalla-modo-guiado');
+  }
+
+  function salirModoGuiado() {
+    irAPantalla('pantalla-rutina-del-dia');
+  }
+
+  function cargarEjercicioGuiado() {
+    const id = rutinaActual.ejercicios[indiceEjercicioGuiado];
+    const ej = ejercicios.find(e => e.id === id);
+    document.getElementById('titulo-modo-guiado').textContent = `Ejercicio ${indiceEjercicioGuiado + 1}/${rutinaActual.ejercicios.length}`;
+    document.getElementById('nombre-ejercicio-guiado').textContent = ej.nombre;
+    document.getElementById('descripcion-ejercicio-guiado').textContent = ej.descripcion;
+    document.getElementById('foto-ejercicio-guiado').src = ej.imagen;
+
+    const contenedor = document.getElementById('series-guiado');
+    contenedor.innerHTML = '';
+    for (let i = 1; i <= 3; i++) {
+      const row = document.createElement('div');
+      row.className = 'serie-row';
+      row.innerHTML = `
+        <input type="number" placeholder="Peso" min="0">
+        <input type="number" placeholder="Reps" min="0">
+        <input type="number" placeholder="RIR" min="0" max="10">
+        <button class="btn-mini">OK</button>
+      `;
+      contenedor.appendChild(row);
+    }
+  }
+
+  function siguienteEjercicio() {
+    if (indiceEjercicioGuiado < rutinaActual.ejercicios.length - 1) {
+      indiceEjercicioGuiado++;
+      cargarEjercicioGuiado();
+    } else {
+      alert('¡Entrenamiento completado! 🎉');
+      salirModoGuiado();
+    }
+  }
+
+  function filtrarEjercicios() {
+    const texto = document.getElementById('buscador-ejercicios').value.toLowerCase();
+    const grupo = document.getElementById('filtro-grupo').value;
+    const lista = document.getElementById('lista-ejercicios-catalogo');
+    lista.innerHTML = '';
+
+    ejercicios.forEach(ej => {
+      if (grupo && ej.grupo !== grupo) return;
+      if (texto && !ej.nombre.toLowerCase().includes(texto)) return;
+
+      const item = document.createElement('div');
+      item.className = 'ejercicio-item';
+      item.innerHTML = `
+        <img src="${ej.imagen}" alt="${ej.nombre}">
+        <div>
+          <div class="ejercicio-nombre">${ej.nombre}</div>
+          <div class="ejercicio-grupo">${ej.grupo}</div>
+        </div>
+        <button class="btn-mini" onclick="abrirFichaEjercicio('${ej.id}')">Ver</button>
+      `;
+      lista.appendChild(item);
+    });
+  }
+
+  function abrirFichaEjercicio(id) {
+    const ej = ejercicios.find(e => e.id === id);
+    document.getElementById('nombre-ficha-ejercicio').textContent = ej.nombre;
+    document.getElementById('foto-ficha-ejercicio').src = ej.imagen;
+    document.getElementById('descripcion-ficha-ejercicio').textContent = ej.descripcion;
+    document.getElementById('marcas-ficha-ejercicio').textContent = 'Aún no hay registros.';
+    document.getElementById('historial-ficha-ejercicio').innerHTML = '';
+    irAPantalla('pantalla-ficha-ejercicio');
+  }
+
+  function guardarCardio() {
+    const tipo = document.getElementById('cardio-tipo').value;
+    const duracion = document.getElementById('cardio-duracion').value;
+    const distancia = document.getElementById('cardio-distancia').value;
+    const esfuerzo = document.getElementById('cardio-esfuerzo').value;
+    alert(`Cardio guardado:\n${tipo} · ${duracion} min · ${distancia} km · Esfuerzo ${esfuerzo}/10`);
+    irAPantalla('pantalla-inicio');
+  }
+
+  function exportarDatos() {
+    const datos = { ejercicios, rutinas, estadoHoy };
+    const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mi-entrenamiento-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importarDatos() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const datos = JSON.parse(ev.target.result);
+          alert('Datos importados correctamente. Recarga la página para aplicar cambios.');
+        } catch {
+          alert('Archivo no válido.');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  // INICIALIZACIÓN
+  window.addEventListener('DOMContentLoaded', () => {
+    filtrarEjercicios();
+    document.getElementById('resumen-rutina-hoy').textContent =
+      `${rutinaActual.nombre} · ${rutinaActual.ejercicios.length} ejercicios`;
+    document.getElementById('resumen-inicio').textContent =
+      'Racha: 3 días · Última sesión: ayer';
+    irAPantalla('pantalla-portada');
+  });
+</script>
